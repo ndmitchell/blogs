@@ -1,0 +1,28 @@
+
+How to write a Monoid with Monad syntax, like the Shake rules Monad, which is a WriterT thingy. You need to make an extra kind the wire it up.
+
+---------------------------------------------------------------------
+
+Applicative Make vs Shake Monad. See Shake-Monad.hs for the code.
+
+---------------------------------------------------------------------
+
+Progress reporting in Shake, and how awesome it is. "Erdi, Gergo: showing the estimated build time remaining in the terminal window's title is genius. you can quote me on that :)"
+
+---------------------------------------------------------------------
+
+New command functions in Development.Shake.Command. In particular, use [x] around filenames.
+
+---------------------------------------------------------------------
+
+How you should write things in Shake, properly abstracting the command line bit:
+
+  "result.tar" *> \out ->
+     createTar out ["file1","file2"]
+
+  "result.tar" *> \out ->
+     createTar out =<< readFileLines "list.txt"
+
+  createTar out src = do
+     need src
+     cmd "tar -cf" [out] src
