@@ -26,3 +26,21 @@ How you should write things in Shake, properly abstracting the command line bit:
   createTar out src = do
      need src
      cmd "tar -cf" [out] src
+
+---------------------------------------------------------------------
+
+Shake vs Ninja
+
+---------------------------------------------------------------------
+
+Optimising Shake
+
+Macker: Shake is also obsessed about minimal incremental build changes and correctness. Some evidence for incremental time:
+
+* I rewrote the storage layer so incremental changes don't involve writing the metadata (http://neilmitchell.blogspot.co.uk/2012/06/shake-storage-layer.html).
+* The inner build algorithm is highly optimised to reduce things like lock contention in incremental builds (http://community.haskell.org/~ndm/downloads/paper-shake_before_building-10_sep_2012.pdf, S4.3)
+* The file modification time checks are highly optimised and keep at bytes out of structures (https://github.com/ndmitchell/shake/blob/master/Development/Shake/FileTime.hs).
+
+The end result is that for an no-op build, running ghc --make to build a 30 module build system takes longer than running a 30,000 object build system. Checking modification time from the disk dominates, and that is highly optimised.
+
+I have yet to benchmark Shake against Ninja. There are a few reasons I think Ninja might win (better on-disk serialisation) and a few reasons I think Shake might win (rules are statically compiled), so will have to try it to find out.
