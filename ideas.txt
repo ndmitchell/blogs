@@ -33,6 +33,10 @@ Shake vs Ninja
 
 ---------------------------------------------------------------------
 
+GNU Make command line vs Shake, also command line handling in Shake
+
+---------------------------------------------------------------------
+
 Optimising Shake
 
 Macker: Shake is also obsessed about minimal incremental build changes and correctness. Some evidence for incremental time:
@@ -44,3 +48,8 @@ Macker: Shake is also obsessed about minimal incremental build changes and corre
 The end result is that for an no-op build, running ghc --make to build a 30 module build system takes longer than running a 30,000 object build system. Checking modification time from the disk dominates, and that is highly optimised.
 
 I have yet to benchmark Shake against Ninja. There are a few reasons I think Ninja might win (better on-disk serialisation) and a few reasons I think Shake might win (rules are statically compiled), so will have to try it to find out.
+
+---------------------------------------------------------------------
+
+Interpetting build metadata in Shake - how to do build.mk style things
+
