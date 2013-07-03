@@ -21,28 +21,6 @@ Notes from meeting: "Arguably one of the biggest current problems with Haskell p
 * <https://www.bitba.se/i-accidentally-the-entire-heap/> - presentation on space leak
 
 
-### Ideas
-
-`sum` defined the obvious way has a space leak, which goes away with optimisation. Deleting items from a map leaves them in there until you "examine" the map.
-
-Wadlers selector evaluation must be relevant.
-
-What tools do we have to track down space leaks? Lag, drag, void and use?
-
-Garbage collection answers memory allocation, finalisation is the answer to resource usage, but there is no answer to space leaks, other than space usage.
-
-How much memory does this program take?
-
-    sum [1..100]
-
-Which sums the numbers from 1 to 100. In a strict language you would generate a list of 100 elements so _O(n)_. In a lazy language it runs in constant memory so _O(1)_. But it doesn't because of a space leak.
-
-Strictness rescues us most of the time, but not always.
-
-
-### Outline
-
-Memory leaks and space leaks, using sum as the motivating example. What is a space leak?
 
 # Leaking Space
 
@@ -78,7 +56,7 @@ For the above example, we happen to know that `length` will force enough of the 
 * A binding is in **weak head normal form** (WHNF) if the outermost value does not require further evaluation. For example `[1+2]` is in WHNF, but not normal form, since it can be reduced to `[3]`. All values in normal form are also in head normal form.
 * A binding is a **thunk** if the outermost value can be evaluated, for example `1+2` is a thunk. A thunk is the opposite of WHNF.
 
-To force a value to WHNF, Haskell provides _bang patterns_. We can define a function `f` which takes one argument as:
+To force a value to WHNF, Haskell provides _bang patterns_ (which often require the pragma `{-# LANGUAGE BangPatterns #-}` at the top of source files). We can define a function `f` which takes one argument as:
 
     f x = ...
 
@@ -202,11 +180,11 @@ This function computes the `mean` of a list `xs` by taking the `sum` and dividin
 
 Using lazy evaluation, namely reducing the top-most left-most expression first, the answer is `O(n)`. The reason is that to fully evaluate `sum xs` we must evaluate the entire list `xs`, but since that list is shared by `length xs`, the whole list `xs` will be retained in memory.
 
-In this instance a smarter evaluation strategy could eliminate the space leak. If we evaluated the first element of `xs`, then applied both `sum` and `length` to it, we could execute in constant space. If we were trying to compute `mean [1..n]` we might also be able to write:
+In this instance a smarter evaluation strategy could eliminate the space leak. If we evaluated the first element of `xs`, then applied both `sum` and `length` to it, we could execute in constant space. Another approach applicable for computing `mean [1..n]` would be to remove the sharing of the list:
 
 	sum [1..n] `div` length [1..n]
 
-Here we have duplicated the list twice, so the list is not shared, the both parts run in constant space, allowing the entire computation run in constant space. Unfortunately, there is a risk that the compiler might common-up the two definitions (a technique known as Common Subexpression Elimination or CSE), sharing the lists, and reintroducing the space leak. Indeed, the GHC compiler is careful about performing CSE partly to avoid introducing space leaks.
+Here we have duplicated the list twice, and both parts run in constant space, allowing the entire computation run in constant space. Unfortunately, there is a risk that the compiler might common-up the two definitions (a technique known as Common Subexpression Elimination or CSE), sharing the lists, and reintroducing the space leak. Indeed, the GHC compiler is careful about performing CSE partly to avoid introducing space leaks.
 
 The solution is to take the pattern we used for `sum3` and extend it so instead of accumulating just the sum, we also accumulate the length. The full definition is: 
 
@@ -214,114 +192,98 @@ The solution is to take the pattern we used for `sum3` and extend it so instead 
         where mean' !sum !length (x:xs) = mean' (sum+x) (1+length) xs
               mean' !sum !length [] = sum `div` length  
 
-We accumulate the `sum` and `length` as local parameters, 
+We accumulate the `sum` and `length` as local parameters, which are marked strict arguments in the helper function. Earlier I mentioned that Haskell programmers frequently prefer higher-order functions as opposed to direct recursion, but the `foldl'` function introduced earlier only permits one accumulating argument. Fortunately Haskell provides pairs using the notation `(_,_)`, so we can pass one value consisting of both running accumulators.
+
+    mean xs = foldl' f (0,0) xs
+        where f (!sum,!length) x = (sum+x, length+x)
+
+While the `foldll'` forces the accumulator to WNHF, we now have a tuple for the accumulator, so while the tuple is in WHNF, the values inside it will remain thunks. By adding the bang patterns inside the tuple match we can force these two values, ensuring the entire accumulator is in normal form and eliminating the space leak.
 
 ### Example 4: Strictness in the Garbage Collector
 
-Finally, let's see another example:
+In all our previous examples we have manually inserted strictness annotations to eliminate the space leak. Unfortunately, Hughes (198_) showed that some space leaks cannot be removed by strictness evaluation, but fortunately Wadler (1987) showed how the garbage collector can be modified to remove them. Let's take a look at such an example. We can improve the quality of any academic paper by placing an exclamation at the end of the title, which we can implement as:
 
-    firstLine ('\n':xs) = ([], xs)
-    firstLine (x:xs) = (x:fst a, snd a)
-        where a = firstLine xs
+    improve xs = fst pair ++ "!" ++ snd pair
+        where pair = firstLine xs 
 
-This function takes a string and splits it into the text that comes before the first line, and the text that comes after the first line. The important point is that it returns a pair. If the first character is a newline character, then there is no text before the newline, and all the remaining text comes after. Otherwise, we can recursively call `firstLine` on the remaining text and cons this character on to the front of the first component of the result (extracted using `fst`), before continuing with the remainder (using `snd`).
+    firstLine ('\n':ys) = ([], '\n':ys)
+    firstLine (y:ys) = (y:fst rest, snd rest)
+        where rest = firstLine ys
 
-We can improve the quality of any paper by placing an exclamation at the end of the title, which we can write:
+The `improve` function takes the source of the paper, and produces a new paper. It splits the text into a variable `pair` being a pair of the first line and the remaining text, using the auxiliary `firstLine`. The function then takes the first element of the pair using `fst`, and the second element using `snd` and uses the string append operator `++` to insert an exclamation mark character between them.  The first equation of `firstLine` matches strings with a leading newline character and produces an empty first line, followed by the text. The second equation recursively calls `firstLine` with everything but the first character, then creates a result where the first character is at the front of the first line. (The function will raise an error if called with a string containing no newline, adding an equation to handle `[]` is simple, and the reader is encouraged to think what such a modification would look like.)
 
-    improve xs = fst a ++ "!\n" ++ snd a
-		where a = firstLine xs 
+It should be possible for `improve` to run in _O(1)_ space, producing an output character after examining each input character, and requiring only a small amount of memory. The reason for such behaviour stems from the second equation of `firstLine`, we can see that after matching `y:ys` (i.e. consuming an input character) we immediately produce `(y:_, _)`, making an output character available via lazy evaluation before making the recursive call. Unfortunately, using the obvious implementation technique, this function actually requires space proportional to the first line of `xs`, so _O(`fst pair`)_. To see why, let us consider what the evaluation of `improve "abc..."` produces:
 
-It is reasonable to expect that this function runs in _O(1)_ space, but using the obvious implementation technique, it actually requires space proportional to the first line of `xs`, so _O(`fst a`). To see why, let us consider what the evaluation of `improve "abc..."` produces:
+    let rest4 = firstLine "..."
+    let rest3 = ('c':fst rest4, snd rest4)
+    let rest2 = ('b':fst rest3, snd rest3)
+    let rest1 = ('a':fst rest2, snd rest2)
+    'a':'b':'c':fst rest4 ++ "!\n" ++ snd rest1
 
-    let a4 = firstLine "..."
-    let a3 = ('c':fst a4, snd a4)
-    let a2 = ('b':fst a3, snd a3)
-    let a1 = ('a':fst a2, snd a2)
-    'a':'b':'c':fst a4 ++ "!\n" ++ snd a1
+In each step of `firstLine` we produce a pair where the second component of that pair is simply the second component of the recursive call. As a result, we end up with both a linear chain of `snd` calls and retain all the character data by referencing the first component of each `rest` variable. If we forced the `snd` functions then we would eliminate the space leak to produce:
 
-At each step of `firstLine` we produce a pair where the second component of that pair is simply the second component of the recursive call. As a result we end up with a chain of functions taking the second component, and this function runs in space proportional to the first line of the string. The prefix `'a':'b':'c'` of the list will be consumed by whoever is asking for the result, so does not count to the memory.
+    let rest4 = firstLine "..."
+    'a':'b':'c':fst rest4 ++ "!\n" ++ snd rest4
 
-More worryingly, assuming we want _O(1)_ space, there is nowhere appropriate to put a strictness annotation. We want to force the evaluation of `snd`, but at the same time we are using the laziness of `snd` to ensure that we can stream the prefix of the result. We have a space leak we cannot eliminate!
-
-Fortunately, there is a solution. The function `snd` is a selector - given a pair, it selects the second component. It does not compute any new values, does not allocate memory, and is very cheap. As such, we can actually _evaluate `seq` during garbage collection_, which eliminates the space leak.
+Unfortunately, there is nowhere we could put a strictness annotation to perform the appropricate reduction. We want to force the evaluation of `snd`, but are also relying on the laziness of the pair in the recursive call to `firstLine` to acheive _O(1)_ space. Fortunately, the garbage collector can solve this problem for us. The function `snd` is a selector - given a pair, it selects the second component. It does not compute any new values, does not allocate memory, and is very cheap. As such, we can actually _evaluate `snd` during garbage collection_, which eliminates the space leak. The reduction of selector functions during garbage collection is now a standard feature of lazy functional languages, automatically removing space leaks that would be otherwise impossible to eliminate.
 
 ### Example 5: Space leaks and closures
 
-While all the examples so far have used lazy evaluation, that's not the only feature that permits them. A _closure_ is a lambda expression plus a bound environment. While lazy evaluation is rare in programming languages, and where it is supported tends to be by an explicit `Lazy` type (which eliminates much of the surprise with default lazy evaluation), closures are either present in, or are being added to most languages. One popular language that has had closures since the very beginning is Javascript. In Javascript we can define:
+All the examples so far have been in Haskell, but other garbage collected languages are also susceptible to space leaks. While few languages are lazy by default, many languages support _closures_ - a lambda expression or function, plus some variables bound in an environment. One popular language which makes extensive use of closures is Javascript. In Javascript we can write:
 
-    function LoadAudio(url) // Returns AudioSource
+    function LoadAudio(url)
     {
-		// Load 'url' into 'request.response'
+        // Load 'url' into 'request.response'
         var request = new XMLHttpRequest();
         request.open('GET', url, false);
         request.responseType = 'arraybuffer';
-		request.send();
+        request.send();
 
-		// Decode the audio data
-		window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        // Decode the audio data
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
         var context = new AudioContext();
         context.decodeAudioData(request.response, function(audio) {
-			document.getElementById("status").click = function(){
-				alert(url + " is " + audio.duration + " seconds long");
-			};
-		});
+            document.getElementById("status").click = function(){
+                alert(url + " is " + audio.duration + " seconds long");
+            };
+        });
     }
 
-This function uses the `XMLHttpRequest` API to get the URL, then uses the Web Audio API to decode the audio data. With the decoded `audio` type, which implements the `AudioBuffer` interface, and then we associate the action of clicking on a `status` HTML element with showing a message telling the user how long the audio duration takes.
+This function uses the `XMLHttpRequest` API to load a URL (such as an MP3 file), then uses the Web Audio API to decode the audio data. Once we obtain a decoded `audio` value, which implements the `AudioBuffer` interface, we then add an action when clicking on a `status` HTML element which tells the user how long the audio file lasts. After this function has run, the `status` element will have an `onclick` event which runs:
 
-After this function has run, the `status` element will has a `click` handler that points at the function:
+    alert(url + " is " + audio.duration + " seconds long");
 
-	function(){
-		alert(url + " is " + audio.duration + " seconds long");
-	};
+This expression references the `audio` object, which stores all the audio data - taking at least as much memory as the original file. We only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
 
-This function references the `audio` object, which stores the entire clip - taking as much memory as the length of the clip. However, we only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
-
-Solving the issue manually is not too tricky. We wish to force evaluation of `audio.duration`, which we can do with:
+This space leak follows much the same pattern as the lazy evaluation space leaks above. We are referencing an expression `audio.duration` which keeps alive a signficiant amount of memory, but when evaluated, use only a small amount of memory. As before, the solution is to force the evaluation sooner than necessary, which we can do with:
 
 	var duration = audio.duration;
 	document.getElementById("status").click = function(){
 		alert(url + " is " + duration + " seconds long");
 	};
+    
+#### Javascript Selectors
 
-We have in effect applied strictness, forcing evaluation of `audio.duration` in advance of where it is needed, to ensure the heap now points at the small number, instead of a field on a large number.
+In fact, in this example, the garbage collector had sufficient information to know that such an evaluation is always beneficial (assuming the property simply returns an existing value, rather than allocating a new value). Since there are no other pointers to `audio` the value of `audio` is constant, and since `duration` is a read only property, we know it cannot change. This optimisation would be an instance of the selector optimisation in Example 4.
 
-In fact, in this example, the garbage collector had enough information to know that such an evaluation was beneficial (assuming the property is very fast to execute and allocates no memory). Since there are no other pointers to `audio` the value of `audio` is fixed, and since `duration` is a read only property, we know it cannot change. This optimisation would be in effect the selector optimisation from Example 4.
-
-Unfortunately, in Javascript, the selector optimisation is less applicable than Haskell due to the default of all data structures being mutable. As a direct example, consider:
+Unfortunately, the selector optimisation is less applicable in Javascript than in Haskell because by default all values are mutable mutable. As a simpler example, consider:
 
     var constants = {pi : 3.142, fiveDigitPrimes : [10007,10009,10037,...]};
-    document.getElementById("fire").click = function(){
+    document.getElementById("fire").onclick = function(){
 		alert(constants.pi);
     };
 
-If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside.
+Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a long list), then add a handler that tells the user the value of `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside, rendering such an optimisation unsafe.
 
-a audio URL (such as an MP3 file), and associate an action with clicking on a status button that shows the user the duration of the clip. 
+While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where the garbage collector knew if each reference was being used in a read-only situation (i.e. `alert(constants.pi)`) or a read-write situation (i.e. `constants.pi = 3`). From this information it would be able to determine which variables were only used read-only and thus were guaranteed to be constant. If `constants` and `constants.pi` were both detected as read-only then the field lookup could be performed by the garbage collector, freeing the `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
 
-If we force `i.size` it takes a lot less space, measuring in Chrome it takes a fraction. Note that if `i.size` was a selector, we could have the garbage collector follow it. Of course, if Image is strict then we don't have an option.
-
-We can now rewrite as:
-
-    var i = new Image(filename)
-
-    document.getElementById("clicker").onclick = function(){
-        alert(i.size)
-    }
-
-We also have the difference between:
-
-    Ref (Map String *Value)
-
-and
-
-	Ref (Map String (Ref Value))
-
-If we can guarantee that an initial name will never change (e.g. that if we do insert, then get, any future gets will be the same, then we can do the selector trick even so (perhaps with a separate table so that `elems` remains correct).
+In Haskell lazy evaluation is common (the default) and space leaks due to selectors are unavoidable, making the choice of selector optimisation an easy decision. In languages like Javascript adding additional code to solve fixable space leaks at the cost of making the normal code slower may not always be a sensible trade-off.
 
 ### Detecting space leaks
 
 It has been said that every non-trivial Haskell program probably has a space leak somewhere within it. I can well imagine they are right. Fortunately, we have heap profiling tools that help us detect things better than other languages.
+
+Memory leaks are easy, you just run for a long period of time and see what is in memory - by definition, most things will be caused by the memory leak. Space leaks are harder since the memory usually goes away at the end.
 
 We can profile.
 

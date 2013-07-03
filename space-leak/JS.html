@@ -1,0 +1,22 @@
+<html>
+<head>
+<script>
+function fire()
+{
+	var xs = [];
+	for (var i = 0; i < 100000; i++)
+		xs[i] = "this is a long test string";
+
+    var constants = {pi : 3.142, fiveDigitPrimes : xs};
+	function foobar(){
+		alert(constants.pi);
+    };
+    document.getElementById("fire").onclick = foobar;
+    constants.pi = 6;
+}
+
+</script>
+<body onload="fire()">
+<button id="fire">go</button>
+</body>
+</html>
