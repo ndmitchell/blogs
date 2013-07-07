@@ -229,42 +229,55 @@ Unfortunately, there is nowhere we could put a strictness annotation to perform 
 
 ### Example 5: Space leaks and closures
 
-All the examples so far have been in Haskell, but other garbage collected languages are also susceptible to space leaks. While few languages are lazy by default, many languages support _closures_ - a lambda expression or function, plus some variables bound in an environment. One popular language which makes extensive use of closures is Javascript. In Javascript we can write:
+All the examples so far have been in Haskell, but other garbage collected languages are also susceptible to space leaks. While few languages are lazy by default, many languages support _closures_ - a lambda expression or function, plus some variables bound in an environment. One popular language which makes extensive use of closures is Javascript.
+
+Let's imagine that we want to use the new HTML5 audio APIs to retrieve an MP3 from the web, and tell the end user its size. In Javascript we can write:
 
     function LoadAudio(url)
     {
         // Load 'url' into 'request.response'
         var request = new XMLHttpRequest();
-        request.open('GET', url, false);
+        request.open('GET', url);
         request.responseType = 'arraybuffer';
-        request.send();
 
-        // Decode the audio data
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        var context = new AudioContext();
-        context.decodeAudioData(request.response, function(audio) {
-            document.getElementById("status").click = function(){
-                alert(url + " is " + audio.duration + " seconds long");
-            };
-        });
+        request.onreadystatechange = function(){
+            if (request.readyState != 4) return;
+
+            // Decode the audio data
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            var context = new AudioContext();
+            context.decodeAudioData(request.response, function(audio){
+                document.getElementById("status").onclick = function(){
+                    alert(url + " is " + audio.duration + " seconds long");
+                }
+            });
+        };
+        request.send();
     }
 
-This function uses the `XMLHttpRequest` API to load a URL (such as an MP3 file), then uses the Web Audio API to decode the audio data. Once we obtain a decoded `audio` value, which implements the `AudioBuffer` interface, we then add an action when clicking on a `status` HTML element which tells the user how long the audio file lasts. After this function has run, the `status` element will have an `onclick` event which runs:
+
+This function uses the `XMLHttpRequest` API to load a URL (such as an MP3 file), then uses the Web Audio API to decode the audio data. Once we obtain a decoded `audio` value, which implements the `AudioBuffer` interface, we then add an action when clicking on a `status` HTML element which tells the user how long the audio file lasts.
+
+The implementation requires three local functions, two of which reference variables defined locally to this function, and those variables get captured in a closure when the function is generated. As an example, the first function which is assigned to `onreadystatechange` captures the `request` variable defined previously. 
+
+After `LoadAudio` has run, the `status` element will have an `onclick` event which will run the following code:
 
     alert(url + " is " + audio.duration + " seconds long");
 
-This expression references the `audio` object, which stores all the audio data - taking at least as much memory as the original file. We only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
+This code references the `audio` object, which stores the audio data - taking at least as much memory as the original MP3. In practice, we only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
 
 This space leak follows much the same pattern as the lazy evaluation space leaks above. We are referencing an expression `audio.duration` which keeps alive a signficiant amount of memory, but when evaluated, use only a small amount of memory. As before, the solution is to force the evaluation sooner than necessary, which we can do with:
 
 	var duration = audio.duration;
-	document.getElementById("status").click = function(){
+	document.getElementById("status").onclick = function(){
 		alert(url + " is " + duration + " seconds long");
 	};
-    
+
+Now we compute the duration registering the `onclick` event, and we no longer reference the `audio` element, allowing it to be discarded.
+
 #### Javascript Selectors
 
-In fact, in this example, the garbage collector had sufficient information to know that such an evaluation is always beneficial (assuming the property simply returns an existing value, rather than allocating a new value). Since there are no other pointers to `audio` the value of `audio` is constant, and since `duration` is a read only property, we know it cannot change. This optimisation would be an instance of the selector optimisation in Example 4.
+In fact, in the above example, the garbage collector had sufficient information to know that such an evaluation is always beneficial (assuming the property simply returns an existing value, rather than allocating a new value). Since there are no other pointers to `audio` the value of `audio` is constant, and since `duration` is a read only property, we know it cannot change. This optimisation would be an instance of the selector optimisation in Example 4.
 
 Unfortunately, the selector optimisation is less applicable in Javascript than in Haskell because by default all values are mutable mutable. As a simpler example, consider:
 
@@ -273,7 +286,7 @@ Unfortunately, the selector optimisation is less applicable in Javascript than i
 		alert(constants.pi);
     };
 
-Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a long list), then add a handler that tells the user the value of `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside, rendering such an optimisation unsafe.
+Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a large array), then add a handler that uses only `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside, rendering such an optimisation unsafe.
 
 While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where the garbage collector knew if each reference was being used in a read-only situation (i.e. `alert(constants.pi)`) or a read-write situation (i.e. `constants.pi = 3`). From this information it would be able to determine which variables were only used read-only and thus were guaranteed to be constant. If `constants` and `constants.pi` were both detected as read-only then the field lookup could be performed by the garbage collector, freeing the `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
 
@@ -281,13 +294,27 @@ In Haskell lazy evaluation is common (the default) and space leaks due to select
 
 ### Detecting space leaks
 
+Memory leaks are easy, you just run for a long period of time and see what is in memory - by definition, most things will be caused by the memory leak. Space leaks are harder since the memory usually goes away at the end. The other problem with space leaks is that it is a global property - a function takes how much time it takes, but a space leak may only crop up in certain patterns (for example the `firstLine`). So, there are two problems:
+
+* Can't see that it is there.
+* Can't statically detect it at the end, has to be using a graph.
+* Can't reduce it so easily.
+
+Using heap profiling you run for a long time then can see everything on the heap. With space leaks you may have to see after, which means the full heap is gone and you have to rely on summary information.
+
+Haskell has no realistic tools for aborting during a space leak and examining the space.
+
+You have to distinguish space leak for high space consumption, a void will be an example.  
+
+
 It has been said that every non-trivial Haskell program probably has a space leak somewhere within it. I can well imagine they are right. Fortunately, we have heap profiling tools that help us detect things better than other languages.
 
-Memory leaks are easy, you just run for a long period of time and see what is in memory - by definition, most things will be caused by the memory leak. Space leaks are harder since the memory usually goes away at the end.
 
 We can profile.
 
 Given the definition that a space leak is, as soon as we find it, it stops being a space leak.
+
+You want to know what leaked, from where. GHC has various ways to tell you, in particular you can filter on type, pile on type, and on location.
 
 <http://blog.ezyang.com/2011/06/pinpointing-space-leaks-in-big-programs/>
 

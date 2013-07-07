@@ -15,8 +15,34 @@ function fire()
     constants.pi = 6;
 }
 
+function LoadAudio(url)
+{
+	// Load 'url' into 'request.response'
+	var request = new XMLHttpRequest();
+	request.open('GET', url);
+	request.responseType = 'arraybuffer';
+
+	request.onreadystatechange = function(){
+		if (request.readyState != 4) return;
+
+		// Decode the audio data
+		window.AudioContext = window.AudioContext || window.webkitAudioContext;
+		var context = new AudioContext();
+		context.decodeAudioData(request.response, function(audio){
+			alert("decoded");
+			document.getElementById("status").onclick = function(){
+				alert(url + " is " + audio.duration + " seconds long");
+			}
+		});
+	};
+	request.send();
+}
+
+LoadAudio("laughter.wav");
+
 </script>
 <body onload="fire()">
 <button id="fire">go</button>
+<button id="status">go2</button>
 </body>
 </html>
