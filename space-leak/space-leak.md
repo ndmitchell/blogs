@@ -255,7 +255,7 @@ Let's use the new Web Audio API to retrieve an MP3 file and compute its duration
             var context = new AudioContext();
             context.decodeAudioData(request.response, function(audio){
                 document.getElementById("status").onclick = function(){
-                    alert(mp3 + " is " + audio.duration + " seconds long");
+                    alert("MP3 is " + audio.duration + " seconds long");
                 }
             });
         };
@@ -264,109 +264,100 @@ Let's use the new Web Audio API to retrieve an MP3 file and compute its duration
 
 This function uses the `XMLHttpRequest` API to load an MP3 file, then uses the Web Audio API to decode the audio data. Using the decoded `audio` value we add an action which tells the user the MP3's duration whenever a `status` button is clicked.
 
-The implementation uses three local functions, two of which reference variables defined locally to this function, and those variables will be captured inside a closure when the local function is created. As an example, the first function which is assigned to `onreadystatechange` captures the `request` variable defined three lines above.
+The implementation uses three local functions, two of which reference variables defined locally to `LoadAudio`, and those variables will be captured inside a closure when the local functions are created. As an example, the first function which is assigned to `onreadystatechange` captures the `request` variable defined three lines before.
 
 After `LoadAudio` has run, the `status` button will have an `onclick` event which will run the following code:
 
-    alert(mp3 + " is " + audio.duration + " seconds long");
+    alert("MP3 is " + audio.duration + " seconds long");
 
 This code references the `audio` object, which stores the audio data - taking at least as much memory as the original MP3. In practice, we only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
 
-This space leak follows much the same pattern as the lazy evaluation space leaks above. We are referencing an expression `audio.duration` which keeps alive a signficiant amount of memory, but when evaluated, uses only a small amount of memory. As before, the solution is to force the evaluation sooner than necessary, which we can do with:
+This space leak has many aspects in common with the lazy evaluation space leaks above. We are referencing an expression `audio.duration` which keeps alive a significant amount of memory, but when evaluated, uses only a small amount of memory. As before, the solution is to force the evaluation sooner than necessary:
 
 	var duration = audio.duration;
 	document.getElementById("status").onclick = function(){
-		alert(mp3 + " is " + duration + " seconds long");
+		alert("MP3 is " + duration + " seconds long");
 	};
 
 Now we compute the duration before registering the `onclick` event, and no longer reference the `audio` element, allowing it to be garbage collected.
 
 #### Javascript Selectors
 
-In fact, in the above example, the garbage collector had sufficient information to know that such an evaluation is always beneficial (assuming the property simply returns an existing value, rather than allocating a new value). Since there are no other pointers to `audio` the value of `audio` is constant, and since `duration` is a read only property, we know it cannot change. This optimisation would be an instance of the selector optimisation in Example 4.
+While we can modify the code to eliminate the space leak, could the garbage collector have eliminated the space leak for us? The answer is yes,  provided that `audio.duration` is cheap to compute, cannot not change in future and will not cause any side effects. Since there are no other references to `audio` the value `audio` refers to cannot change, and since `audio.duration` is a read only field it was likely allocated when the `audio` value was constructed. This optimisation would be an instance of the selector optimisation in Example 4.
 
-Unfortunately, the selector optimisation is less applicable in Javascript than in Haskell because by default all values are mutable mutable. As a simpler example, consider:
+Unfortunately, the selector optimisation is less applicable in Javascript than in Haskell, because most values are mutable. As a simpler example, consider:
 
     var constants = {pi : 3.142, fiveDigitPrimes : [10007,10009,10037,...]};
     document.getElementById("fire").onclick = function(){
 		alert(constants.pi);
     };
 
-Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a large array), then add a handler that uses only `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside, rendering such an optimisation unsafe.
+Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a large array), then add an event handler that uses only `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside, rendering such an optimisation unsafe.
 
-While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where the garbage collector knew if each reference was being used in a read-only situation (i.e. `alert(constants.pi)`) or a read-write situation (i.e. `constants.pi = 3`). From this information it would be able to determine which variables were only used read-only and thus were guaranteed to be constant. If `constants` and `constants.pi` were both detected as read-only then the field lookup could be performed by the garbage collector, freeing the `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
+While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where the garbage collector knew if each reference was being used in a read-only situation (i.e. `alert(constants.pi)`) or a read-write situation (i.e. `constants.pi = 3`). From this information it would be able to determine which variables were only used read-only and thus were guaranteed to be constant. If `constants` and `constants.pi` were both detected as read-only then the field lookup could be performed by the garbage collector, freeing both `constants` and `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
 
-In Haskell lazy evaluation is common (the default) and space leaks due to selectors are unavoidable, making the choice of selector optimisation an easy decision. In languages like Javascript adding additional code to solve fixable space leaks at the cost of making the normal code slower may not always be a sensible trade-off.
+In Haskell lazy evaluation is common (the default) and space leaks due to selectors are unavoidable, making the decision to apply selector optimisation obvious. In languages like Javascript adding additional code to solve fixable space leaks at the cost of making the normal code slower or more complex may not be a sensible trade-off.
 
 ### Detecting space leaks
 
-We have seen five examples of space leaks, so hopefully you are building up an intuition as to when space leaks occur and how they can be fixed. However, all the examples have been a handful of lines - the challenge is taking a large program with a space leak and narrowing it down to determine which lines of code are at fault. Given the space leak problems that lazy evaluation can lead to, Haskell comes with a number of built in profiling tools which provide much assistance. But before we look at the tools available, let us first consider what tools we might want, and why.
+We have seen five examples of space leaks, hopefully providing some intuition as to where space leaks occur and how they can be fixed. However, all the examples have been a handful of lines - for space leaks in big programs the challenge is often finding the code at fault. As Haskell is particularly vulnerable to space leaks the compiler provides a number of built in profiling tools to pinpoint their source. But before we look at which tools are available, let us first consider which tools might be useful.
 
-Space leaks are different to memory leaks, in particular the garbage collector still knows about the memory, and will likely free the excess memory before the end of the program. Assuming a leaking definition of `sum`, as soon as `sum` produces a result, any intermediate space leak will be eliminated by the garbage collector. As a result, a program with a space leak will often reach its maximum memory utilisation in the middle of the program, compared to memory leaks with continue increasing throughout. One standard technique for diagnosing memory leaks is to look at the heap at the end, and whatever is leaking will take up the most space, and can be examined in the context of the whole heap. Sadly, with space leaks, the heap at the end often has the program gone away. We also want to know what peaks, relative to what, so we can see the space leak visually.
+Space leaks are quite different to memory leaks, in particular the garbage collector still knows about the memory, and will usually free the memory before the program terminates. Assuming a definition of `sum` containing a space leak, as soon as `sum` has produced a result, any intermediate space leak will be freed by the garbage collector. A program with a space leak will often reach its peak memory use in the middle of the execution, compared to memory leaks which never decrease. A standard technique for diagnosing memory leaks is to look at the memory after the program has finished, to see what is unexpectedly retained - such a technique is less useful for space leaks.
 
-Instead, it is much more useful to see the heap at intermediate points throughout the program. Of course, storing the entire heap at each step is likely to be infeasible in many cases. The solution is therefore to produce summary statistics about the heap - what type of things were on the heap, where were they referenced from, how old were they etc.
-
-Lazy evaluation also complicates time based profiles, as the programmer has much less idea what the program is doing at each stage - while the program might be structured in stages, lazy evaluation may cause them to run interleaved or reorder the stages.
-
-The other problem with space leaks is that it is a global property - a function takes how much time it takes, but a space leak may only crop up in certain patterns (for example the `firstLine`). Some of the standard approaches to program reduction in an error apply to space leaks as well - make the program smaller, change the size of parameters to make the program more or less visible, try to exercise less code.
-
-You have to distinguish space leak for high space consumption, a void will be an example.  
+Instead, it is often useful to examine the memory at intermediate points throughout the execution, looking for spikes in the memory usage. Capturing the entire memory at frequent intervals is likely to require too much disk space, so one solution is to record summary statistics such as how much memory was allocated by each function at regular intervals.
 
 #### Haskell Tools
 
-The Haskell compiler supports profiling. Simply compile your program with profiling support built in:
+The Haskell compiler provides several profiling modes to generate and graph heap summary information. To generate a profile we first compile our program with the following flags:
 
-    ghc --make Main.hs -prof -fprof-auto -fprof-caf -rtsopts
+    ghc --make Main.hs -prof -fprof-auto -fprof-cafs -rtsopts
 
 These flags mean:
 
-* `ghc --make Main.hs` - compile the file `Main.hs` into an executable, as standard.
-* `-prof -fprof-auto -fprof-caf` - turn on profiling, and make sure it records information about top-level definitions.
-* `-rtsopts` - allow the resulting executable to accept profiling flags, so we can actually use the profiling.
+* `ghc --make Main.hs` - compile the file `Main.hs` into an executable, as normal.
+* `-prof -fprof-auto -fprof-caf` - turn on profiling in the executable, and make sure it is able to record information about top-level definitions.
+* `-rtsopts` - allow the resulting executable to accept profiling options.
 
-Then when running you can generate profile information. As an example when building the `mean` example, we can run:
+We can run the resulting program as normal, but with additional flags we can also generate profile information:
 
     main +RTS -xt -hy
     hp2ps -c main.hp
 
-This sequence generates the plot shown in Figure 1. The first line runs the resulting `main` executable with some flags to the runtime system (anything after `+RTS`). The `-xt` flag says include the stack in the profile output (this author believes the flag should be always on by default) and `-hy` to generate a report summarised by type. The first line generating a file `main.hp` and the second line turns that into a PostScript file `main.ps` (using color, because of the `-c` flag). In  the plots I also passed `-i0.01` to generate more ticks, which is usually only necessary when playing around with toy examples.
+If we use the `mean` example from earlier we produce the first plot shown in Figure 1. The first command runs the resulting `main` executable with some flags to the runtime system (anything after `+RTS`). The `-xt` flag says include the stack in the profile output (this author believes `-xt` should be on by default) and `-hy` to generate a report summarised by type. The first command generates a file `main.hp` and the second command turns that into a PostScript file `main.ps` (in color, due to the `-c` flag). In the plots shown I also passed `-i0.01` to sample the memory more frequently, which is usually only necessary when trying quick-running toy examples.
 
-Haskell has a number of flags, and the usual approach is to hit your problem with all of them, and see what produces the most interesting information. The four standard types of profile are shown in the figures. They are:
+Haskell has a number of profiling modes, and the best approach is to try them all and see which produces the most useful information. The four standard types of profile are shown in Figure 1. They are:
 
-* `-hc` by cost-centre. A cost-centre is automatically inserted on all top-level definitions, and can also be manually inserted with an annotation in the source code. These are useful for getting an idea of where the memory came from.
-* `-hm` by module. A module is a more granular version of cost-centre.
-* `-hy` is by type, showing in the above example we have some lists (`[]`) and some `Int` numbers.
-* `-hd` is by description, showing a more refined version of `-hy`. In the above example we can see a close correspondence, since all `Int` numbers correspond to the internal `I#` constructor, and our list is almost entirely composed of `(:)` nodes - probably with a single end of the list item.
+* `-hy` summarises the memory by type, in the example we have some lists (`[]`) and some numbers (`Int`). This summary answers the question "what" is in the heap.
+* `-hd` summarises by description, showing a more refined version of `-hy`. In the example we can see a close correspondence to `-hy`, with all `Int` entries matching `I#` (which is the internal constructor of `Int`), and lists matching `(:)`. Any group below a threshold is hidden, or we would likely see a single `[]` denoting the end of the list.  
+* `-hc` summarises by cost-centre. A cost-centre is a named area of the source code, automatically inserted on all top-level definitions, and can also be manually inserted with an annotation in the code. In the example we can see that `main` has been attributed all the allocation, likely due to optimisation inlining `mean` inside it. This summary answers the question "where" was the memory created.
+* `-hm` summarises by module. A module is a more granular version of cost-centre.
 
-Of course, we have to be careful that compiling for profiling can change what happens. As a fallback, we have `-hT` which does not require compiling with profiling mode.
+From a combination of these plots we can see that the function `main` in the module `Main` allocates a large list of numbers. It allocates the list over 0.4 seconds, then quickly consumes the list over 0.1 seconds. This heap usage describes what we would expect from the original definition of `mean`.
 
-We have to run multiple times, which sucks, because now `-hd` and `-hy` do not match perfectly. But the correspondence is close enough in practice.
+For larger programs the plot will often contain a lot of memory usage that is expected, and not relevant to the space leak. To simplify the plot we can filter by any of the four types, for example passing `-hc -hy[]` will show a plot grouped by cost-centre, but only where the type is a list.
 
-Haskell has no realistic tools for aborting during a space leak and examining the space.
+As we have seen in the `sum` example, compiling with different optimisation settings may cause space leaks to appear or disappear, and sadly compiling for profiling can have similar effects (although it is relatively rare). As a fallback any Haskell executable can be run using `+RTS -hT` which produces a plot summarised by type, without compiling for profiling and causing few changes to the behaviour of the program.
 
-You want to know what leaked, from where. GHC has various ways to tell you, in particular you can filter on type, pile on type, and on location.
+Using the profiling tools to their full effect requires practice and perseverance. To get a better idea of how real problems are tackled using these tools I recommend the following two "tales from the trenches": 
 
-<http://blog.ezyang.com/2011/06/pinpointing-space-leaks-in-big-programs/>
-
-<http://book.realworldhaskell.org/read/profiling-and-optimization.html>
+* <http://blog.ezyang.com/2011/06/pinpointing-space-leaks-in-big-programs/>
+* <http://book.realworldhaskell.org/read/profiling-and-optimization.html>
 
 #### Javascript Tools
 
-The one set of tools Haskell does not offer is breaking at a certain point and examining the heap. Fortunately, tools such as Chrome's heap profiler shows lots of information, such as information about what points and what, in both directions, with summaries. For leaks that do not disappear at the end (such as most function based leaks) this does great stuff.
+One tool Haskell lacks is the ability to pause execution at a certain point and explore the memory. In contrast, such a feature is available in some Javascript implementations, for example the Chrome heap profiler.    
 
-For some space leaks you want the information at a certain point, for that you want to pause the heap live and see information about it. Javascript offers that beautifully.
-
-You may want to break when a certain condition becomes true, if you can run and set a high-water mark. Haskell does not offer that in any reasonable way. Neither does Javascript.
+The Chrome heap profiler allows a snapshot of the heap to be taken and explored. The profiler shows a tree of the heap, showing which values point at each other. You can summarise by the type of object, see statistics about how much memory is consumed and referenced by a certain value, and filter by name. A feature particularly useful for diagnosing space leaks is the ability to see the retaining tree of a value. The two Javascript space leaks in this article produce heaps which pinpoint the problem easily.
 
 ### Are space leaks inevitable?
 
-As garbage collection frees us from the monotony of manually managing memory, languages are free to add more advanced features. Indeed, garbage collection was first invented by John McCarthy to solve problems in Lisp, allowing more advanced language features. Of course, these advanced features make it harder to predict what memory is being used, resulting in space leaks.
+Garbage collection frees programmers from the monotony of manually managing memory, making it easier for languages to include advanced features like lazy evaluation or closures. These advanced features abstract away from the memory layout, making it harder to predict what memory looks like, potentially leading to space leaks.
 
-Compilers for lazy functional languages have been grappling with space leaks for over thirty years and have developed an array of techniques for helping (CPS etc). Some of these may be directly applicable to other languages, others may inspire variants of them more suited.
+Compilers for lazy functional languages have been dealing with space leaks for over thirty years and have developed a number of strategies to help. There hare been changes to compilation techniques, modifications to the garbage collector and tools to detect space leaks when they do occur. Some of these strategies may be useful to other languages.
 
-While space leaks are worrisome, they are not fatal, and should be viewed as a trade-off - certain advanced language features lead to space leaks. Haskell has been used successfully in many projects (cite CUFP).
+While space leaks are worrisome, they are not fatal, they can be detected and eliminated, and are the cost of certain language features and should be viewed as a trade-off - certain advanced language features lead to space leaks. Haskell has been used successfully in many projects (cite CUFP). In the same way that anyone can write an _O(n^2)_ sorting algorithm, anyone can write an _O(n)_ summation algorithm.
 
-My hope for the future is that the tooling improves. A detected space leak is usually easy enough to solve, however, there are three hopes:
+I have three hopes for the future:
 
 * In particular domains people will work to eliminate space leaks by construction, for example FRP and pipes/conduits/enumerators. Generally I hope people can come up with nice libraries that are correct by construction.
 
