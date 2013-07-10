@@ -283,18 +283,18 @@ Now we compute the duration before registering the `onclick` event, and no longe
 
 #### Javascript Selectors
 
-While we can modify the code to eliminate the space leak, could the garbage collector have eliminated the space leak for us? The answer is yes,  provided that `audio.duration` is cheap to compute, cannot not change in future and will not cause any side effects. Since there are no other references to `audio` the value `audio` refers to cannot change, and since `audio.duration` is a read only field it was likely allocated when the `audio` value was constructed. This optimisation would be an instance of the selector optimisation in Example 4.
+While we can modify the code to eliminate the space leak, could the garbage collector have eliminated the space leak for us? The answer is yes,  provided that `audio.duration` is cheap to compute, cannot not change in future and will not cause any side effects. Since there are no other references to `audio` the value `audio` refers to cannot change, and since `audio.duration` is a read only field it was likely allocated when the `audio` value was constructed. This optimisation would be an instance of the selector optimisation from Example 4.
 
-Unfortunately, the selector optimisation is less applicable in Javascript than in Haskell, because most values are mutable. As a simpler example, consider:
+Unfortunately, the selector optimisation is less applicable in Javascript than in Haskell, because most values are mutable. As a small example, consider:
 
     var constants = {pi : 3.142, fiveDigitPrimes : [10007,10009,10037,...]};
     document.getElementById("fire").onclick = function(){
 		alert(constants.pi);
     };
 
-Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a large array), then add an event handler that uses only `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member inside, rendering such an optimisation unsafe.
+Here we define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a large array), then add an event handler that uses only `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, in Javascript, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate just the `pi` member, meaning evaluation in advance is unsafe.
 
-While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where the garbage collector knew if each reference was being used in a read-only situation (i.e. `alert(constants.pi)`) or a read-write situation (i.e. `constants.pi = 3`). From this information it would be able to determine which variables were only used read-only and thus were guaranteed to be constant. If `constants` and `constants.pi` were both detected as read-only then the field lookup could be performed by the garbage collector, freeing both `constants` and `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
+While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where the garbage collector knew if each reference was being used in a read-only situation (i.e. `alert(constants.pi)`) or a mutable situation (i.e. `constants.pi = 3`). From this information it would be able to determine which variables were only used read-only and thus were guaranteed to be constant. If `constants` and `constants.pi` were both detected as read-only then the field lookup could be performed by the garbage collector, freeing both `constants` and `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
 
 In Haskell lazy evaluation is common (the default) and space leaks due to selectors are unavoidable, making the decision to apply selector optimisation obvious. In languages like Javascript adding additional code to solve fixable space leaks at the cost of making the normal code slower or more complex may not be a sensible trade-off.
 
