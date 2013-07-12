@@ -67,7 +67,7 @@ The variable `xs` is in WHNF, but not in normal form. To force reduction to norm
 
 #### Why Lazy?
 
-Given that strictness avoids this space leak, and (as we will see later) several other space leaks, why not make all values strict? Certainly most languages have strict values, and there are even variants of Haskell that default to strict evaluation (cite Mu). As with all language design decisions, lazy evaluation is a trade-off - space leaks are a disadvantage - but there are also many advantages. Other articles discuss the advantages of lazy evaluation in depth (cite Hughes), but a few brief reasons:
+Given that strictness avoids this space leak, and (as we will see later) several other space leaks, why not make all values strict? Certainly most languages have strict values, and there are even variants of Haskell that default to strict evaluation (Augustsson 2011). As with all language design decisions, lazy evaluation is a trade-off - space leaks are a disadvantage - but there are also many advantages. Other articles discuss the advantages of lazy evaluation in depth (Hughes 1989), but a few brief reasons:
 
 * Simulating laziness in a strict language is usually more difficult than forcing strictness in a lazy language, so laziness can be a better default.
 * Defining new control structures in strict languages often requires macros or building them into the compiler, while lazy evaluation allows such patterns to be expressed directly.
@@ -82,7 +82,7 @@ Let's take another example of a space leak. Consider the following code:
 
 In Haskell this expression creates a list containing the numbers 1 to `n`, then adds them up. In a strict language, this operation takes _O(n)_ space - it would first generate a list of length `n`, then call `sum`. However, in a lazy language, the items in the list can be generated one at a time as they are needed by `sum`, resulting in _O(1)_ space usage. Even if we replace `[1..n]` with numbers read from a file, we still retain the _O(1)_ space usage as laziness automatically interleaves reading numbers from a file and computing the sum.
 
-Unfortunately, the above code, when compiled with the Glasgow Haskell Compiler (cite GHC) takes _O(n)_ space due to a space leak, but at `-O1` optimisation or above takes _O(1)_ space. More confusingly, for some definitions of `sum` the code takes _O(1)_ at all optimisation levels, and for other definitions the code always takes _O(n)_.
+Unfortunately, the above code, when compiled with the Glasgow Haskell Compiler (The GHC Team 2003) takes _O(n)_ space due to a space leak, but at `-O1` optimisation or above takes _O(1)_ space. More confusingly, for some definitions of `sum` the code takes _O(1)_ at all optimisation levels, and for other definitions the code always takes _O(n)_.
 
 Let us ponder why the space leak arises, using the following definition of `sum`:
 
@@ -145,7 +145,7 @@ An experienced Haskell programmer may realise that our three `sum` functions can
 
 These definitions are equivalent to our original versions using explicit recursion. The `fold` functions all _reduce_ the list, with `foldr` using `0` instead of the empty list and nesting the `(+)` to the right, while `foldl` starts at the left using `0` as an accumulator. The function `foldl'` is a version of `foldl` which also forces the accumulator to WHNF at each step.
 
-Haskell programmers often prefer to define functions in terms of `fold` instead of explicit recursion. The Haskell Lint tool, called HLint (cite HLint), will even automatically suggest the `foldr/foldl` versions of `sum` from our original recursive definitions. The advantage of using standard recursion patterns is that the form of the recursion can be easily understood, and general rules about performance and space leaks can be formulated. For example, when using a reduction function which requires both its arguments to produce a result, such as `(+)`, only `foldl'` is capable of running in constant space, so is usually the right choice.
+Haskell programmers often prefer to define functions in terms of `fold` instead of explicit recursion. The Haskell Lint tool, called HLint (Mitchell 2013), will even automatically suggest the `foldr/foldl` versions of `sum` from our original recursive definitions. The advantage of using standard recursion patterns is that the form of the recursion can be easily understood, and general rules about performance and space leaks can be formulated. For example, when using a reduction function which requires both its arguments to produce a result, such as `(+)`, only `foldl'` is capable of running in constant space, so is usually the right choice.
 
 You may wonder why Haskell does not define `sum` using `foldl'` by default. In Haskell the `(+)` function can be overloaded, and some versions may not require both arguments to produce a result, so `foldl'` would be unnecessarily strict. However, for most common definitions of `(+)` using `foldl'` would be more appropriate.
 
@@ -182,7 +182,7 @@ While `foldl'` forces the accumulator to WNHF, we now have a pair as the accumul
 
 ### Example 4: Strictness in the Garbage Collector
 
-In the previous examples we have inserted strictness annotations to eliminate space leaks. However, not all space leaks can be removed by strictness annotations (Huges 1980), sometimes we require special behavior from the garbage collector (Wadler 1987). As an example, let's improve the impact of an academic paper by placing an exclamation mark at the end of the title, which we can implement with:
+In the previous examples we have inserted strictness annotations to eliminate space leaks. However, not all space leaks can be removed by strictness annotations (Huges 1980), sometimes we require special behaviour from the garbage collector (Wadler 1987). As an example, let's improve the impact of an academic paper by placing an exclamation mark at the end of the title, which we can implement with:
 
     improve xs = fst pair ++ "!" ++ snd pair
         where pair = firstLine xs 
@@ -212,7 +212,7 @@ Unfortunately, there is nowhere we could put a strictness annotation to perform 
 
 All the examples so far have been in Haskell, but other garbage collected languages are also susceptible to space leaks. While few languages are lazy by default, many languages support _closures_ - a lambda expression or function, plus some variables bound in an environment. One popular language which makes extensive use of closures is Javascript.
 
-Let's use the new Web Audio API to retrieve an MP3 file and compute its duration. In Javascript we can write:
+Let's use the new Web Audio API (Rogers 2013) to retrieve an MP3 file and compute its duration. In Javascript we can write:
 
     function LoadAudio(mp3)
     {
@@ -297,6 +297,15 @@ We can run the resulting program as normal, but with additional flags we can als
     main +RTS -xt -hy
     hp2ps -c main.hp
 
+
+----------
+
+![](figure1.png)
+
+Figure 1: Profiles for the `mean` example with different profiler settings. Time in seconds is along the X axis and memory in Mb is along the Y axis. 
+
+----------
+
 If we use the `mean` example from earlier we produce the first plot shown in Figure 1. The first command runs the resulting `main` executable with some flags to the runtime system (anything after `+RTS`). The `-xt` flag says include the stack in the profile output (this author believes `-xt` should be on by default) and `-hy` to generate a report summarised by type. The first command generates a file `main.hp` and the second command turns that into a PostScript file `main.ps` (in color, due to the `-c` flag). In the plots shown I also passed `-i0.01` to sample the memory more frequently, which is usually only necessary when trying quick-running toy examples.
 
 Haskell has a number of profiling modes, and the simplest approach is to try them all and see which produces the most useful information. The four standard types of profile are shown in Figure 1. They are:
@@ -329,10 +338,24 @@ Garbage collection frees programmers from the monotony of manually managing memo
 
 Compilers for lazy functional languages have been dealing with space leaks for over thirty years and have developed a number of strategies to help. There have been changes to compilation techniques, modifications to the garbage collector and profilers to pinpoint space leaks when they do occur. Some of these strategies may be applicable in other languages. Despite all the improvements, space leaks remain a thorn in the side of lazy evaluation, providing a significant disadvantage to weigh against the benefits.
 
-While space leaks are worrisome, they are not fatal, and they can be detected and eliminated. The presence of lazy evaluation has not stopped Haskell being used successfully in many projects (cite CUFP). While there is no obvious silver bullet for space leaks, there are three approaches which could help:
+While space leaks are worrisome, they are not fatal, and they can be detected and eliminated. The presence of lazy evaluation has not stopped Haskell being used successfully in many projects (see the proceedings of CUFP for many examples). While there is no obvious silver bullet for space leaks, there are three approaches which could help:
 
-* For some complex problem domains there are libraries that eliminate a large class of space leaks by design. One example is Functional Reactive Programming which is used to build interactive applications like user interfaces and sound synthesisers - by changing how the library is defined we can both guarantee certain temporal properties and eliminate a common source of space leaks. Another example is stream processing which is used heavily in web servers to consume streams (e.g. a Javascript file) and produce new streams (e.g. a minimized Javascript file) without keeping the whole stream in memory. There are several competing stream libraries for Haskell, but all ensure that memory is not retained longer than necessary, and that the results are streamed to the user as soon as possible.
+* For some complex problem domains there are libraries that eliminate a large class of space leaks by design. One example is Functional Reactive Programming which is used to build interactive applications like user interfaces and sound synthesisers - by changing how the library is defined we can both guarantee certain temporal properties and eliminate a common source of space leaks (Liu and Hudak 2007). Another example is stream processing which is used heavily in web servers to consume streams (e.g. a Javascript file) and produce new streams (e.g. a minimized Javascript file) without keeping the whole stream in memory. There are several competing stream libraries for Haskell, but all ensure that memory is not retained longer than necessary, and that the results are streamed to the user as soon as possible.
 
-* Space leaks are often detected relatively late in the development process, sometimes years after the code was written and deployed, and often only in response to user complaints of high memory usage. If space leaks could be detected earlier, ideally as soon as they were introduced, they would be easier to fix, and would never reach end users. Certain types of advanced profiling information can detect suspicious memory patterns (cite Lag/Drag/Void/Use) and there are some experimental tools for annotating expected heap usage (cite something), but nothing has reached mainstream use. The Haskell compiler does partition memory in such a way that some space leaks are detected - the `sum` example fails with a message about stack overflow for lists of length 508146 and above, but the other examples in this article use all available memory before failing.
+* Space leaks are often detected relatively late in the development process, sometimes years after the code was written and deployed, and often only in response to user complaints of high memory usage. If space leaks could be detected earlier, ideally as soon as they were introduced, they would be easier to fix, and would never reach end users. Certain types of advanced profiling information can detect suspicious memory patterns (Röjemo and Runciman 1996) and there are some experimental tools for annotating expected heap usage (Hofmann and Jost 2003), but nothing has reached mainstream use. The Haskell compiler does partition memory in such a way that some space leaks are detected - the `sum` example fails with a message about stack overflow for lists of length 508146 and above, but the other examples in this article use all available memory before failing.
 
-* The tools for pinpointing space leaks are powerful, but certainly not perfect. An interactive viewer can explore existing plots (cite Ezyang), but users are still required to specify how the memory is grouped before running the program - it would be much easier if all four groupings could be captured at once. A feature missing from Haskell programs is the ability to take a snapshot of the memory to examine later, which would be even more powerful if combined with the ability to take a snapshot when memory exceeded a certain threshold. Pinpointing space leaks is currently a skill which takes practice and perseverance, better tools could significantly simplify the process.
+* The tools for pinpointing space leaks are powerful, but certainly not perfect. An interactive viewer can explore existing plots (Yang 2013), but users are still required to specify how the memory is grouped before running the program - it would be much easier if all four groupings could be captured at once. A feature missing from Haskell programs is the ability to take a snapshot of the memory to examine later, which would be even more powerful if combined with the ability to take a snapshot when memory exceeded a certain threshold. Pinpointing space leaks is currently a skill which takes practice and perseverance, better tools could significantly simplify the process.
+
+### References
+
+* 2011, Lennart Augustsson. Pragmatic Haskell, _CUFP 2011_. <http://www.youtube.com/watch?v=hgOzYZDrXL0>
+* 2013, The GHC team. The Glorious Glasgow Haskell Compilation System User's Guide, Version 7.6.3. <http://www.haskell.org/ghc/docs/latest/html/users_guide/index.html>
+* 2003, Martin Hofmann and Steffen Jost. Static Prediction of Heap Space Usage for First-Order, _POPL 2003_.
+* 1983, John Hughes. The design and implementation of programming languages, PhD thesis, Oxford University.
+* 1989, John Hughes. Why Functional Programming Matters, _Computer Journal_ 32(2): 98–107.
+* 2007, Hai Liu and Paul Hudak. Plugging a space leak with an arrow, _Electronic Notes in Theoretical Computer Science_ 193:29-45.
+* 2013, Neil Mitchell. HLint. <http://community.haskell.org/~ndm/hlint/>
+* 2013, Chris Rogers. Web Audio API
+* 1996, Niklas Röjemo and Colin Runciman. Lag, Drag, Void and Use - Heap Profiling and Space-Efficient Compilation Revisited, _ICFP 1996_.
+* 1987, Philip Wadler. Fixing some space leaks with a garbage collector, _Software: Practice and Experience_ 17(9): 595-608.
+* 2013, Edward Yang. hp/D3.js. <http://heap.ezyang.com/>
