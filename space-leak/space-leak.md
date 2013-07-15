@@ -10,7 +10,7 @@ Let's consider the following Haskell definition:
 
     xs = delete dead [alive, dead]
 
-This fragment creates a variable `xs`. We create a two element list using the `[_,_]` notation, containing both `alive` and `dead`, then we remove the element `dead` from the list with `delete`. If we call `length xs` it will return 1, indicating there is only one element in `xs`. In the absence of lazy evaluation, the memory layout would be:
+This fragment creates a variable `xs`. We create a two element list using the `[_,_]` notation, containing both `alive` and `dead`, then we remove the element `dead` from the list using `delete`. If we call `length xs` it will return 1, indicating there is only one element in `xs`. In the absence of lazy evaluation, the memory layout would be:
 
     xs = [alive]
 
@@ -20,15 +20,15 @@ Here `xs` references a list containing `alive` as the only element, `dead` is no
 
 Instead of pointing at a _value_, `xs` points at an _expression_, which may be replaced with an actual value later. Note that `xs` still has two references to `dead`, thus `dead` cannot be garbage collected, even though we know that `dead` will never be used. The variable `dead` is part of a space leak.
 
-As previously mentioned, `length xs` will return 1, but as a consequence of computing the length, it has to evaluate `delete`. The act of evaluating `length xs` reduces `xs` to a value, which eliminates the space leak. A program using lists can end up with a space leak if it frequently adds and deletes elements, but never computes properties such as length or looks up values.
+As previously mentioned, `length xs` will return 1, but as a consequence of computing the length, it will evaluate `delete`. The act of evaluating `length xs` reduces `xs` to a value, which eliminates the space leak. A program using lists can end up with a space leak if it frequently adds and deletes elements, but never uses the list to compute the length or look up values.
 
-More generally, a space leak can occur when the memory contains an expression, where the expression grows regularly, but where the evaluated value would not grow. Such leaks are usually solved by forcing the evaluation, making evaluation of some binding _strict_ instead of lazy.  
+More generally, a space leak can occur when the memory contains an expression, where the expression grows regularly, but where the evaluated value would not grow. Such leaks are usually solved by forcing the evaluation, making evaluation of some variable _strict_ instead of lazy.  
 
 #### Strictness Annotations
 
 In the above example, we happen to know that `length` will force `delete` to be evaluated, but `length` will not always force `xs` to become a value. We use the following definitions to describe how evaluated an expression is:
 
-* An expression is in **normal form** if it cannot be evaluated further. For example, the list `[1,2]` is in normal form. Lists are constructed from `[]` (pronounced "nil") for the empty list, and `(:)` (pronounced "cons") to combine a head element to the tail of the list, so `[1,2]` can equivalently be written `1:2:[]`.
+* An expression is in **normal form** if it cannot be evaluated further. For example, the list `[1,2]` is in normal form. Lists are constructed from `[]` (pronounced "nil") for the empty list, and `(:)` (pronounced "cons") to combine a head element to the tail of a list, so `[1,2]` can equivalently be written `1:2:[]`.
 * An expression is in **weak head normal form** (WHNF) if the outermost part does not require further evaluation. For example `(1+2):[]` is in WHNF since the outermost part is `(:)`, but not normal form since the `(+)` can be evaluated to produce `3`. All values in normal form are also in WHNF.
 
 To force a value to WHNF, Haskell provides _bang patterns_ (which often require the pragma `{-# LANGUAGE BangPatterns #-}` at the top of the source file). We can define a function `f` which takes one argument as:
@@ -39,7 +39,7 @@ Where `...` is the body of the function. The body of the function may or may not
 
     f !x = ...
 
-Now Haskell guarantees that when evaluating the body of `f` the binding `x` will be in WHNF (in reality, the guarantee Haskell provides is somewhat weaker - but the approximation described here is sufficient for most purposes). Using bang patterns we can define:
+Now when evaluating the body of `f` the binding `x` will be in WHNF (in reality, the guarantee Haskell provides is somewhat weaker - but the approximation described here is sufficient for most purposes). Using bang patterns we can define:
 
     seq !x y = y
 
@@ -80,9 +80,9 @@ Let's take another example of a space leak. Consider the following code:
 
     sum [1..n]
 
-In Haskell this expression creates a list containing the numbers 1 to `n`, then adds them up. In a strict language, this operation takes _O(n)_ space - it would first generate a list of length `n`, then call `sum`. However, in a lazy language, the items in the list can be generated one at a time as they are needed by `sum`, resulting in _O(1)_ space usage. Even if we replace `[1..n]` with numbers read from a file, the program still runs in _O(1)_ space as laziness automatically interleaves reading numbers from a file and computing the sum.
+In Haskell this expression creates a list containing the numbers 1 to `n`, then adds them up. In a strict language, this operation takes _O(n)_ space - it would first generate a list of length `n`, then call `sum`. However, in a lazy language, the items in the list can be generated one at a time as they are needed by `sum`, resulting in _O(1)_ space usage. Even if we replace `[1..n]` with numbers read from a file, the program can still run in _O(1)_ space as laziness automatically interleaves reading numbers from a file and computing the sum.
 
-Unfortunately, the above code, when compiled with the Glasgow Haskell Compiler (The GHC Team 2003) takes _O(n)_ space due to a space leak, but when using the `-O1` optimisation flag takes _O(1)_ space. More confusingly, for some definitions of `sum` the code takes _O(1)_ at all optimisation levels, and for other definitions the code always takes _O(n)_.
+Unfortunately, the above code, when compiled with the Glasgow Haskell Compiler (The GHC Team 2013) takes _O(n)_ space due to a space leak, but when using the `-O1` optimisation flag takes _O(1)_ space. More confusingly, for some definitions of `sum` the code takes _O(1)_ at all optimisation settings, and for other definitions the code always takes _O(n)_.
 
 Let us ponder why the space leak arises, using the following definition of `sum`:
 
@@ -97,7 +97,7 @@ The first equation says that if the list has at least one item in it, bind the f
     1 + sum1 (2:[3..n])         -- + requires both its arguments
     1 + (2 + sum1 [3..n])
 
-We can trace the evaluation by looking at what the program will require next, working from the top-most left-most part of the expression. For example, initially `sum1` looks at the list to determine which expression to match, which requires evaluating `[1..n]` to produce `1:[2..n]`. As evaluation proceeds it builds up the term `1 + 2 + 3 + 4 ...`, taking `O(n)` space. While the program never has the whole list in memory at once, it instead has all the items of the list joined with `+` operations.
+We can trace the evaluation by looking at what the program will require next, working from the top-most left-most part of the expression. For example, initially `sum1` looks at the list to determine which expression to match, which requires evaluating `[1..n]` to produce `1:[2..n]`. As evaluation proceeds it builds up the term `1 + 2 + 3 + 4 ...`, taking _O(n)_ space. While the program never has the whole list in memory at once, it instead has all the items of the list joined with `+` operations.
 
 Having identified the space leak, we can use strictness to eliminate it. Given the expression `1 + 2` it can be reduced to `3` immediately, and provided the program keeps performing the addition as the computation goes along, it will only use constant memory. Alas, with the definition of `sum1`, the expression is actually `1 + (2 + (3 ...`, meaning that `1` and `2` cannot be reduced. Fortunately addition is associative, so we can redefine `sum` to build up `((1 + 2) + 3) ...`:
 
@@ -115,7 +115,7 @@ We define `sum2` in terms of an auxiliary function `sum2'`, which takes an addit
     sum2' (0+1) (2:[3..n]) 
     sum2' ((0+1)+2) [3..n]
 
-Now there are literal numbers joined with addition, but the space leak is still present. Fortunately, there is now a suitable target for a strictness annotation. We can define:
+Now there are literal numbers applied to addition, but the space leak is still present. Fortunately, there is now a suitable target for a strictness annotation. We can define:
 
     sum3 xs = sum3' 0 xs
         where
@@ -133,11 +133,11 @@ The strictness annotation on the accumulator argument `a` results in the accumul
     sum3' (1+2) [3..n]
     sum3' 3 [3..n]
 
-The trace shows that `sum3` takes _O(1)_ space, and does not have a space leak. The definition of `sum` in the standard Haskell libraries is defined equivalently to `sum2`. However, with optimisations turned on, the compiler can detect that the accumulator is used strictly. By examining `sum2` we can see that if `sum2 xs` is ever evaluated at all, then as a necessary consequence, the accumulator `a` will have to be evaluated to produce a result, since it is the only value returned from the function. Using this knowledge, and the knowledge that reordering operations is safe (since Haskell expressions do not have side-effects), the compiler adds a strictness annotation.
+The trace shows that `sum3` takes _O(1)_ space, and does not have a space leak. The definition of `sum` in the standard Haskell libraries is defined equivalently to `sum2`. However, with optimisations turned on, the compiler can detect that the accumulator is used strictly. By examining `sum2` we can see that if `sum2 xs` is ever evaluated at all, then as a necessary consequence, the accumulator `a` will have to be evaluated to produce a result, since it is the only value returned from the function. Using this knowledge, and the knowledge that reordering operations is safe (since Haskell expressions do not have side-effects), the optimiser adds a strictness annotation.
 
 #### Higher-order Functions
 
-An experienced Haskell programmer may realise that our three `sum` functions can be defined in terms of standard library functions. The following definitions are equivalent to our original versions using explicit recursion: 
+An experienced Haskell programmer may realise that our three `sum` functions can be defined in terms of standard library functions. The following definitions are equivalent to our original versions: 
 
     sum1 = foldr (+) 0
     sum2 = foldl (+) 0
@@ -147,7 +147,7 @@ The `fold` functions all _reduce_ the list, with `foldr` using `0` instead of th
 
 Haskell programmers often prefer to define functions in terms of `fold` instead of explicit recursion. The Haskell Lint tool, called HLint (Mitchell 2013), will automatically suggest the `foldr/foldl` versions of `sum` from our original recursive definitions. The advantage of using standard recursion patterns is that the form of the recursion can be easily understood, and general rules about performance and space leaks can be formulated. For example, when using a reduction function which requires both its arguments to produce a result, such as `(+)`, only `foldl'` is capable of running in constant space, so is usually the right choice.
 
-You may wonder why Haskell does not define `sum` using `foldl'` by default. In Haskell the `(+)` function can be overloaded, and some versions may not require both arguments to produce a result, so `foldl'` would be unnecessarily strict. However, for most common definitions of `(+)` using `foldl'` would be more appropriate.
+You may wonder why Haskell does not define `sum` using `foldl'` by default. In Haskell the `(+)` function can be overloaded, and some versions may not require both arguments to produce a result, so `foldl'` would be unnecessarily strict. However, for most common definitions of `(+)`, using `foldl'` would be more appropriate.
 
 ### Example 3: `mean`
 
@@ -157,7 +157,7 @@ Let's take a look at another example:
 
 This function computes the `mean` of a list `xs` by taking the `sum` and dividing by the `length` (the backticks around `div` let us use a function as an infix operator). Assuming we use a space-leak-free definition of `sum`, how much space will `mean [1..n]` take?
 
-Using lazy evaluation, namely reducing the top-most left-most expression first, the answer is `O(n)`. To evaluate `sum xs` requires evaluating the entire list `xs`, but since that list is also used by `length xs`, `xs` must be retained in memory instead of being collected as it is produced.
+Using lazy evaluation, namely reducing the top-most left-most expression first, the answer is _O(n)_. To evaluate `sum xs` requires evaluating the entire list `xs`, but since that list is also used by `length xs`, `xs` must be retained in memory instead of being collected as it is produced.
 
 In this example a smarter evaluation strategy could eliminate the space leak. If the program evaluated the first element of `xs`, then applied both `sum` and `length` to it, the function would take constant space. Another approach to computing `mean [1..n]` is to remove the sharing of the list:
 
@@ -172,17 +172,17 @@ The solution is to take the pattern we used for `sum3` and extend it so instead 
             mean' !s !l (x:xs) = mean' (s+x) (l+1) xs
             mean' !s !l [] = s `div` l
 
-We accumulate the sum (`s`) and length (`l`) as local parameters, which are marked as strict arguments in the helper function. The resulting definition runs in _O(1)_ and has no space leak. Earlier I mentioned that Haskell programmers frequently prefer higher-order functions to direct recursion, but the `foldl'` function introduced earlier only permits one accumulating argument. The solution is to combine both accumulators into a single accumulator using the pair notation `(_,_)`.
+We accumulate the sum (`s`) and length (`l`) as local parameters, which are strict arguments to the helper function. The resulting definition has no space leak and runs in _O(1)_. Previously I mentioned that Haskell programmers frequently prefer higher-order functions to direct recursion, but the `foldl'` function introduced earlier only permits one accumulating argument. The solution is to combine both accumulators into a single accumulator using the pair notation `(_,_)`.
 
     mean xs = uncurry div (foldl' f (0,0) xs)
         where
             f (!s,!l) x = (s+x, l+1)
 
-The function `foldl'` forces the accumulator to WHNF, but we are now using a pair as the accumulator, so while the pair is forced to WHNF, the values inside it remain unevaluated expressions. By adding the bang patterns inside the pair match we can force these two values, ensuring the entire accumulator is in normal form and eliminating the space leak. After producing a pair of the sum and the length we use the library function `uncurry` to apply `div` to the elements of the pair.
+The function `foldl'` forces the accumulator to WHNF, but we are now using a pair as the accumulator, so while the pair is forced to WHNF, the values inside it remain unevaluated expressions. By adding the bang patterns inside the pair match we can force the two values, ensuring the entire accumulator is in normal form and eliminating the space leak. After producing a pair of the sum and the length we use the library function `uncurry` to apply `div` to the elements of the pair.
 
 ### Example 4: Space Leaks and the Garbage Collector
 
-In the previous examples we have inserted strictness annotations to eliminate space leaks. However, not all space leaks can be removed by strictness annotations (Huges 1980), sometimes we require special behaviour from the garbage collector (Wadler 1987). As an example, let's improve the impact of an academic paper by placing an exclamation mark at the end of the title, which we can implement with:
+In the previous examples we have inserted strictness annotations to eliminate space leaks. However, not all space leaks can be removed by strictness annotations (Huges 1980) - sometimes we require special behaviour from the garbage collector (Wadler 1987). As an example, let's improve the impact of an academic paper by placing an exclamation mark at the end of the title:
 
     improve xs = fst pair ++ "!" ++ snd pair
         where pair = firstLine xs 
@@ -192,7 +192,7 @@ In the previous examples we have inserted strictness annotations to eliminate sp
         where rest = firstLine ys
 	firstLine [] = ([], [])
 
-The `improve` function takes the source of the paper, and produces a new paper. It splits the text into a variable `pair` being a pair of the first line and the remaining text, using the auxiliary `firstLine`. The function then takes the first element of the pair using `fst`, and the second element using `snd` and uses the string append operator `++` to insert an exclamation mark character between them.  The first equation of `firstLine` matches strings with a leading newline character and produces an empty first line, followed by the text. The second equation recursively calls `firstLine` with everything but the first character, then creates a result where the first character is at the front of the first line. The final equation ensures that an input with no newline treats everything as the first line.
+The `improve` function takes the source of the paper, and produces a new paper. It splits the text into a variable `pair` being a pair of the first line and the remaining text, using the auxiliary `firstLine`. The function then takes the first element of the pair using `fst`, and the second element using `snd` and uses the string append operator `++` to insert an exclamation mark character between them.  The first equation of `firstLine` matches strings with a leading newline character and produces an empty first line, followed by the text. The second equation recursively calls `firstLine` with everything but the first character, then creates a result where the first character is at the front of the first line. The final equation ensures that the empty input produces empty outputs.
 
 It should be possible for `improve` to run in _O(1)_ space, producing an output character after examining each input character, and requiring only a small amount of memory. Looking at the second equation of `firstLine` we see that after matching `y:ys` (i.e. consuming an input character) the program will immediately produce `(y:_, _)`, making an output character available via lazy evaluation before making the recursive call. Unfortunately, using the obvious implementation techniques, this function requires space proportional to the first line of `xs`, so _O(`fst pair`)_. To understand the space usage, let us consider the evaluation of `improve "abc..."`:
 
@@ -202,7 +202,7 @@ It should be possible for `improve` to run in _O(1)_ space, producing an output 
     let rest1 = ('a':fst rest2, snd rest2)
     'a':'b':'c':fst rest4 ++ "!" ++ snd rest1
 
-In each step of `firstLine` a pair is produced where the second component of that pair is simply the second component of the recursive call. The result is both a linear chain of `snd` calls and all the character data being retained by references to the first component of each `rest` variable. If we forced the `snd` functions the space leak would be eliminated to produce:
+In each step of `firstLine` a pair is produced where the second component of that pair is simply the second component of the recursive call. The result is both a linear chain of `snd` calls and all the characters being retained by references to the first component of each `rest` variable. If we forced the `snd` functions this space leak would be eliminated to produce:
 
     let rest4 = firstLine "..."
     'a':'b':'c':fst rest4 ++ "!\n" ++ snd rest4
@@ -245,7 +245,7 @@ After `LoadAudio` has run, the `status` button will have an `onclick` event whic
 
     alert("MP3 is " + audio.duration + " seconds long");
 
-This code references the `audio` object, which stores the audio data - taking at least as much memory as the original MP3. In practice, we only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
+This code references the `audio` object, which stores the audio data - taking at least as much memory as the original MP3. However, we only ever access the `duration` field, which is a number, taking a mere 8 bytes. As a result, we have a space leak.
 
 This space leak has many aspects in common with the lazy evaluation space leaks above. We are referencing an expression `audio.duration` which keeps alive a significant amount of memory, but when evaluated, uses only a small amount of memory. As before, the solution is to force the evaluation sooner than necessary:
 
@@ -269,7 +269,7 @@ Unfortunately, the selector optimisation is less applicable in Javascript than i
 
 We define a dictionary containing both `pi` (a number) and `fiveDigitPrimes` (a large array), then add an event handler that only uses `pi`. If `constants` was immutable, then the garbage collector could reduce `constants.pi` and remove the reference to `constants`. Alas, the user can write `constants = {pi : 3}` to mutate `constants`, or `constants.pi = 3` to mutate the `pi` field, meaning evaluation in advance is unsafe.
 
-While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where we know which references are being used read-only (i.e. `alert(constants.pi)`) and which are not (i.e. `constants.pi = 3`). Using this information we can determine which variables are only used read-only and thus are guaranteed to be constant. If `constants` and `constants.pi` are both determined to be constant then the field lookup could be performed by the garbage collector, freeing both `constants` and `fiveDigitPrimes`. If the dictionary implementation provided certain guarantees then even if only `constants` was constant the lookup would still be safe.
+While the difficulties of mutation mean that Javascript does not reduce such functions in practice, it is not an insurmountable barrier. Consider a memory layout where we know which references are being used read-only (i.e. `alert(constants.pi)`) and which are not (i.e. `constants.pi = 3`). Using this information we can determine which variables are only used read-only and thus are guaranteed to be constant. If `constants` and `constants.pi` are both determined to be constant then the field lookup could be performed by the garbage collector, freeing both `constants` and `fiveDigitPrimes`. If the dictionary implementation always mutated fields in-place then even if only `constants` was constant the lookup would still be safe.
 
 In Haskell lazy evaluation is common (the default) and space leaks due to selectors are unavoidable, making the decision to apply selector optimisation obvious. In languages like Javascript adding additional code to solve fixable space leaks at the cost of making the normal code slower or more complex may not be a sensible trade-off.
 
@@ -307,22 +307,22 @@ Figure 1: Profiles for the `mean` example with different memory groupings. The X
 
 ----------
 
-If we use the `mean` example from earlier we produce the first plot shown in Figure 1. The first command runs the resulting `main` executable with some flags to the runtime system (anything after `+RTS`). The `-xt` flag says include the stack in the profile output (this author believes `-xt` should be on by default) and `-hy` to generate a report summarised by type. The first command generates a file `main.hp` and the second command turns that into a PostScript file `main.ps` (in color, due to the `-c` flag). In the plots shown I also passed `-i0.01` to sample the memory more frequently, which is usually only necessary when trying quick-running toy examples.
+If we use the `mean` example from earlier we produce the first plot shown in Figure 1. The first command runs the resulting `main` executable with some flags to the runtime system (anything after `+RTS`). The `-xt` flag includes any stack in the profile output (this author believes `-xt` should be on by default) and `-hy` generates a report summarised by type. The first command generates a file `main.hp` and the second command turns that into a PostScript file `main.ps` (in color, due to the `-c` flag). In the plots shown I also passed `-i0.01` to sample the memory more frequently, which is usually only necessary when trying quick-running toy examples.
 
 Haskell has a number of profiling modes, and the simplest approach is to try them all and see which produces the most useful information. The four standard types of profile are shown in Figure 1. They are:
 
 * `-hy` summarises the memory by type, in the example we have some lists (`[]`) and some numbers (`Int`). This summary answers the question "what" is in the memory.
 * `-hd` summarises by description, showing a more refined version of `-hy`. In the example we can see a close correspondence to `-hy`, with all `Int` entries matching `I#` (which is the internal constructor of `Int`), and lists matching `(:)`. Any group below a threshold is hidden, or we would likely see a single `[]` denoting the end of the list.  
-* `-hc` summarises by cost-centre. A cost-centre is a named area of the source code, automatically inserted on all top-level definitions, and can also be manually inserted with an annotation in the code. In Figure 1 we see that `main` has been attributed all the allocation, probably due to optimisation inlining `mean` inside it. This summary answers the question "where" was the memory created.
+* `-hc` summarises by cost-centre. A cost-centre is a named area of the source code, automatically inserted on all top-level definitions, and can also be manually inserted with an annotation in the code. In Figure 1 we see that `main` has been attributed all the memory, probably due to optimisation inlining `mean` inside it. This summary answers the question "where" was the memory created.
 * `-hm` summarises by module. A module is a more granular version of cost-centre.
 
 From a combination of these plots we can see that the function `main` in the module `Main` allocates a large list of numbers. It allocates the list over 0.4 seconds, then quickly consumes the list over 0.1 seconds. This memory usage describes what we would expect from the original definition of `mean`.
 
-For larger programs the plot will often contain a lot of memory usage that is expected, and not relevant to the space leak. To simplify the plot we can filter by any of the four types, for example passing `-hc -hy[]` will generate a plot grouped by cost-centre, but only where the type is a list.
+For larger programs the plot will often contain a lot of memory usage that is expected, and not relevant to the space leak. To simplify the plot we can filter by any of the four types, for example passing `-hc -hy[]` will generate a plot grouped by cost-centre, but only for memory where the type is a list.
 
-As we have seen in the `sum` example, compiling with different optimisation settings may cause space leaks to appear or disappear, and sadly compiling for profiling can have similar effects (although it is relatively rare). As a fallback any Haskell executable can be run using `+RTS -hT` which produces a plot summarised by type, without compiling for profiling and causing fewer changes to the behaviour of the program.
+As we have seen in the `sum` example, compiling with different optimisation settings may cause space leaks to appear or disappear, and sadly compiling for profiling can have similar effects (although it is relatively rare). As a fallback, any Haskell executable can be run using `+RTS -hT` which produces a plot summarised by type, without compiling for profiling and causing fewer changes to the behaviour of the program.
 
-Before using the profiling tools I suggest reading the "Profiling" section of the GHC manual, which covers several additional flavours of profiling. To get a better idea how the profiling tools are applied to large programs and how to interpret the output I recommend the following two "tales from the trenches": 
+Before using the profiling tools I suggest reading the "Profiling" section of the GHC manual, which covers several additional flavours of profiling. To get a better idea how the profiling tools can be applied to large programs and how to interpret the results I recommend the following two "tales from the trenches": 
 
 * <http://blog.ezyang.com/2011/06/pinpointing-space-leaks-in-big-programs/>
 * <http://neilmitchell.blogspot.com/2013/02/chasing-space-leak-in-shake.html>
@@ -331,7 +331,7 @@ Before using the profiling tools I suggest reading the "Profiling" section of th
 
 One tool Haskell lacks is the ability to pause execution at a certain point and explore the memory. This feature is available in some Javascript implementations, including in Chrome as the heap profiler.    
 
-The Chrome heap profiler allows a snapshot of the memory to be taken and explored. The profiler displays a tree of the heap, showing which values point at each other. You can summarise by the type of object, see statistics about how much memory is consumed and referenced by a certain value, and filter by name. A feature particularly useful for diagnosing space leaks is the ability to see what references are keeping a value alive. The two Javascript space leaks in this article produce heap snapshots which pinpoint the problem easily.
+The Chrome heap profiler allows a snapshot of the memory to be taken and explored. The profiler displays a tree of the memory, showing which values point at each other. You can summarise by the type of object, see statistics about how much memory is consumed and referenced by a certain value, and filter by name. A feature particularly useful for diagnosing space leaks is the ability to see what references are keeping a value alive. The two Javascript space leaks in this article produce heap snapshots which pinpoint the problem easily.
 
 ### Are Space Leaks Inevitable?
 
@@ -341,7 +341,7 @@ Compilers for lazy functional languages have been dealing with space leaks for o
 
 While space leaks are worrisome, they are not fatal, and they can be detected and eliminated. The presence of lazy evaluation has not stopped Haskell being used successfully in many projects (see the proceedings of CUFP for many examples). While there is no obvious silver bullet for space leaks, there are three approaches which could help:
 
-* For some complex problem domains there are libraries that eliminate a large class of space leaks by design. One example is Functional Reactive Programming which is used to build interactive applications like user interfaces and sound synthesisers - by changing how the library is defined we can both guarantee certain temporal properties and eliminate a common source of space leaks (Liu and Hudak 2007). Another example is stream processing which is used heavily in web servers to consume streams (e.g. a Javascript file) and produce new streams (e.g. a minimized Javascript file) without keeping the whole stream in memory. There are several competing stream libraries for Haskell, but all ensure that memory is not retained longer than necessary, and that the results are streamed to the user as soon as possible.
+* For some complex problem domains there are libraries that eliminate a large class of space leaks by design. One example is Functional Reactive Programming which is used to build interactive applications such as user interfaces and sound synthesisers - by changing how the library is defined we can both guarantee certain temporal properties and eliminate a common source of space leaks (Liu and Hudak 2007). Another example is stream processing which is used heavily in web servers to consume streams (e.g. a Javascript file) and produce new streams (e.g. a minimized Javascript file) without keeping the whole stream in memory. There are several competing stream libraries for Haskell, but all ensure that memory is not retained longer than necessary, and that the results are streamed to the user as soon as possible.
 
 * Space leaks are often detected relatively late in the development process, sometimes years after the code was written and deployed, and often only in response to user complaints of high memory usage. If space leaks could be detected earlier, ideally as soon as they were introduced, they would be easier to fix, and would never reach end users. Certain types of advanced profiling information can detect suspicious memory patterns (Röjemo and Runciman 1996) and there are some experimental tools for annotating expected heap usage (Hofmann and Jost 2003), but nothing has reached mainstream use. The Haskell compiler does partition memory in such a way that some space leaks are detected - the `sum` example fails with a message about stack overflow for lists of length 508146 and above, but the other examples in this article use all available memory before failing.
 
