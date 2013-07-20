@@ -67,7 +67,7 @@ The variable `ys` is in WHNF, but not in normal form. To force reduction to norm
 
 #### Why Lazy?
 
-Given that strictness avoids this space leak, and (as we will see later) several other space leaks, why not make all values strict? Certainly most languages have strict values, and there are even variants of Haskell that default to strict evaluation (Augustsson 2011). As with all language design decisions, lazy evaluation is a trade-off - space leaks are a disadvantage - but there are also many advantages. Other articles discuss the advantages of lazy evaluation in depth (Hughes 1989), but a few brief reasons:
+Given that strictness avoids this space leak, and (as we will see later) several other space leaks, why not make all values strict? Certainly most languages have strict values, and there are even variants of Haskell that default to strict evaluation (Augustsson 2011a). As with all language design decisions, lazy evaluation is a trade-off - space leaks are a disadvantage - but there are also many advantages. Other articles discuss the advantages of lazy evaluation in depth (Hughes 1989, Augustsson 2011b), but a few brief reasons:
 
 * Defining new control structures in strict languages often requires macros or building them into the compiler, while lazy evaluation allows such patterns to be expressed directly.
 * Laziness allows variable bindings to be made without considering which bindings are evaluated in which code paths, a great simplification when combined with complex conditionals.
@@ -349,7 +349,8 @@ While space leaks are worrisome, they are not fatal, and they can be detected an
 
 ### References
 
-* 2011, Lennart Augustsson. Pragmatic Haskell, _CUFP 2011_. <http://www.youtube.com/watch?v=hgOzYZDrXL0>
+* 2011a, Lennart Augustsson. Pragmatic Haskell, _CUFP 2011_. <http://www.youtube.com/watch?v=hgOzYZDrXL0>
+* 2011b, Lennart Augustsson. More Points for Lazy Evaluation. <http://augustss.blogspot.co.uk/2011/05/more-points-for-lazy-evaluation-in.html>
 * 2013, The GHC team. The Glorious Glasgow Haskell Compilation System User's Guide, Version 7.6.3. <http://www.haskell.org/ghc/docs/latest/html/users_guide/index.html>
 * 2003, Martin Hofmann and Steffen Jost. Static Prediction of Heap Space Usage for First-Order, _POPL 2003_.
 * 1983, John Hughes. The design and implementation of programming languages, PhD thesis, Oxford University.
