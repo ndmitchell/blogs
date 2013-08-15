@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,107 +12,13 @@
    height="1052.3622047"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.46"
    sodipodi:docname="figure0.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="C:\Neil\blogs\space-leak\figure1.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    version="1.1">
-  <defs
-     id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       id="perspective10" />
-    <inkscape:perspective
-       id="perspective2390"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2419"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2436"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2449"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2462"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2475"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2488"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2505"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2518"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2535"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2548"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective2565"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -125,18 +30,177 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="314.92676"
-     inkscape:cy="896.68546"
+     inkscape:cx="534.27331"
+     inkscape:cy="761.75594"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="696"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
+     inkscape:window-width="1280"
+     inkscape:window-height="688"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1" />
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend"
+       style="overflow:visible;">
+      <path
+         id="path3253"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow2Lend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lend">
+      <path
+         transform="scale(1.1) rotate(180) translate(1,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         id="path3247" />
+    </marker>
+    <inkscape:perspective
+       id="perspective10"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2390" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2419" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2436" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2449" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2462" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2475" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2488" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2505" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2518" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2535" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2548" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2565" />
+    <marker
+       style="overflow:visible;"
+       id="Arrow2Lendm"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow2Lendm">
+      <path
+         transform="scale(1.1) rotate(180) translate(1,0)"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         style="stroke-linejoin:round;font-size:12.0;fill-rule:evenodd;stroke:#800000;stroke-width:0.62500000;fill:#800000"
+         id="path5051" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend9"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend9"
+       style="overflow:visible;">
+      <path
+         id="path5748"
+         style="stroke-linejoin:round;font-size:12.0;fill-rule:evenodd;stroke:#000080;stroke-width:0.62500000;fill:#000080"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend9a"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend9a"
+       style="overflow:visible;">
+      <path
+         id="path5923"
+         style="stroke-linejoin:round;font-size:12.0;fill-rule:evenodd;stroke:#800000;stroke-width:0.62500000;fill:#800000"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+  </defs>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -149,345 +213,714 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
+     id="layer1"
      inkscape:groupmode="layer"
-     id="layer1">
-    <g
-       id="g3223">
-      <rect
-         ry="17.306042"
-         y="112.23209"
-         x="134.8699"
-         height="298.26019"
-         width="231.26018"
-         id="rect3091"
-         style="fill:none;stroke:#000000;stroke-width:2.73981857;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
-      <text
-         sodipodi:linespacing="125%"
-         id="text3093"
-         y="133.36218"
-         x="185.60254"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           style="font-size:20px;font-weight:bold"
-           y="133.36218"
-           x="185.60254"
-           id="tspan3095"
-           sodipodi:role="line">Encyclopedia</tspan></text>
-      <g
-         transform="translate(3.5,0)"
-         id="g3197">
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101"
-           width="149"
-           height="30"
-           x="172.5"
-           y="157.36218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="182.5"
-           y="178.36218"
-           id="text3103"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105"
-             x="182.5"
-             y="178.36218"
-             style="font-size:18px">A</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1"
-           width="149"
-           height="30"
-           x="172.5"
-           y="186.86218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="182.5"
-           y="208.36218"
-           id="text3103-7"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4"
-             x="182.5"
-             y="208.36218"
-             style="font-size:18px">B</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-0"
-           width="149"
-           height="30"
-           x="172.5"
-           y="216.36218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="182.5"
-           y="237.36218"
-           id="text3103-7-9"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-4"
-             x="182.5"
-             y="237.36218"
-             style="font-size:18px">C</tspan></text>
-      </g>
-      <g
-         transform="translate(2.5,0)"
-         id="g3208">
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-8"
-           width="149"
-           height="30"
-           x="173.5"
-           y="298.86218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="183.5"
-           y="319.86218"
-           id="text3103-8"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-2"
-             x="183.5"
-             y="319.86218"
-             style="font-size:18px">X</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-4"
-           width="149"
-           height="30"
-           x="173.5"
-           y="328.36218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="183.5"
-           y="349.86218"
-           id="text3103-7-5"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-5"
-             x="183.5"
-             y="349.86218"
-             style="font-size:18px">Y</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-0-1"
-           width="149"
-           height="30"
-           x="173.5"
-           y="357.86218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="183.5"
-           y="378.86218"
-           id="text3103-7-9-7"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-4-1"
-             x="183.5"
-             y="378.86218"
-             style="font-size:18px">Z</tspan></text>
-      </g>
-      <text
-         sodipodi:linespacing="125%"
-         id="text3219"
-         y="275.36218"
-         x="227"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           y="275.36218"
-           x="227"
-           id="tspan3221"
-           sodipodi:role="line">...</tspan></text>
-    </g>
-    <g
-       transform="translate(1.50001,351.99999)"
-       id="g3223-1">
-      <rect
-         ry="17.306042"
-         y="112.23209"
-         x="134.8699"
-         height="298.26019"
-         width="231.26018"
-         id="rect3091-5"
-         style="fill:none;stroke:#000000;stroke-width:2.73981857;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0" />
-      <text
-         sodipodi:linespacing="125%"
-         id="text3093-2"
-         y="133.36218"
-         x="185.60254"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           style="font-size:20px;font-weight:bold"
-           y="133.36218"
-           x="185.60254"
-           id="tspan3095-7"
-           sodipodi:role="line">Encyclopedia</tspan></text>
-      <g
-         transform="translate(3.5,0)"
-         id="g3197-6">
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-14"
-           width="149"
-           height="30"
-           x="172.5"
-           y="157.36218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="182.5"
-           y="178.36218"
-           id="text3103-2"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-3"
-             x="182.5"
-             y="178.36218"
-             style="font-size:18px">A</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-2"
-           width="149"
-           height="30"
-           x="172.5"
-           y="186.86218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="182.5"
-           y="208.36218"
-           id="text3103-7-2"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-1"
-             x="182.5"
-             y="208.36218"
-             style="font-size:18px">B</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-0-6"
-           width="149"
-           height="30"
-           x="172.5"
-           y="216.36218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="182.5"
-           y="237.36218"
-           id="text3103-7-9-8"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-4-5"
-             x="182.5"
-             y="237.36218"
-             style="font-size:18px">C</tspan></text>
-      </g>
-      <g
-         transform="translate(2.5,0)"
-         id="g3208-7">
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-8-6"
-           width="149"
-           height="30"
-           x="173.5"
-           y="298.86218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="183.5"
-           y="319.86218"
-           id="text3103-8-1"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-2-8"
-             x="183.5"
-             y="319.86218"
-             style="font-size:18px">X</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-4-9"
-           width="149"
-           height="30"
-           x="173.5"
-           y="328.36218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="183.5"
-           y="349.86218"
-           id="text3103-7-5-2"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-5-7"
-             x="183.5"
-             y="349.86218"
-             style="font-size:18px">Y</tspan></text>
-        <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
-           id="rect3101-1-0-1-9"
-           width="149"
-           height="30"
-           x="173.5"
-           y="357.86218" />
-        <text
-           xml:space="preserve"
-           style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-           x="183.5"
-           y="378.86218"
-           id="text3103-7-9-7-5"
-           sodipodi:linespacing="125%"><tspan
-             sodipodi:role="line"
-             id="tspan3105-4-4-1-4"
-             x="183.5"
-             y="378.86218"
-             style="font-size:18px">Z</tspan></text>
-      </g>
-      <text
-         sodipodi:linespacing="125%"
-         id="text3219-3"
-         y="275.36218"
-         x="227"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           y="275.36218"
-           x="227"
-           id="tspan3221-1"
-           sodipodi:role="line">...</tspan></text>
-    </g>
-    <path
-       style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 324,314.36218 c 128,0 128,0 128,0"
-       id="path3345"
-       inkscape:connector-curvature="0" />
+     inkscape:label="Layer 1">
     <rect
-       style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       ry="14.243557"
+       y="223.34901"
+       x="504.65433"
+       height="245.47993"
+       width="170.82494"
+       id="rect3091-5"
+       style="fill:none;stroke:#999999;stroke-width:2.13627601;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       ry="14.243557"
+       y="224.24719"
+       x="134.54681"
+       height="245.47993"
+       width="170.82494"
+       id="rect3091"
+       style="fill:none;stroke:#999999;stroke-width:2.13627601;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3093"
+       y="228.91817"
+       x="176.90163"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         style="font-size:15.59428787px;font-weight:bold"
+         y="228.91817"
+         x="176.90163"
+         id="tspan3095"
+         sodipodi:role="line">Encyclopaedia</tspan></text>
+    <g
+       transform="matrix(0.7386699,0,0,0.8230395,37.507818,131.87575)"
+       id="g3197"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101"
+         width="149"
+         height="30"
+         x="172.5"
+         y="157.36218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="182.5"
+         y="178.36218"
+         id="text3103"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105"
+           x="182.5"
+           y="178.36218"
+           style="font-size:18px">A</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1"
+         width="149"
+         height="30"
+         x="172.5"
+         y="186.86218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="182.5"
+         y="208.36218"
+         id="text3103-7"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4"
+           x="182.5"
+           y="208.36218"
+           style="font-size:18px">B</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-0"
+         width="149"
+         height="30"
+         x="172.5"
+         y="216.36218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="182.5"
+         y="237.36218"
+         id="text3103-7-9"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-4"
+           x="182.5"
+           y="237.36218"
+           style="font-size:18px">C</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.7386699,0,0,0.8230395,36.769149,131.87575)"
+       id="g3208"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-8"
+         width="149"
+         height="30"
+         x="173.5"
+         y="298.86218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="183.5"
+         y="319.86218"
+         id="text3103-8"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-2"
+           x="183.5"
+           y="319.86218"
+           style="font-size:18px">X</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-4"
+         width="149"
+         height="30"
+         x="173.5"
+         y="328.36218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="183.5"
+         y="349.86218"
+         id="text3103-7-5"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-5"
+           x="183.5"
+           y="349.86218"
+           style="font-size:18px">Y</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-0-1"
+         width="149"
+         height="30"
+         x="173.5"
+         y="357.86218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="183.5"
+         y="378.86218"
+         id="text3103-7-9-7"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-4-1"
+           x="183.5"
+           y="378.86218"
+           style="font-size:18px">Z</tspan></text>
+    </g>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3219"
+       y="339.6376"
+       x="213.85812"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         y="339.6376"
+         x="213.85812"
+         id="tspan3221"
+         sodipodi:role="line">...</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path3345"
+       d="M 274.25153,390.60825 C 368.80127,390.60825 368.80127,390.60825 368.80127,390.60825"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="377.43964"
+       x="341.10114"
+       height="24.691185"
+       width="110.06181"
        id="rect3101-13"
-       width="149"
-       height="30"
-       x="414.5"
-       y="298.36218" />
+       style="fill:#ffffff;stroke:#000000;stroke-width:2.33914304;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3103-87"
+       y="373.94504"
+       x="367.85172"
+       style="font-size:14.0348587px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         style="font-size:14.0348587px"
+         y="373.94504"
+         x="367.85172"
+         id="tspan3105-42"
+         sodipodi:role="line">Xylophone</tspan></text>
+    <text
+       id="text2447"
+       y="145.48874"
+       x="290.27014"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         y="145.48874"
+         x="290.27014"
+         id="tspan2449"
+         sodipodi:role="line">Xena</tspan></text>
+    <path
+       sodipodi:nodetypes="cc"
+       id="path2451"
+       d="M 288.28625,163.44934 L 232.88601,223.53123"
+       style="fill:#000080;fill-rule:evenodd;stroke:#000080;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Mend9);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5896"
+       d="M 323.09964,162.52909 L 397.70531,375.69632"
+       style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Mend9a);stroke-miterlimit:4;stroke-dasharray:1.55942879, 4.67828637;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path6073"
+       d="M 643.25099,272.01545 C 737.80073,272.01545 737.80073,272.01545 737.80073,272.01545"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="259.88013"
+       x="709.55066"
+       height="20.978439"
+       width="32.862667"
+       id="rect6075"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       id="text6077"
+       y="145.48151"
+       x="661.0705"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         y="145.48151"
+         x="661.0705"
+         id="tspan6079"
+         sodipodi:role="line">Shawn</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="424.5"
-       y="319.36218"
-       id="text3103-87"
-       sodipodi:linespacing="125%"><tspan
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="756.96582"
+       y="260.81534"
+       id="text6081"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
          sodipodi:role="line"
-         id="tspan3105-42"
-         x="424.5"
-         y="319.36218"
-         style="font-size:18px">Xylophone</tspan></text>
+         id="tspan6083"
+         x="756.96582"
+         y="260.81534"
+         style="font-size:10.91600132px">345</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6087"
+       d="M 643.25099,297.5297 C 737.80073,297.5297 737.80073,297.5297 737.80073,297.5297"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path6095"
+       d="M 643.25099,323.86699 C 737.80073,323.86699 737.80073,323.86699 737.80073,323.86699"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="285.92599"
+       x="709.49658"
+       height="20.978439"
+       width="32.862667"
+       id="rect6127"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="756.90875"
+       y="283.93063"
+       id="text6129"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         sodipodi:role="line"
+         id="tspan6131"
+         x="756.90875"
+         y="283.93063"
+         style="font-size:10.91600132px">412</tspan></text>
+    <rect
+       y="312.55466"
+       x="709.55066"
+       height="20.978439"
+       width="32.862667"
+       id="rect6133"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="756.96588"
+       y="309.15756"
+       id="text6135"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         sodipodi:role="line"
+         id="tspan6137"
+         x="756.96588"
+         y="309.15756"
+         style="font-size:10.91600132px">363</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6139"
+       d="M 643.25098,387.24099 C 737.80072,387.24099 737.80072,387.24099 737.80072,387.24099"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="375.10565"
+       x="709.55066"
+       height="20.978439"
+       width="32.862667"
+       id="rect6141"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="756.96582"
+       y="369.97531"
+       id="text6143"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         sodipodi:role="line"
+         id="tspan6145"
+         x="756.96582"
+         y="369.97531"
+         style="font-size:10.91600132px">212</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6147"
+       d="M 643.25098,412.75524 C 737.80072,412.75524 737.80072,412.75524 737.80072,412.75524"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path6149"
+       d="M 643.25098,439.09253 C 737.80072,439.09253 737.80072,439.09253 737.80072,439.09253"
+       style="fill:none;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       y="401.15155"
+       x="709.49658"
+       height="20.978439"
+       width="32.862667"
+       id="rect6151"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="756.90875"
+       y="393.09067"
+       id="text6153"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         sodipodi:role="line"
+         id="tspan6155"
+         x="756.90875"
+         y="393.09067"
+         style="font-size:10.91600132px">341</tspan></text>
+    <rect
+       y="427.78018"
+       x="709.55066"
+       height="20.978439"
+       width="32.862667"
+       id="rect6157"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="756.96588"
+       y="418.3176"
+       id="text6159"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         sodipodi:role="line"
+         id="tspan6161"
+         x="756.96588"
+         y="418.3176"
+         style="font-size:10.91600132px">170</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3093-2"
+       y="228.06731"
+       x="566.01392"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         style="font-size:15.59428787px;font-weight:bold"
+         y="228.06731"
+         x="566.01392"
+         id="tspan3095-7"
+         sodipodi:role="line">Encyclopaedia</tspan></text>
+    <g
+       transform="matrix(0.7386699,0,0,0.8230395,407.61529,130.97759)"
+       id="g3197-6"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-14"
+         width="149"
+         height="30"
+         x="172.5"
+         y="157.36218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="182.5"
+         y="178.36218"
+         id="text3103-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-3"
+           x="182.5"
+           y="178.36218"
+           style="font-size:18px">A</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-2"
+         width="149"
+         height="30"
+         x="172.5"
+         y="186.86218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="182.5"
+         y="208.36218"
+         id="text3103-7-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-1"
+           x="182.5"
+           y="208.36218"
+           style="font-size:18px">B</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-0-6"
+         width="149"
+         height="30"
+         x="172.5"
+         y="216.36218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="182.5"
+         y="237.36218"
+         id="text3103-7-9-8"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-4-5"
+           x="182.5"
+           y="237.36218"
+           style="font-size:18px">C</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.7386699,0,0,0.8230395,406.87662,130.97759)"
+       id="g3208-7"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-8-6"
+         width="149"
+         height="30"
+         x="173.5"
+         y="298.86218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="183.5"
+         y="319.86218"
+         id="text3103-8-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-2-8"
+           x="183.5"
+           y="319.86218"
+           style="font-size:18px">X</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-4-9"
+         width="149"
+         height="30"
+         x="173.5"
+         y="328.36218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="183.5"
+         y="349.86218"
+         id="text3103-7-5-2"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-5-7"
+           x="183.5"
+           y="349.86218"
+           style="font-size:18px">Y</tspan></text>
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect3101-1-0-1-9"
+         width="149"
+         height="30"
+         x="173.5"
+         y="357.86218" />
+      <text
+         xml:space="preserve"
+         style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="183.5"
+         y="378.86218"
+         id="text3103-7-9-7-5"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3105-4-4-1-4"
+           x="183.5"
+           y="378.86218"
+           style="font-size:18px">Z</tspan></text>
+    </g>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3219-3"
+       y="338.78674"
+       x="604.53015"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         y="338.78674"
+         x="604.53015"
+         id="tspan3221-1"
+         sodipodi:role="line">...</tspan></text>
+    <rect
+       y="344.65317"
+       x="791.54303"
+       height="20.978439"
+       width="32.862667"
+       id="rect6163"
+       style="fill:#ffffff;stroke:#000000;stroke-width:1.17816329;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:31.18857574px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="841.95593"
+       y="339.56644"
+       id="text6165"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       transform="scale(0.9473596,1.0555654)"><tspan
+         sodipodi:role="line"
+         id="tspan6167"
+         x="841.95593"
+         y="339.56644"
+         style="font-size:10.91600132px">8971</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.77971435px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 742.17424,270.42641 L 807.26496,344.58146"
+       id="path6219"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.77971435px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 742.17424,296.09547 L 796.29461,344.17401"
+       id="path6221"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.77971435px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 742.17424,322.57941 L 791.17512,347.02613"
+       id="path6223"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 646.00088,355.04467 L 791.17512,355.04467"
+       id="path6225"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.77971435px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 742.53992,386.54832 L 791.17512,362.1016"
+       id="path6227"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.77971435px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 742.17424,411.80994 L 797.39165,365.36116"
+       id="path6229"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.77971435px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 742.17424,439.10877 L 807.26496,365.36116"
+       id="path6231"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path6233"
+       d="M 655.16561,161.63093 L 599.76537,221.71282"
+       style="fill:#000080;fill-rule:evenodd;stroke:#000080;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Mend9);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path6235"
+       d="M 700.36671,158.9151 L 812.64454,343.27595"
+       style="fill:#800000;fill-rule:evenodd;stroke:#800000;stroke-width:1.55942869;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Mend9a);stroke-miterlimit:4;stroke-dasharray:1.55942879, 4.67828637;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\figure0.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>
