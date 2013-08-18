@@ -149,8 +149,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="487.74883"
-     inkscape:cy="845.7626"
+     inkscape:cx="300.4713"
+     inkscape:cy="883.65531"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -178,7 +178,7 @@
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="96.175568"
+       x="94.175568"
        y="52.20359"
        id="text2629"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete1.png"
@@ -186,15 +186,8 @@
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan2631"
-         x="96.175568"
+         x="94.175568"
          y="52.20359">xs</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 115.08827,47.717405 L 131.11774,47.717405"
-       id="path2633"
-       inkscape:export-filename="C:\Neil\blogs\space-leak\delete1.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -208,51 +201,24 @@
          id="tspan5217"
          x="136.64998"
          y="52.20359">[ ● ]</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 150.26732,55.880599 L 150.26732,71.910067"
-       id="path5219"
-       inkscape:export-filename="C:\Neil\blogs\space-leak\delete1.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="133.29381"
-       y="86.014183"
+       x="196.62714"
+       y="72.680847"
        id="text5221"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete1.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan5223"
-         x="133.29381"
-         y="86.014183">alive</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="98.21965"
-       y="144.10007"
-       id="text5225"
-       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"><tspan
-         sodipodi:role="line"
-         id="tspan5227"
-         x="98.21965"
-         y="144.10007">xs</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 117.13236,139.61389 L 133.16183,139.61389"
-       id="path5229"
-       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+         x="196.62714"
+         y="72.680847">alive</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        x="138.69406"
-       y="144.10007"
+       y="131.10007"
        id="text5231"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
        inkscape:export-xdpi="90"
@@ -260,75 +226,110 @@
          sodipodi:role="line"
          id="tspan5233"
          x="138.69406"
-         y="144.10007">delete ● ●</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 193.97807,134.77708 L 215.97807,114.80655"
-       id="path5235"
-       sodipodi:nodetypes="cc"
-       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+         y="131.10007">delete ● ●</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="216.00456"
-       y="113.91065"
+       x="310.33789"
+       y="113.24398"
        id="text5237"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan5239"
-         x="216.00456"
-         y="113.91065">dead</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 211.65896,142.0171 L 233.32563,151.04657"
-       id="path5241"
-       sodipodi:nodetypes="cc"
-       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+         x="310.33789"
+         y="113.24398">dead</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="234.24423"
-       y="154.83986"
+       x="231.24423"
+       y="150.1732"
        id="text5243"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan5245"
-         x="234.24423"
-         y="154.83986">[ ● , ● ]</tspan></text>
+         x="231.24423"
+         y="150.1732">[ ● , ● ]</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="234.13052"
-       y="188.33871"
+       x="310.30658"
+       y="169.67204"
        id="text5247"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><tspan
          sodipodi:role="line"
          id="tspan5249"
-         x="234.13052"
-         y="188.33871">alive</tspan></text>
+         x="310.30658"
+         y="169.67204">alive</tspan></text>
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 267.0402,145.01412 L 242.70687,116.71025"
-       id="path5251"
-       sodipodi:nodetypes="cc"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Mend)"
+       d="M 150.33334,56.02885 L 150.33334,69.02885 L 193.00001,69.02885"
+       id="path2521"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\delete1.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Mend);stroke-opacity:1"
+       d="M 113,47.695516 L 133.66667,47.695516"
+       id="path3305"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\delete1.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-size:16.02946854px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="95.552986"
+       y="130.76674"
+       id="text5391"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan5393"
+         x="95.552986"
+         y="130.76674">xs</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow2Mend);stroke-opacity:1"
+       d="M 114.37742,126.25867 L 135.04409,126.25867"
+       id="path5405"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.80147332;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 247.54233,156.18055 L 247.54233,174.87668"
-       id="path5253"
-       sodipodi:nodetypes="cc"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-opacity:1"
+       d="M 191.92115,119.8127 L 191.92115,106.8127 L 307.25449,106.8127"
+       id="path5407"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-opacity:1"
+       d="M 206.25447,133.2354 L 206.25447,146.2354 L 229.58781,146.2354"
+       id="path5409"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-opacity:1"
+       d="M 268.92114,153.2354 L 268.92114,166.2354 L 307.58782,165.90207"
+       id="path5411"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-mid:none;marker-end:url(#Arrow2Mend);stroke-opacity:1"
+       d="M 244.92114,138.81269 L 244.92114,111.47936 L 307.25448,111.47936"
+       id="path5413"
+       sodipodi:nodetypes="ccc"
        inkscape:export-filename="C:\Neil\blogs\space-leak\delete2.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />

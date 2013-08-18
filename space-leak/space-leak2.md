@@ -1,8 +1,8 @@
 # Leaking Space
 
-A _space leak_ occurs when a program uses more memory than necessary. In contrast to memory leaks, where the memory is never released, the memory consumed by a space leak is released, merely later than expected. Garbage collection has largely eliminated memory leaks, but making memory management automatic can make unexpected space leaks more likely. In this article we'll go through some example space leaks, discuss how to spot space leaks, and how to eliminate them.
+A _space leak_ occurs when a program uses more memory than necessary. In contrast to memory leaks, where the leaked memory is never released, the memory consumed by a space leak is still released, merely later than expected. In this article we'll go through some example space leaks, discuss how to spot space leaks, and how to eliminate them.
 
-### Real life space leaks
+### Real-life Space Leaks
 
 Before we get to space leaks in computer programs, let's consider two "real life" space leaks. Xena the xylophone enthusiast buys a 26 volume printed encyclopaedia, but she only wants to read the article on xylophones. The encyclopaedia occupies a lot of space on her bookshelf, but Xena could throw away all but the X volume, reducing the shelf requirements. Furthermore, she could cut out the Xylophone article, leaving only a single piece of paper. In this example Xena is storing lots of information, but is only interested in a small subset of it.
 
@@ -42,12 +42,12 @@ More generally, a space leak can occur when the memory contains an expression, w
 
 ### Forcing Evaluation
 
-In Example 1, we happen to know that `length` will force `delete` to be evaluated. We use the following definitions to describe how evaluated an expression is:
+To eliminate space leaks we often need to force evaluation of an expression earlier than it would normally be evaluated. Before describing how to force evaluation, it is necessary to define how "evaluated" an expression is:
 
 * An expression is in **normal form** if it cannot be evaluated further. For example, the list `[1,2]` is in normal form. Lists are constructed from `[]` (pronounced "nil") for the empty list, and `(:)` (pronounced "cons") to combine a head element to the tail of a list, so `[1,2]` can equivalently be written `1:2:[]`.
-* An expression is in **weak head normal form** (WHNF) if the outermost part does not require further evaluation. For example `(1+2):[]` is in WHNF since the outermost part is `(:)`, but not normal form since the `(+)` can be evaluated to produce `3`. All values in normal form are also in WHNF.
+* An expression is in **weak head normal form** (WHNF) if the outermost part does not require further evaluation. For example `(1+2):[]` is in WHNF since the outermost part is `(:)`, but not normal form since the `(+)` can be evaluated to produce `3`. All values in normal form are by definition also in WHNF.
 
-To force a value to WHNF, Haskell provides strictness annotations with the commonly used "bang patterns" extension (The GHC Team 2013). We can define a function `output` which prints "Output" to the console, followed by its argument:
+To force evaluation to WHNF, Haskell provides strictness annotations with the commonly used "bang patterns" extension (The GHC Team 2013). We can define a function `output` which prints "Output" to the console, followed by its argument:
 
     output x = do
         print "Output"
@@ -57,7 +57,7 @@ Printing `x` evaluates `x` to normal form, so the function `output` will first p
 
     output !x = ...
 
-Now evaluating `output x` will first evaluate `x` to WHNF, then print "Output", then evaluate `x` to normal form and print it. Using bang patterns we can control the order of evaluation.
+Now evaluating `output x` will first evaluate `x` to WHNF, then print "Output", then evaluate `x` to normal form and print it. Using strictness annotations we can force evaluation sooner than normal.
 
 ### Sidebar: Why Lazy?
 
@@ -251,7 +251,7 @@ In Haskell lazy evaluation is common (the default) and space leaks due to select
 
 We have seen five examples of space leaks, providing some guidance as to where space leaks occur and how they can be fixed. However, all the examples have been a handful of lines - for space leaks in big programs the challenge is often finding the code at fault. As Haskell is particularly vulnerable to space leaks the compiler provides a number of built in profiling tools to pinpoint the source of space leaks. But before we look at which tools are available, let us first consider which tools might be useful.
 
-Space leaks are quite different to memory leaks, in particular the garbage collector still knows about the memory referenced by the space leak, and will usually free that memory before the program terminates. Assuming a definition of `sum` containing a space leak, as soon as `sum` has produced a result, any intermediate space leak will be freed by the garbage collector. A program with a space leak will often reach its peak memory use in the middle of the execution, compared to memory leaks which never decrease. A standard technique for diagnosing memory leaks is to look at the memory after the program has finished, to see what is unexpectedly retained - this technique is not application for space leaks.
+Space leaks are quite different to memory leaks, in particular the garbage collector still knows about the memory referenced by the space leak, and will usually free that memory before the program terminates. Assuming a definition of `sum` containing a space leak, as soon as `sum` has produced a result, any intermediate space leak will be freed by the garbage collector. A program with a space leak will often reach its peak memory use in the middle of the execution, compared to memory leaks which never decrease. A standard technique for diagnosing memory leaks is to look at the memory after the program has finished, to see what is unexpectedly retained - this technique is not applicable to space leaks.
 
 Instead, it is often useful to examine the memory at intermediate points throughout the execution, looking for spikes in the memory usage. Capturing the entire memory at frequent intervals is likely to require too much disk space, so a solution is to record summary statistics at regular intervals, such as how much memory was allocated by each function.
 
@@ -313,7 +313,7 @@ Garbage collection frees programmers from the monotony of manually managing memo
 
 Compilers for lazy functional languages have been dealing with space leaks for over thirty years and have developed a number of strategies to help. There have been changes to compilation techniques, modifications to the garbage collector and profilers to pinpoint space leaks when they do occur. Some of these strategies may be applicable in other languages. Despite all the improvements, space leaks remain a thorn in the side of lazy evaluation, providing a significant disadvantage to weigh against the benefits.
 
-While space leaks are worrisome, they are not fatal, and they can be detected and eliminated. The presence of lazy evaluation has not stopped Haskell being used successfully in many projects (see the proceedings of CUFP for many examples). While there is no obvious silver bullet for space leaks, there are three approaches which could help:
+While space leaks are worrisome, they are not fatal, and they can be detected and eliminated. The presence of lazy evaluation has not stopped Haskell being used successfully in many projects (see the proceedings of Commercial Users of Functional Programming for many examples). While there is no obvious silver bullet for space leaks, there are three approaches which could help:
 
 * For some complex problem domains there are libraries that eliminate a large class of space leaks by design. One example is Functional Reactive Programming which is used to build interactive applications such as user interfaces and sound synthesisers - by changing how the library is defined we can both guarantee certain temporal properties and eliminate a common source of space leaks (Liu and Hudak 2007). Another example is stream processing which is used heavily in web servers to consume streams (e.g. a Javascript file) and produce new streams (e.g. a minimized Javascript file) without keeping the whole stream in memory. There are several competing stream libraries for Haskell, but all ensure that memory is not retained longer than necessary, and that the results are streamed to the user as soon as possible.
 
