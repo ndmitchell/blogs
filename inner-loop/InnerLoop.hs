@@ -25,10 +25,6 @@ inc :: Ptr Word8 -> Ptr Word8
 inc x = x `plusPtr` 1
 
 
-findIndex0_1 :: (Char -> Bool) -> ByteString0 -> Int
-findIndex0_1 f (BS0 bs) = Internal.inlinePerformIO $ BS.unsafeUseAsCString bs $ \ptr -> go 
-
-
 break0_1 :: (Char -> Bool) -> ByteString0 -> (ByteString, ByteString0)
 break0_1 f (BS0 bs) = (BS.unsafeTake i bs, BS0 $ BS.unsafeDrop i bs)
     where
