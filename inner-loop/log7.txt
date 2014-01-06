@@ -1,0 +1,870 @@
+[1 of 1] Compiling InnerLoop        ( InnerLoop.hs, InnerLoop.o )
+
+==================== Tidy Core ====================
+Result size of Tidy Core = {terms: 139, types: 102, coercions: 20}
+
+Rec {
+InnerLoop.$wgo [Occ=LoopBreaker]
+  :: GHC.Prim.Addr# -> GHC.Prim.Addr#
+[GblId, Arity=1, Caf=NoCafRefs, Str=DmdType L]
+InnerLoop.$wgo =
+  \ (ww_s1Qq :: GHC.Prim.Addr#) ->
+    case GHC.Prim.readWord8OffAddr#
+           @ GHC.Prim.RealWorld ww_s1Qq 0 GHC.Prim.realWorld#
+    of _ { (# _, ipv1_a1Dr #) ->
+    let {
+      c1_a1uU [Dmd=Just L] :: GHC.Prim.Char#
+      [LclId, Str=DmdType]
+      c1_a1uU = GHC.Prim.chr# (GHC.Prim.word2Int# ipv1_a1Dr) } in
+    case GHC.Prim.leChar# c1_a1uU '$' of _ {
+      GHC.Types.False -> InnerLoop.$wgo (GHC.Prim.plusAddr# ww_s1Qq 1);
+      GHC.Types.True ->
+        case c1_a1uU of _ {
+          __DEFAULT -> InnerLoop.$wgo (GHC.Prim.plusAddr# ww_s1Qq 1);
+          '\NUL' -> ww_s1Qq;
+          '\n' -> ww_s1Qq;
+          '\r' -> ww_s1Qq;
+          ' ' -> ww_s1Qq;
+          '$' -> ww_s1Qq
+        }
+    }
+    }
+end Rec }
+
+InnerLoop.innerLoop_1
+  :: GHC.IO.FilePath
+     -> GHC.Prim.State# GHC.Prim.RealWorld
+     -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+           (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0) #)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=2, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=IF_ARGS [0 0] 341 30}]
+InnerLoop.innerLoop_1 =
+  \ (file_aLx :: GHC.IO.FilePath)
+    (eta_B1 :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+    case Data.ByteString.Char8.readFile1 file_aLx eta_B1
+    of _ { (# ipv_a1BV, ipv1_a1BW #) ->
+    (# ipv_a1BV,
+       let {
+         ipv2_X1CD [Dmd=Just D(LLLL)] :: InnerLoop.ByteString0
+         [LclId, Str=DmdType]
+         ipv2_X1CD =
+           case ipv1_a1BW
+           of _
+           { Data.ByteString.Internal.PS rb_a1x8 rb1_a1xf rb2_a1xg rb3_a1xh ->
+           (GHC.IO.unsafeDupablePerformIO
+              @ Data.ByteString.Internal.ByteString
+              ((\ (s_a1BS :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+                  let {
+                    a_s1B7 [Dmd=Just L] :: GHC.Prim.Int#
+                    [LclId, Str=DmdType]
+                    a_s1B7 = GHC.Prim.+# rb3_a1xh 1 } in
+                  case GHC.Prim.<# a_s1B7 0 of _ {
+                    GHC.Types.False ->
+                      case GHC.Prim.newPinnedByteArray#
+                             @ GHC.Prim.RealWorld a_s1B7 s_a1BS
+                      of _ { (# ipv3_a1CO, ipv4_a1CP #) ->
+                      let {
+                        a1_s1D8 [Dmd=Just L] :: GHC.Prim.Addr#
+                        [LclId, Str=DmdType]
+                        a1_s1D8 =
+                          GHC.Prim.byteArrayContents#
+                            (ipv4_a1CP
+                             `cast` (UnsafeCo
+                                       (GHC.Prim.MutableByteArray# GHC.Prim.RealWorld)
+                                       GHC.Prim.ByteArray#
+                                     :: GHC.Prim.MutableByteArray# GHC.Prim.RealWorld
+                                          ~#
+                                        GHC.Prim.ByteArray#)) } in
+                      case {__pkg_ccall bytestring-0.10.0.0 memcpy GHC.Prim.Addr#
+                                        -> GHC.Prim.Addr#
+                                        -> GHC.Prim.Word#
+                                        -> GHC.Prim.State# GHC.Prim.RealWorld
+                                        -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Prim.Addr# #)}_a1Cc
+                             a1_s1D8
+                             (GHC.Prim.plusAddr# rb_a1x8 rb2_a1xg)
+                             (GHC.Prim.int2Word# rb3_a1xh)
+                             ipv3_a1CO
+                      of _ { (# ds4_a1Ch, _ #) ->
+                      case GHC.Prim.writeWord8OffAddr#
+                             @ GHC.Prim.RealWorld
+                             (GHC.Prim.plusAddr# a1_s1D8 rb3_a1xh)
+                             0
+                             (__word 0)
+                             ds4_a1Ch
+                      of s2_a1BF { __DEFAULT ->
+                      case GHC.Prim.touch#
+                             @ GHC.ForeignPtr.ForeignPtrContents rb1_a1xf s2_a1BF
+                      of s'_a1Bs { __DEFAULT ->
+                      let {
+                        a2_s1Da :: GHC.ForeignPtr.ForeignPtrContents
+                        [LclId, Str=DmdType]
+                        a2_s1Da = GHC.ForeignPtr.PlainPtr ipv4_a1CP } in
+                      case GHC.Prim.touch#
+                             @ GHC.ForeignPtr.ForeignPtrContents a2_s1Da s'_a1Bs
+                      of s'1_X1CH { __DEFAULT ->
+                      (# s'1_X1CH,
+                         Data.ByteString.Internal.PS a1_s1D8 a2_s1Da 0 a_s1B7 #)
+                      }
+                      }
+                      }
+                      }
+                      };
+                    GHC.Types.True ->
+                      case GHC.ForeignPtr.mallocPlainForeignPtrBytes2 of wild2_00 { }
+                  })
+               `cast` (Sym
+                         <(GHC.Types.NTCo:IO <Data.ByteString.Internal.ByteString>)>
+                       :: (GHC.Prim.State# GHC.Prim.RealWorld
+                           -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+                                 Data.ByteString.Internal.ByteString #))
+                            ~#
+                          GHC.Types.IO Data.ByteString.Internal.ByteString)))
+           `cast` (Sym <(InnerLoop.NTCo:ByteString0)>
+                   :: Data.ByteString.Internal.ByteString ~# InnerLoop.ByteString0)
+           } } in
+       let {
+         i_s1Aa [Dmd=Just D(L)] :: GHC.Types.Int
+         [LclId, Str=DmdType]
+         i_s1Aa =
+           case ipv2_X1CD
+                `cast` (<InnerLoop.NTCo:ByteString0>
+                        :: InnerLoop.ByteString0 ~# Data.ByteString.Internal.ByteString)
+           of _ { Data.ByteString.Internal.PS rb_a1Ed rb1_a1Ee rb2_a1Ef _ ->
+           let {
+             a_s1Eq [Dmd=Just L] :: GHC.Prim.Addr#
+             [LclId, Str=DmdType]
+             a_s1Eq = GHC.Prim.plusAddr# rb_a1Ed rb2_a1Ef } in
+           case InnerLoop.$wgo a_s1Eq of end_a1s9 { __DEFAULT ->
+           case GHC.Prim.touch#
+                  @ GHC.ForeignPtr.ForeignPtrContents rb1_a1Ee GHC.Prim.realWorld#
+           of _ { __DEFAULT ->
+           GHC.Types.I# (GHC.Prim.minusAddr# end_a1s9 a_s1Eq)
+           }
+           }
+           } } in
+       (Data.ByteString.Unsafe.unsafeTake
+          i_s1Aa
+          (ipv2_X1CD
+           `cast` (<InnerLoop.NTCo:ByteString0>
+                   :: InnerLoop.ByteString0 ~# Data.ByteString.Internal.ByteString)),
+        (Data.ByteString.Unsafe.unsafeDrop
+           i_s1Aa
+           (ipv2_X1CD
+            `cast` (<InnerLoop.NTCo:ByteString0>
+                    :: InnerLoop.ByteString0 ~# Data.ByteString.Internal.ByteString)))
+        `cast` (Sym <(InnerLoop.NTCo:ByteString0)>
+                :: Data.ByteString.Internal.ByteString
+                     ~#
+                   InnerLoop.ByteString0)) #)
+    }
+
+InnerLoop.innerLoop_7
+  :: GHC.IO.FilePath
+     -> GHC.Types.IO
+          (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=0, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=ALWAYS_IF(unsat_ok=True,boring_ok=True)}]
+InnerLoop.innerLoop_7 =
+  InnerLoop.innerLoop_1
+  `cast` (<GHC.IO.FilePath>
+          -> Sym
+               <(GHC.Types.NTCo:IO
+                   <(Data.ByteString.Internal.ByteString, InnerLoop.ByteString0)>)>
+          :: (GHC.IO.FilePath
+              -> GHC.Prim.State# GHC.Prim.RealWorld
+              -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+                    (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0) #))
+               ~#
+             (GHC.IO.FilePath
+              -> GHC.Types.IO
+                   (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0)))
+
+
+
+
+==================== Cmm ====================
+[section "data" { __stginit_main:InnerLoop:
+ }]
+
+
+
+==================== Cmm ====================
+[section "data" {
+     InnerLoop.$wgo_closure:
+         const InnerLoop.$wgo_info;
+ },
+ InnerLoop.$wgo_info()
+         { label: InnerLoop.$wgo_info
+           rep:HeapRep static { Fun {arity: 1 fun_type: ArgSpec 4} }
+         }
+     c1Uf:
+         _s1Se::I32 = %MO_UU_Conv_W8_W32(I8[I32[Sp + 0]]);
+         _s1Sh::I32 = _s1Se::I32;
+         _s1Sg::I32 = _s1Sh::I32;
+         _c1TZ::I32 = _s1Sg::I32 <= 36;
+         ;
+         if (_c1TZ::I32 >= 1) goto c1Ui;
+         _s1Ty::I32 = I32[Sp + 0] + 1;
+         I32[Sp + 0] = _s1Ty::I32;
+         jump InnerLoop.$wgo_info; // []
+     c1Ui:
+         _s1TD::I32 = _s1Sg::I32;
+         if (_s1TD::I32 < 13) goto c1Ur;
+         if (_s1TD::I32 < 32) goto c1Us;
+         if (_s1TD::I32 < 36) goto c1Ut;
+         if (_s1TD::I32 != 36) goto c1Uu;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Uu:
+         _s1TC::I32 = I32[Sp + 0] + 1;
+         I32[Sp + 0] = _s1TC::I32;
+         jump InnerLoop.$wgo_info; // []
+     c1Ut:
+         if (_s1TD::I32 != 32) goto c1Uu;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Us:
+         if (_s1TD::I32 != 13) goto c1Uu;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Uv:
+         if (_s1TD::I32 != 0) goto c1Uu;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Ur:
+         if (_s1TD::I32 < 10) goto c1Uv;
+         if (_s1TD::I32 != 10) goto c1Uu;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_1_srt:
+         const GHC.ForeignPtr.mallocPlainForeignPtrBytes2_closure;
+         const Data.ByteString.Char8.readFile1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_1_closure:
+         const InnerLoop.innerLoop_1_info;
+         const 0;
+ },
+ s1UJ_ret()
+         { label: s1UJ_info
+           rep:StackRep [False, True, True, True, True]
+         }
+     c1VQ:
+         Hp = Hp + 28;
+         if (Hp > HpLim) goto c1VU;
+         _s1SM::I32 = R1 + 8;
+         _s1UC::I32 = I32[Sp + 20];
+         _s1UD::I32 = I32[Sp + 12] + I32[Sp + 8];
+         (_s1UN::I32, PtrHint) = foreign "ccall"
+           memcpy((_s1SM::I32, PtrHint), (_s1UD::I32, PtrHint),
+                  (_s1UC::I32,));
+         _s1UB::I32 = _s1SM::I32 + I32[Sp + 20];
+         I8[_s1UB::I32] = %MO_UU_Conv_W32_W8(0);
+         I32[Hp - 24] = GHC.ForeignPtr.PlainPtr_con_info;
+         I32[Hp - 20] = R1;
+         I32[Hp - 16] = Data.ByteString.Internal.PS_con_info;
+         I32[Hp - 12] = Hp - 21;
+         I32[Hp - 8] = _s1SM::I32;
+         I32[Hp - 4] = 0;
+         I32[Hp + 0] = I32[Sp + 16];
+         R1 = Hp - 15;
+         Sp = Sp + 24;
+         jump (I32[Sp + 0]); // [R1]
+     c1VV:
+         R9 = 254;
+         jump stg_gc_ut; // [R1]
+     c1VU:
+         HpAlloc = 28;
+         goto c1VV;
+ },
+ sat_s1UE_info()
+         { label: sat_s1UE_info
+           rep:HeapRep 1 ptrs 3 nonptrs { Fun {arity: 1 fun_type: ArgSpec 3} }
+         }
+     c1VX:
+         if (Sp - 24 < SpLim) goto c1VZ;
+         _s1SE::I32 = I32[R1 + 7] + 1;
+         _c1Vp::I32 = %MO_S_Lt_W32(_s1SE::I32, 0);
+         ;
+         if (_c1Vp::I32 >= 1) goto c1W1;
+         I32[Sp - 4] = I32[R1 + 7];
+         I32[Sp - 8] = _s1SE::I32;
+         I32[Sp - 12] = I32[R1 + 11];
+         I32[Sp - 16] = I32[R1 + 15];
+         I32[Sp - 20] = I32[R1 + 3];
+         R1 = _s1SE::I32;
+         I32[Sp - 24] = s1UJ_info;
+         Sp = Sp - 24;
+         jump stg_newPinnedByteArray#; // [R1]
+     c1VZ: jump stg_gc_fun; // []
+     c1W1:
+         R1 = GHC.ForeignPtr.mallocPlainForeignPtrBytes2_closure;
+         jump stg_ap_0_fast; // [R1]
+ },
+ s1UL_ret()
+         { label: s1UL_info
+           rep:StackRep []
+         }
+     c1W3:
+         Hp = Hp + 20;
+         if (Hp > HpLim) goto c1W6;
+         I32[Hp - 16] = sat_s1UE_info;
+         I32[Hp - 12] = I32[R1 + 3];
+         I32[Hp - 8] = I32[R1 + 15];
+         I32[Hp - 4] = I32[R1 + 7];
+         I32[Hp + 0] = I32[R1 + 11];
+         I32[Sp + 0] = Hp - 15;
+         jump GHC.IO.unsafeDupablePerformIO_info; // []
+     c1W7: jump stg_gc_enter_1; // [R1]
+     c1W6:
+         HpAlloc = 20;
+         goto c1W7;
+ },
+ ipv2_s1Tb_info()
+         { label: ipv2_s1Tb_info
+           rep:HeapRep 1 ptrs { Thunk }
+         }
+     c1Wn:
+         if (Sp - 12 < SpLim) goto c1Wp;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         R1 = I32[R1 + 8];
+         I32[Sp - 12] = s1UL_info;
+         Sp = Sp - 12;
+         if (R1 & 3 != 0) goto c1Wq;
+         jump I32[R1]; // [R1]
+     c1Wp: jump stg_gc_enter_1; // [R1]
+     c1Wq: jump s1UL_info; // [R1]
+ },
+ s1Tp_ret()
+         { label: s1Tp_info
+           rep:StackRep [False, True]
+         }
+     c1WC:
+         Hp = Hp + 8;
+         if (Hp > HpLim) goto c1WI;
+         _s1UF::I32 = R1 - I32[Sp + 8];
+         I32[Hp - 4] = GHC.Types.I#_con_info;
+         I32[Hp + 0] = _s1UF::I32;
+         R1 = Hp - 3;
+         Sp = Sp + 12;
+         jump (I32[Sp + 0]); // [R1]
+     c1WJ: jump stg_gc_unbx_r1; // [R1]
+     c1WI:
+         HpAlloc = 8;
+         goto c1WJ;
+ },
+ s1UP_ret()
+         { label: s1UP_info
+           rep:StackRep []
+         }
+     c1WL:
+         _s1Tl::I32 = I32[R1 + 7] + I32[R1 + 11];
+         I32[Sp - 4] = I32[R1 + 3];
+         I32[Sp + 0] = _s1Tl::I32;
+         I32[Sp - 12] = _s1Tl::I32;
+         I32[Sp - 8] = s1Tp_info;
+         Sp = Sp - 12;
+         jump InnerLoop.$wgo_info; // []
+ },
+ i_s1Tr_info()
+         { label: i_s1Tr_info
+           rep:HeapRep 1 ptrs { Thunk }
+         }
+     c1WP:
+         if (Sp - 24 < SpLim) goto c1WR;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         R1 = I32[R1 + 8];
+         I32[Sp - 12] = s1UP_info;
+         Sp = Sp - 12;
+         if (R1 & 3 != 0) goto c1WS;
+         jump I32[R1]; // [R1]
+     c1WR: jump stg_gc_enter_1; // [R1]
+     c1WS: jump s1UP_info; // [R1]
+ },
+ sat_s1Tu_info()
+         { label: sat_s1Tu_info
+           rep:HeapRep 2 ptrs { Thunk }
+         }
+     c1WX:
+         if (Sp - 16 < SpLim) goto c1WZ;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 12] = I32[R1 + 8];
+         I32[Sp - 16] = I32[R1 + 12];
+         Sp = Sp - 16;
+         jump Data.ByteString.Unsafe.unsafeDrop_info; // []
+     c1WZ: jump stg_gc_enter_1; // [R1]
+ },
+ sat_s1Tv_info()
+         { label: sat_s1Tv_info
+           rep:HeapRep 2 ptrs { Thunk }
+         }
+     c1X4:
+         if (Sp - 16 < SpLim) goto c1X6;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 12] = I32[R1 + 8];
+         I32[Sp - 16] = I32[R1 + 12];
+         Sp = Sp - 16;
+         jump Data.ByteString.Unsafe.unsafeTake_info; // []
+     c1X6: jump stg_gc_enter_1; // [R1]
+ },
+ s1UM_ret()
+         { label: s1UM_info
+           rep:StackRep []
+         }
+     c1X8:
+         Hp = Hp + 68;
+         if (Hp > HpLim) goto c1Xb;
+         I32[Hp - 64] = ipv2_s1Tb_info;
+         I32[Hp - 56] = R1;
+         I32[Hp - 52] = i_s1Tr_info;
+         I32[Hp - 44] = Hp - 64;
+         I32[Hp - 40] = sat_s1Tu_info;
+         I32[Hp - 32] = Hp - 64;
+         I32[Hp - 28] = Hp - 52;
+         I32[Hp - 24] = sat_s1Tv_info;
+         I32[Hp - 16] = Hp - 64;
+         I32[Hp - 12] = Hp - 52;
+         I32[Hp - 8] = (,)_con_info;
+         I32[Hp - 4] = Hp - 24;
+         I32[Hp + 0] = Hp - 40;
+         R1 = Hp - 7;
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Xc:
+         R9 = 254;
+         jump stg_gc_ut; // [R1]
+     c1Xb:
+         HpAlloc = 68;
+         goto c1Xc;
+ },
+ InnerLoop.innerLoop_1_info()
+         { label: InnerLoop.innerLoop_1_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c1Xe:
+         if (Sp - 4 < SpLim) goto c1Xg;
+         I32[Sp - 4] = I32[Sp + 0];
+         I32[Sp + 0] = s1UM_info;
+         Sp = Sp - 4;
+         jump Data.ByteString.Char8.readFile1_info; // []
+     c1Xg:
+         R1 = InnerLoop.innerLoop_1_closure;
+         jump stg_gc_fun; // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_7_srt:
+         const InnerLoop.innerLoop_1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_7_closure:
+         const InnerLoop.innerLoop_7_info;
+         const 0;
+ },
+ InnerLoop.innerLoop_7_info()
+         { label: InnerLoop.innerLoop_7_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c1Yd: jump InnerLoop.innerLoop_1_info; // []
+ }]
+
+
+
+==================== Asm code ====================
+.data
+	.align 4
+.align 1
+.globl __stginit_main:InnerLoop
+__stginit_main:InnerLoop:
+.data
+	.align 4
+.align 1
+.globl InnerLoop.$wgo_closure
+InnerLoop.$wgo_closure:
+	.long	InnerLoop.$wgo_info
+.text
+	.align 4,0x90
+	.long	65540
+	.long	0
+	.long	15
+.globl InnerLoop.$wgo_info
+InnerLoop.$wgo_info:
+_c1Uf:
+	movl 0(%ebp),%eax
+	movzbl (%eax),%eax
+	cmpl $36,%eax
+	jbe _c1Ui
+	incl 0(%ebp)
+	jmp InnerLoop.$wgo_info
+_c1Ui:
+	cmpl $13,%eax
+	jb _c1Ur
+	cmpl $32,%eax
+	jb _c1Us
+	cmpl $36,%eax
+	jb _c1Ut
+	cmpl $36,%eax
+	jne _c1Uu
+	movl 0(%ebp),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c1Ur:
+	cmpl $10,%eax
+	jb _c1Uv
+	cmpl $10,%eax
+	jne _c1Uu
+	movl 0(%ebp),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c1Us:
+	cmpl $13,%eax
+	jne _c1Uu
+	movl 0(%ebp),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c1Ut:
+	cmpl $32,%eax
+	jne _c1Uu
+	movl 0(%ebp),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c1Uu:
+	incl 0(%ebp)
+	jmp InnerLoop.$wgo_info
+_c1Uv:
+	testl %eax,%eax
+	jne _c1Uu
+	movl 0(%ebp),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+.section .data
+	.align 4
+.align 1
+InnerLoop.innerLoop_1_srt:
+	.long	GHC.ForeignPtr.mallocPlainForeignPtrBytes2_closure
+	.long	Data.ByteString.Char8.readFile1_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_1_closure
+InnerLoop.innerLoop_1_closure:
+	.long	InnerLoop.innerLoop_1_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	965
+	.long	32
+s1UJ_info:
+_c1VQ:
+	addl $28,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1VU
+	leal 8(%esi),%ecx
+	movl %ecx,64(%esp)
+	movl 20(%ebp),%eax
+	movl 12(%ebp),%ecx
+	addl 8(%ebp),%ecx
+	pushl %eax
+	pushl %ecx
+	movl 72(%esp),%ecx
+	pushl %ecx
+	call memcpy
+	addl $12,%esp
+	movl 20(%ebp),%eax
+	movl 64(%esp),%ecx
+	movb $0,(%ecx,%eax,1)
+	movl $GHC.ForeignPtr.PlainPtr_con_info,-24(%edi)
+	movl %esi,-20(%edi)
+	movl $Data.ByteString.Internal.PS_con_info,-16(%edi)
+	leal -21(%edi),%eax
+	movl %eax,-12(%edi)
+	movl %ecx,-8(%edi)
+	movl $0,-4(%edi)
+	movl 16(%ebp),%eax
+	movl %eax,0(%edi)
+	leal -15(%edi),%esi
+	addl $24,%ebp
+	jmp *0(%ebp)
+_c1VU:
+	movl $28,116(%ebx)
+_c1VV:
+	movl $254,32(%ebx)
+	jmp stg_gc_ut
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(sat_s1UE_info)+0
+	.long	65539
+	.long	196609
+	.long	65545
+sat_s1UE_info:
+_c1VX:
+	leal -24(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1VZ
+	movl 7(%esi),%eax
+	incl %eax
+	testl %eax,%eax
+	jl _c1W1
+	movl 7(%esi),%ecx
+	movl %ecx,-4(%ebp)
+	movl %eax,-8(%ebp)
+	movl 11(%esi),%ecx
+	movl %ecx,-12(%ebp)
+	movl 15(%esi),%ecx
+	movl %ecx,-16(%ebp)
+	movl 3(%esi),%ecx
+	movl %ecx,-20(%ebp)
+	movl %eax,%esi
+	movl $s1UJ_info,-24(%ebp)
+	addl $-24,%ebp
+	jmp stg_newPinnedByteArray#
+_c1VZ:
+	jmp *-8(%ebx)
+_c1W1:
+	movl $GHC.ForeignPtr.mallocPlainForeignPtrBytes2_closure,%esi
+	jmp stg_ap_0_fast
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(s1UL_info)+0
+	.long	0
+	.long	65568
+s1UL_info:
+_c1W3:
+	addl $20,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1W6
+	movl $sat_s1UE_info,-16(%edi)
+	movl 3(%esi),%eax
+	movl %eax,-12(%edi)
+	movl 15(%esi),%eax
+	movl %eax,-8(%edi)
+	movl 7(%esi),%eax
+	movl %eax,-4(%edi)
+	movl 11(%esi),%eax
+	movl %eax,0(%edi)
+	leal -15(%edi),%eax
+	movl %eax,0(%ebp)
+	jmp GHC.IO.unsafeDupablePerformIO_info
+_c1W6:
+	movl $20,116(%ebx)
+_c1W7:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(ipv2_s1Tb_info)+0
+	.long	1
+	.long	65553
+ipv2_s1Tb_info:
+_c1Wn:
+	leal -12(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Wp
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%esi
+	movl $s1UL_info,-12(%ebp)
+	addl $-12,%ebp
+	testl $3,%esi
+	jne s1UL_info
+	jmp *(%esi)
+_c1Wp:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	66
+	.long	32
+s1Tp_info:
+_c1WC:
+	addl $8,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1WI
+	movl %esi,%eax
+	subl 8(%ebp),%eax
+	movl $GHC.Types.I#_con_info,-4(%edi)
+	movl %eax,0(%edi)
+	leal -3(%edi),%esi
+	addl $12,%ebp
+	jmp *0(%ebp)
+_c1WI:
+	movl $8,116(%ebx)
+	jmp stg_gc_unbx_r1
+.text
+	.align 4,0x90
+	.long	0
+	.long	32
+s1UP_info:
+_c1WL:
+	movl 7(%esi),%ecx
+	addl 11(%esi),%ecx
+	movl 3(%esi),%eax
+	movl %eax,-4(%ebp)
+	movl %ecx,0(%ebp)
+	movl %ecx,-12(%ebp)
+	movl $s1Tp_info,-8(%ebp)
+	addl $-12,%ebp
+	jmp InnerLoop.$wgo_info
+.text
+	.align 4,0x90
+	.long	1
+	.long	17
+i_s1Tr_info:
+_c1WP:
+	leal -24(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1WR
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%esi
+	movl $s1UP_info,-12(%ebp)
+	addl $-12,%ebp
+	testl $3,%esi
+	jne s1UP_info
+	jmp *(%esi)
+_c1WR:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	2
+	.long	19
+sat_s1Tu_info:
+_c1WX:
+	leal -16(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1WZ
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%eax
+	movl %eax,-12(%ebp)
+	movl 12(%esi),%eax
+	movl %eax,-16(%ebp)
+	addl $-16,%ebp
+	jmp Data.ByteString.Unsafe.unsafeDrop_info
+_c1WZ:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	2
+	.long	19
+sat_s1Tv_info:
+_c1X4:
+	leal -16(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1X6
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%eax
+	movl %eax,-12(%ebp)
+	movl 12(%esi),%eax
+	movl %eax,-16(%ebp)
+	addl $-16,%ebp
+	jmp Data.ByteString.Unsafe.unsafeTake_info
+_c1X6:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(s1UM_info)+0
+	.long	0
+	.long	65568
+s1UM_info:
+_c1X8:
+	addl $68,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1Xb
+	movl $ipv2_s1Tb_info,-64(%edi)
+	movl %esi,-56(%edi)
+	movl $i_s1Tr_info,-52(%edi)
+	leal -64(%edi),%eax
+	movl %eax,-44(%edi)
+	movl $sat_s1Tu_info,-40(%edi)
+	leal -64(%edi),%eax
+	movl %eax,-32(%edi)
+	leal -52(%edi),%eax
+	movl %eax,-28(%edi)
+	movl $sat_s1Tv_info,-24(%edi)
+	leal -64(%edi),%eax
+	movl %eax,-16(%edi)
+	leal -52(%edi),%eax
+	movl %eax,-12(%edi)
+	movl $(,)_con_info,-8(%edi)
+	leal -24(%edi),%eax
+	movl %eax,-4(%edi)
+	leal -40(%edi),%eax
+	movl %eax,0(%edi)
+	leal -7(%edi),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c1Xb:
+	movl $68,116(%ebx)
+_c1Xc:
+	movl $254,32(%ebx)
+	jmp stg_gc_ut
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(InnerLoop.innerLoop_1_info)+0
+	.long	131077
+	.long	0
+	.long	196623
+.globl InnerLoop.innerLoop_1_info
+InnerLoop.innerLoop_1_info:
+_c1Xe:
+	leal -4(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Xg
+	movl 0(%ebp),%eax
+	movl %eax,-4(%ebp)
+	movl $s1UM_info,0(%ebp)
+	addl $-4,%ebp
+	jmp Data.ByteString.Char8.readFile1_info
+_c1Xg:
+	movl $InnerLoop.innerLoop_1_closure,%esi
+	jmp *-8(%ebx)
+.section .data
+	.align 4
+.align 1
+InnerLoop.innerLoop_7_srt:
+	.long	InnerLoop.innerLoop_1_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_7_closure
+InnerLoop.innerLoop_7_closure:
+	.long	InnerLoop.innerLoop_7_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_7_srt-(InnerLoop.innerLoop_7_info)+0
+	.long	131077
+	.long	0
+	.long	65551
+.globl InnerLoop.innerLoop_7_info
+InnerLoop.innerLoop_7_info:
+_c1Yd:
+	jmp InnerLoop.innerLoop_1_info
+
+

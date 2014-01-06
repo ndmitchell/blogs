@@ -1,0 +1,589 @@
+[1 of 1] Compiling InnerLoop        ( InnerLoop.hs, InnerLoop.o )
+
+==================== Tidy Core ====================
+Result size of Tidy Core = {terms: 90, types: 85, coercions: 7}
+
+InnerLoop.innerLoop_1
+  :: GHC.IO.FilePath
+     -> GHC.Prim.State# GHC.Prim.RealWorld
+     -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+           (Data.ByteString.Internal.ByteString,
+            Data.ByteString.Internal.ByteString) #)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=2, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=IF_ARGS [0 0] 395 30}]
+InnerLoop.innerLoop_1 =
+  \ (file_aLn :: GHC.IO.FilePath)
+    (eta_B1 :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+    case Data.ByteString.Char8.readFile1 file_aLn eta_B1
+    of _ { (# ipv_a1yk, ipv1_a1yl #) ->
+    (# ipv_a1yk,
+       let {
+         n_a1J6 [Dmd=Just D(L)] :: GHC.Types.Int
+         [LclId, Str=DmdType]
+         n_a1J6 =
+           case ipv1_a1yl
+           of _
+           { Data.ByteString.Internal.PS rb_a1Ja rb1_a1KF rb2_a1KG rb3_a1KH ->
+           let {
+             l_a1J9 :: GHC.Types.Int
+             [LclId, Str=DmdType m]
+             l_a1J9 = GHC.Types.I# rb3_a1KH } in
+           letrec {
+             $wa_s1Nm [Occ=LoopBreaker]
+               :: GHC.Prim.Addr#
+                  -> GHC.Prim.Int#
+                  -> GHC.Prim.State# GHC.Prim.RealWorld
+                  -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Types.Int #)
+             [LclId, Arity=3, Str=DmdType LLL]
+             $wa_s1Nm =
+               \ (ww_s1Ne :: GHC.Prim.Addr#)
+                 (ww1_s1Ni :: GHC.Prim.Int#)
+                 (w_s1Nk :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+                 case GHC.Prim.>=# ww1_s1Ni rb3_a1KH of _ {
+                   GHC.Types.False ->
+                     case GHC.Prim.readWord8OffAddr#
+                            @ GHC.Prim.RealWorld ww_s1Ne 0 w_s1Nk
+                     of _ { (# ipv2_a1L0, ipv3_a1L1 #) ->
+                     case GHC.Prim.chr# (GHC.Prim.word2Int# ipv3_a1L1) of _ {
+                       __DEFAULT ->
+                         $wa_s1Nm
+                           (GHC.Prim.plusAddr# ww_s1Ne 1) (GHC.Prim.+# ww1_s1Ni 1) ipv2_a1L0;
+                       '\n' -> (# ipv2_a1L0, GHC.Types.I# ww1_s1Ni #);
+                       '\r' -> (# ipv2_a1L0, GHC.Types.I# ww1_s1Ni #);
+                       ' ' -> (# ipv2_a1L0, GHC.Types.I# ww1_s1Ni #);
+                       '$' -> (# ipv2_a1L0, GHC.Types.I# ww1_s1Ni #)
+                     }
+                     };
+                   GHC.Types.True -> (# w_s1Nk, l_a1J9 #)
+                 }; } in
+           case $wa_s1Nm
+                  (GHC.Prim.plusAddr# rb_a1Ja rb2_a1KG) 0 GHC.Prim.realWorld#
+           of _ { (# ipv2_a1Ld, ipv3_a1Le #) ->
+           case GHC.Prim.touch#
+                  @ GHC.ForeignPtr.ForeignPtrContents rb1_a1KF ipv2_a1Ld
+           of _ { __DEFAULT ->
+           ipv3_a1Le
+           }
+           }
+           } } in
+       (Data.ByteString.Unsafe.unsafeTake n_a1J6 ipv1_a1yl,
+        Data.ByteString.Unsafe.unsafeDrop n_a1J6 ipv1_a1yl) #)
+    }
+
+InnerLoop.innerLoop_3
+  :: GHC.IO.FilePath
+     -> GHC.Types.IO
+          (Data.ByteString.Internal.ByteString,
+           Data.ByteString.Internal.ByteString)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=0, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=ALWAYS_IF(unsat_ok=True,boring_ok=True)}]
+InnerLoop.innerLoop_3 =
+  InnerLoop.innerLoop_1
+  `cast` (<GHC.IO.FilePath>
+          -> Sym
+               <(GHC.Types.NTCo:IO
+                   <(Data.ByteString.Internal.ByteString,
+                     Data.ByteString.Internal.ByteString)>)>
+          :: (GHC.IO.FilePath
+              -> GHC.Prim.State# GHC.Prim.RealWorld
+              -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+                    (Data.ByteString.Internal.ByteString,
+                     Data.ByteString.Internal.ByteString) #))
+               ~#
+             (GHC.IO.FilePath
+              -> GHC.Types.IO
+                   (Data.ByteString.Internal.ByteString,
+                    Data.ByteString.Internal.ByteString)))
+
+
+
+
+==================== Cmm ====================
+[section "data" { __stginit_main:InnerLoop:
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_1_srt:
+         const Data.ByteString.Char8.readFile1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_1_closure:
+         const InnerLoop.innerLoop_1_info;
+         const 0;
+ },
+ $wa_s1P2_info()
+         { label: $wa_s1P2_info
+           rep:HeapRep 1 ptrs 1 nonptrs { Fun {arity: 3 fun_type: ArgSpec 9} }
+         }
+     c1Qz:
+         Hp = Hp + 8;
+         if (Hp > HpLim) goto c1QC;
+         _c1Qg::I32 = %MO_S_Ge_W32(I32[Sp + 4], I32[R1 + 5]);
+         ;
+         if (_c1Qg::I32 >= 1) goto c1QF;
+         _s1OZ::I32 = %MO_UU_Conv_W8_W32(I8[I32[Sp + 0]]);
+         _s1Ps::I32 = _s1OZ::I32;
+         _s1PB::I32 = _s1Ps::I32;
+         if (_s1PB::I32 < 32) goto c1QO;
+         if (_s1PB::I32 < 36) goto c1QP;
+         if (_s1PB::I32 != 36) goto c1QQ;
+         I32[Hp - 4] = GHC.Types.I#_con_info;
+         I32[Hp + 0] = I32[Sp + 4];
+         R1 = Hp - 3;
+         Sp = Sp + 8;
+         jump (I32[Sp + 0]); // [R1]
+     c1QR: jump stg_gc_fun; // []
+     c1QC:
+         HpAlloc = 8;
+         goto c1QR;
+     c1QF:
+         R1 = I32[R1 + 1];
+         Sp = Sp + 8;
+         Hp = Hp - 8;
+         jump (I32[Sp + 0]); // [R1]
+     c1QQ:
+         _s1Pq::I32 = I32[Sp + 4] + 1;
+         _s1Pr::I32 = I32[Sp + 0] + 1;
+         I32[Sp + 4] = _s1Pq::I32;
+         I32[Sp + 0] = _s1Pr::I32;
+         Hp = Hp - 8;
+         jump $wa_s1P2_info; // [R1]
+     c1QP:
+         if (_s1PB::I32 != 32) goto c1QQ;
+         I32[Hp - 4] = GHC.Types.I#_con_info;
+         I32[Hp + 0] = I32[Sp + 4];
+         R1 = Hp - 3;
+         Sp = Sp + 8;
+         jump (I32[Sp + 0]); // [R1]
+     c1QS:
+         if (_s1PB::I32 != 10) goto c1QQ;
+         I32[Hp - 4] = GHC.Types.I#_con_info;
+         I32[Hp + 0] = I32[Sp + 4];
+         R1 = Hp - 3;
+         Sp = Sp + 8;
+         jump (I32[Sp + 0]); // [R1]
+     c1QO:
+         if (_s1PB::I32 < 13) goto c1QS;
+         if (_s1PB::I32 != 13) goto c1QQ;
+         I32[Hp - 4] = GHC.Types.I#_con_info;
+         I32[Hp + 0] = I32[Sp + 4];
+         R1 = Hp - 3;
+         Sp = Sp + 8;
+         jump (I32[Sp + 0]); // [R1]
+ },
+ s1PF_ret()
+         { label: s1PF_info
+           rep:StackRep [False]
+         }
+     c1QY:
+         Sp = Sp + 8;
+         R1 = R1 & (-4);
+         jump I32[R1]; // [R1]
+ },
+ s1Pz_ret()
+         { label: s1Pz_info
+           rep:StackRep []
+         }
+     c1R0:
+         Hp = Hp + 20;
+         if (Hp > HpLim) goto c1R3;
+         I32[Hp - 16] = GHC.Types.I#_con_info;
+         I32[Hp - 12] = I32[R1 + 15];
+         I32[Hp - 8] = $wa_s1P2_info;
+         I32[Hp - 4] = Hp - 15;
+         I32[Hp + 0] = I32[R1 + 15];
+         _s1Pt::I32 = I32[R1 + 7] + I32[R1 + 11];
+         I32[Sp + 0] = I32[R1 + 3];
+         R1 = Hp - 5;
+         I32[Sp - 8] = 0;
+         I32[Sp - 12] = _s1Pt::I32;
+         I32[Sp - 4] = s1PF_info;
+         Sp = Sp - 12;
+         jump $wa_s1P2_info; // [R1]
+     c1R4: jump stg_gc_enter_1; // [R1]
+     c1R3:
+         HpAlloc = 20;
+         goto c1R4;
+ },
+ n_s1Pk_info()
+         { label: n_s1Pk_info
+           rep:HeapRep 1 ptrs { Thunk }
+         }
+     c1R8:
+         if (Sp - 24 < SpLim) goto c1Ra;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         R1 = I32[R1 + 8];
+         I32[Sp - 12] = s1Pz_info;
+         Sp = Sp - 12;
+         if (R1 & 3 != 0) goto c1Rb;
+         jump I32[R1]; // [R1]
+     c1Ra: jump stg_gc_enter_1; // [R1]
+     c1Rb: jump s1Pz_info; // [R1]
+ },
+ sat_s1Pn_info()
+         { label: sat_s1Pn_info
+           rep:HeapRep 2 ptrs { Thunk }
+         }
+     c1Rg:
+         if (Sp - 16 < SpLim) goto c1Ri;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 12] = I32[R1 + 8];
+         I32[Sp - 16] = I32[R1 + 12];
+         Sp = Sp - 16;
+         jump Data.ByteString.Unsafe.unsafeDrop_info; // []
+     c1Ri: jump stg_gc_enter_1; // [R1]
+ },
+ sat_s1Po_info()
+         { label: sat_s1Po_info
+           rep:HeapRep 2 ptrs { Thunk }
+         }
+     c1Rn:
+         if (Sp - 16 < SpLim) goto c1Rp;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 12] = I32[R1 + 8];
+         I32[Sp - 16] = I32[R1 + 12];
+         Sp = Sp - 16;
+         jump Data.ByteString.Unsafe.unsafeTake_info; // []
+     c1Rp: jump stg_gc_enter_1; // [R1]
+ },
+ s1PA_ret()
+         { label: s1PA_info
+           rep:StackRep []
+         }
+     c1Rr:
+         Hp = Hp + 56;
+         if (Hp > HpLim) goto c1Ru;
+         I32[Hp - 52] = n_s1Pk_info;
+         I32[Hp - 44] = R1;
+         I32[Hp - 40] = sat_s1Pn_info;
+         I32[Hp - 32] = R1;
+         I32[Hp - 28] = Hp - 52;
+         I32[Hp - 24] = sat_s1Po_info;
+         I32[Hp - 16] = R1;
+         I32[Hp - 12] = Hp - 52;
+         I32[Hp - 8] = (,)_con_info;
+         I32[Hp - 4] = Hp - 24;
+         I32[Hp + 0] = Hp - 40;
+         R1 = Hp - 7;
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Rv:
+         R9 = 254;
+         jump stg_gc_ut; // [R1]
+     c1Ru:
+         HpAlloc = 56;
+         goto c1Rv;
+ },
+ InnerLoop.innerLoop_1_info()
+         { label: InnerLoop.innerLoop_1_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c1Rx:
+         if (Sp - 4 < SpLim) goto c1Rz;
+         I32[Sp - 4] = I32[Sp + 0];
+         I32[Sp + 0] = s1PA_info;
+         Sp = Sp - 4;
+         jump Data.ByteString.Char8.readFile1_info; // []
+     c1Rz:
+         R1 = InnerLoop.innerLoop_1_closure;
+         jump stg_gc_fun; // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_3_srt:
+         const Data.ByteString.Char8.readFile1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_3_closure:
+         const InnerLoop.innerLoop_3_info;
+         const 0;
+ },
+ InnerLoop.innerLoop_3_info()
+         { label: InnerLoop.innerLoop_3_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c1Sf: jump InnerLoop.innerLoop_1_info; // []
+ }]
+
+
+
+==================== Asm code ====================
+.data
+	.align 4
+.align 1
+.globl __stginit_main:InnerLoop
+__stginit_main:InnerLoop:
+.section .data
+	.align 4
+.align 1
+InnerLoop.innerLoop_1_srt:
+	.long	Data.ByteString.Char8.readFile1_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_1_closure
+InnerLoop.innerLoop_1_closure:
+	.long	InnerLoop.innerLoop_1_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	196617
+	.long	65537
+	.long	13
+$wa_s1P2_info:
+_c1Qz:
+	addl $8,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1QC
+	movl 4(%ebp),%eax
+	cmpl 5(%esi),%eax
+	jge _c1QF
+	movl 0(%ebp),%eax
+	movzbl (%eax),%eax
+	cmpl $32,%eax
+	jb _c1QO
+	cmpl $36,%eax
+	jb _c1QP
+	cmpl $36,%eax
+	jne _c1QQ
+	movl $GHC.Types.I#_con_info,-4(%edi)
+	movl 4(%ebp),%eax
+	movl %eax,0(%edi)
+	leal -3(%edi),%esi
+	addl $8,%ebp
+	jmp *0(%ebp)
+_c1QC:
+	movl $8,116(%ebx)
+_c1QR:
+	jmp *-8(%ebx)
+_c1QF:
+	movl 1(%esi),%esi
+	addl $8,%ebp
+	addl $-8,%edi
+	jmp *0(%ebp)
+_c1QO:
+	cmpl $13,%eax
+	jb _c1QS
+	cmpl $13,%eax
+	jne _c1QQ
+	movl $GHC.Types.I#_con_info,-4(%edi)
+	movl 4(%ebp),%eax
+	movl %eax,0(%edi)
+	leal -3(%edi),%esi
+	addl $8,%ebp
+	jmp *0(%ebp)
+_c1QP:
+	cmpl $32,%eax
+	jne _c1QQ
+	movl $GHC.Types.I#_con_info,-4(%edi)
+	movl 4(%ebp),%eax
+	movl %eax,0(%edi)
+	leal -3(%edi),%esi
+	addl $8,%ebp
+	jmp *0(%ebp)
+_c1QQ:
+	movl 0(%ebp),%eax
+	incl %eax
+	incl 4(%ebp)
+	movl %eax,0(%ebp)
+	addl $-8,%edi
+	jmp $wa_s1P2_info
+_c1QS:
+	cmpl $10,%eax
+	jne _c1QQ
+	movl $GHC.Types.I#_con_info,-4(%edi)
+	movl 4(%ebp),%eax
+	movl %eax,0(%edi)
+	leal -3(%edi),%esi
+	addl $8,%ebp
+	jmp *0(%ebp)
+.text
+	.align 4,0x90
+	.long	1
+	.long	32
+s1PF_info:
+_c1QY:
+	addl $8,%ebp
+	andl $-4,%esi
+	jmp *(%esi)
+.text
+	.align 4,0x90
+	.long	0
+	.long	32
+s1Pz_info:
+_c1R0:
+	addl $20,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1R3
+	movl $GHC.Types.I#_con_info,-16(%edi)
+	movl 15(%esi),%eax
+	movl %eax,-12(%edi)
+	movl $$wa_s1P2_info,-8(%edi)
+	leal -15(%edi),%eax
+	movl %eax,-4(%edi)
+	movl 15(%esi),%eax
+	movl %eax,0(%edi)
+	movl 7(%esi),%ecx
+	addl 11(%esi),%ecx
+	movl 3(%esi),%eax
+	movl %eax,0(%ebp)
+	leal -5(%edi),%esi
+	movl $0,-8(%ebp)
+	movl %ecx,-12(%ebp)
+	movl $s1PF_info,-4(%ebp)
+	addl $-12,%ebp
+	jmp $wa_s1P2_info
+_c1R3:
+	movl $20,116(%ebx)
+_c1R4:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	1
+	.long	17
+n_s1Pk_info:
+_c1R8:
+	leal -24(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Ra
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%esi
+	movl $s1Pz_info,-12(%ebp)
+	addl $-12,%ebp
+	testl $3,%esi
+	jne s1Pz_info
+	jmp *(%esi)
+_c1Ra:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	2
+	.long	19
+sat_s1Pn_info:
+_c1Rg:
+	leal -16(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Ri
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%eax
+	movl %eax,-12(%ebp)
+	movl 12(%esi),%eax
+	movl %eax,-16(%ebp)
+	addl $-16,%ebp
+	jmp Data.ByteString.Unsafe.unsafeDrop_info
+_c1Ri:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	2
+	.long	19
+sat_s1Po_info:
+_c1Rn:
+	leal -16(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Rp
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%eax
+	movl %eax,-12(%ebp)
+	movl 12(%esi),%eax
+	movl %eax,-16(%ebp)
+	addl $-16,%ebp
+	jmp Data.ByteString.Unsafe.unsafeTake_info
+_c1Rp:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	0
+	.long	32
+s1PA_info:
+_c1Rr:
+	addl $56,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1Ru
+	movl $n_s1Pk_info,-52(%edi)
+	movl %esi,-44(%edi)
+	movl $sat_s1Pn_info,-40(%edi)
+	movl %esi,-32(%edi)
+	leal -52(%edi),%eax
+	movl %eax,-28(%edi)
+	movl $sat_s1Po_info,-24(%edi)
+	movl %esi,-16(%edi)
+	leal -52(%edi),%eax
+	movl %eax,-12(%edi)
+	movl $(,)_con_info,-8(%edi)
+	leal -24(%edi),%eax
+	movl %eax,-4(%edi)
+	leal -40(%edi),%eax
+	movl %eax,0(%edi)
+	leal -7(%edi),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c1Ru:
+	movl $56,116(%ebx)
+_c1Rv:
+	movl $254,32(%ebx)
+	jmp stg_gc_ut
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(InnerLoop.innerLoop_1_info)+0
+	.long	131077
+	.long	0
+	.long	65551
+.globl InnerLoop.innerLoop_1_info
+InnerLoop.innerLoop_1_info:
+_c1Rx:
+	leal -4(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Rz
+	movl 0(%ebp),%eax
+	movl %eax,-4(%ebp)
+	movl $s1PA_info,0(%ebp)
+	addl $-4,%ebp
+	jmp Data.ByteString.Char8.readFile1_info
+_c1Rz:
+	movl $InnerLoop.innerLoop_1_closure,%esi
+	jmp *-8(%ebx)
+.section .data
+	.align 4
+.align 1
+InnerLoop.innerLoop_3_srt:
+	.long	Data.ByteString.Char8.readFile1_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_3_closure
+InnerLoop.innerLoop_3_closure:
+	.long	InnerLoop.innerLoop_3_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_3_srt-(InnerLoop.innerLoop_3_info)+0
+	.long	131077
+	.long	0
+	.long	65551
+.globl InnerLoop.innerLoop_3_info
+InnerLoop.innerLoop_3_info:
+_c1Sf:
+	jmp InnerLoop.innerLoop_1_info
+
+

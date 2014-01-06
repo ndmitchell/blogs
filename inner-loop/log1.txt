@@ -1,0 +1,492 @@
+[1 of 1] Compiling InnerLoop        ( InnerLoop.hs, InnerLoop.o )
+
+==================== Tidy Core ====================
+Result size of Tidy Core = {terms: 38, types: 62, coercions: 9}
+
+InnerLoop.innerLoop_3 :: [GHC.Types.Char]
+[GblId,
+ Str=DmdType,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=0, Value=False,
+         ConLike=False, WorkFree=False, Expandable=False,
+         Guidance=IF_ARGS [] 40 0}]
+InnerLoop.innerLoop_3 =
+  GHC.CString.unpackCString#
+    " \r\
+    \$"
+
+InnerLoop.test_1 :: GHC.Types.Char -> GHC.Types.Bool
+[GblId,
+ Arity=1,
+ Str=DmdType L,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=1, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=IF_ARGS [0] 40 0}]
+InnerLoop.test_1 =
+  \ (x_axz :: GHC.Types.Char) ->
+    GHC.List.elem
+      @ GHC.Types.Char GHC.Classes.$fEqChar x_axz InnerLoop.innerLoop_3
+
+InnerLoop.innerLoop_2
+  :: GHC.IO.FilePath
+     -> GHC.Prim.State# GHC.Prim.RealWorld
+     -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+           ([GHC.Types.Char], [GHC.Types.Char]) #)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=2, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=IF_ARGS [0 0] 140 30}]
+InnerLoop.innerLoop_2 =
+  \ (file_aIR :: GHC.IO.FilePath)
+    (eta_B1 :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+    case GHC.IO.Handle.FD.openFile1
+           file_aIR GHC.IO.IOMode.ReadMode eta_B1
+    of _ { (# ipv_a1CK, ipv1_a1CL #) ->
+    case GHC.IO.Handle.Text.hGetContents1 ipv1_a1CL ipv_a1CK
+    of _ { (# ipv2_a1vB, ipv3_a1vC #) ->
+    (# ipv2_a1vB,
+       case GHC.List.$wbreak @ GHC.Types.Char InnerLoop.test_1 ipv3_a1vC
+       of _ { (# ww1_a1XP, ww2_a1XQ #) ->
+       (ww1_a1XP, ww2_a1XQ)
+       } #)
+    }
+    }
+
+InnerLoop.innerLoop_1
+  :: GHC.IO.FilePath
+     -> GHC.Types.IO ([GHC.Types.Char], [GHC.Types.Char])
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=0, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=ALWAYS_IF(unsat_ok=True,boring_ok=True)}]
+InnerLoop.innerLoop_1 =
+  InnerLoop.innerLoop_2
+  `cast` (<GHC.IO.FilePath>
+          -> Sym <(GHC.Types.NTCo:IO <([GHC.Types.Char], [GHC.Types.Char])>)>
+          :: (GHC.IO.FilePath
+              -> GHC.Prim.State# GHC.Prim.RealWorld
+              -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+                    ([GHC.Types.Char], [GHC.Types.Char]) #))
+               ~#
+             (GHC.IO.FilePath
+              -> GHC.Types.IO ([GHC.Types.Char], [GHC.Types.Char])))
+
+
+
+
+==================== Cmm ====================
+[section "data" { __stginit_main:InnerLoop:
+ }]
+
+
+
+==================== Cmm ====================
+[section "data" {
+     InnerLoop.innerLoop_3_closure:
+         const InnerLoop.innerLoop_3_info;
+         const 0;
+         const 0;
+         const 0;
+ },
+ section "readonly" {
+     c1Z1_str:
+         I8[] [32,13,10,36]
+ },
+ InnerLoop.innerLoop_3_info()
+         { label: InnerLoop.innerLoop_3_info
+           rep:HeapRep static { Thunk }
+         }
+     c1Z4:
+         if (Sp - 12 < SpLim) goto c1Z6;
+         Hp = Hp + 8;
+         if (Hp > HpLim) goto c1Z8;
+         I32[Hp - 4] = stg_CAF_BLACKHOLE_info;
+         I32[Hp + 0] = CurrentTSO;
+         (_c1Z9::I32,) = foreign "ccall"
+           newCAF((BaseReg, PtrHint), (R1, PtrHint), (Hp - 4, PtrHint));
+         if (_c1Z9::I32 == 0) goto c1Za;
+         goto c1Zb;
+     c1Z6: jump stg_gc_enter_1; // [R1]
+     c1Z8:
+         HpAlloc = 8;
+         goto c1Z6;
+     c1Za: jump I32[R1]; // [R1]
+     c1Zb:
+         I32[Sp - 8] = stg_bh_upd_frame_info;
+         I32[Sp - 4] = Hp - 4;
+         I32[Sp - 12] = c1Z1_str;
+         Sp = Sp - 12;
+         jump GHC.CString.unpackCString#_info; // []
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.test_1_srt:
+         const InnerLoop.innerLoop_3_closure;
+ },
+ section "data" {
+     InnerLoop.test_1_closure:
+         const InnerLoop.test_1_info;
+         const 0;
+ },
+ InnerLoop.test_1_info()
+         { label: InnerLoop.test_1_info
+           rep:HeapRep static { Fun {arity: 1 fun_type: ArgSpec 5} }
+         }
+     c1Zo:
+         if (Sp - 8 < SpLim) goto c1Zr;
+         I32[Sp - 4] = I32[Sp + 0];
+         I32[Sp + 0] = InnerLoop.innerLoop_3_closure;
+         I32[Sp - 8] = GHC.Classes.$fEqChar_closure;
+         Sp = Sp - 8;
+         jump GHC.List.elem_info; // []
+     c1Zr:
+         R1 = InnerLoop.test_1_closure;
+         jump stg_gc_fun; // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_2_srt:
+         const GHC.IO.Handle.FD.openFile1_closure;
+         const InnerLoop.innerLoop_3_closure;
+         const GHC.IO.Handle.Text.hGetContents1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_2_closure:
+         const InnerLoop.innerLoop_2_info;
+         const 0;
+ },
+ s1Zz_ret()
+         { label: s1Zz_info
+           rep:StackRep []
+         }
+     c1ZR:
+         Hp = Hp + 12;
+         if (Hp > HpLim) goto c1ZV;
+         I32[Hp - 8] = (,)_con_info;
+         I32[Hp - 4] = R1;
+         I32[Hp + 0] = I32[Sp + 0];
+         R1 = Hp - 7;
+         Sp = Sp + 8;
+         jump (I32[Sp + 0]); // [R1]
+     c1ZW:
+         R9 = 16777470;
+         jump stg_gc_ut; // [R1]
+     c1ZV:
+         HpAlloc = 12;
+         goto c1ZW;
+ },
+ sat_s1Zy_info()
+         { label: sat_s1Zy_info
+           rep:HeapRep 1 ptrs { Thunk }
+         }
+     c1ZZ:
+         if (Sp - 20 < SpLim) goto c201;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 16] = I32[R1 + 8];
+         I32[Sp - 20] = InnerLoop.test_1_closure+1;
+         I32[Sp - 12] = s1Zz_info;
+         Sp = Sp - 20;
+         jump GHC.List.$wbreak_info; // []
+     c201: jump stg_gc_enter_1; // [R1]
+ },
+ s1ZA_ret()
+         { label: s1ZA_info
+           rep:StackRep []
+         }
+     c203:
+         Hp = Hp + 12;
+         if (Hp > HpLim) goto c206;
+         I32[Hp - 8] = sat_s1Zy_info;
+         I32[Hp + 0] = R1;
+         R1 = Hp - 8;
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c207:
+         R9 = 254;
+         jump stg_gc_ut; // [R1]
+     c206:
+         HpAlloc = 12;
+         goto c207;
+ },
+ s1ZB_ret()
+         { label: s1ZB_info
+           rep:StackRep []
+         }
+     c209:
+         I32[Sp - 4] = R1;
+         I32[Sp + 0] = s1ZA_info;
+         Sp = Sp - 4;
+         jump GHC.IO.Handle.Text.hGetContents1_info; // []
+ },
+ InnerLoop.innerLoop_2_info()
+         { label: InnerLoop.innerLoop_2_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c20b:
+         if (Sp - 8 < SpLim) goto c20d;
+         I32[Sp - 4] = GHC.IO.IOMode.ReadMode_closure+1;
+         I32[Sp - 8] = I32[Sp + 0];
+         I32[Sp + 0] = s1ZB_info;
+         Sp = Sp - 8;
+         jump GHC.IO.Handle.FD.openFile1_info; // []
+     c20d:
+         R1 = InnerLoop.innerLoop_2_closure;
+         jump stg_gc_fun; // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_1_srt:
+         const InnerLoop.innerLoop_2_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_1_closure:
+         const InnerLoop.innerLoop_1_info;
+         const 0;
+ },
+ InnerLoop.innerLoop_1_info()
+         { label: InnerLoop.innerLoop_1_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c20v: jump InnerLoop.innerLoop_2_info; // []
+ }]
+
+
+
+==================== Asm code ====================
+.data
+	.align 4
+.align 1
+.globl __stginit_main:InnerLoop
+__stginit_main:InnerLoop:
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_3_closure
+InnerLoop.innerLoop_3_closure:
+	.long	InnerLoop.innerLoop_3_info
+	.long	0
+	.long	0
+	.long	0
+.section .rodata
+	.align 4
+.align 1
+c1Z1_str:
+	.byte	32
+	.byte	13
+	.byte	10
+	.byte	36
+	.byte	0
+.text
+	.align 4,0x90
+	.long	0
+	.long	22
+.globl InnerLoop.innerLoop_3_info
+InnerLoop.innerLoop_3_info:
+_c1Z4:
+	leal -12(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Z6
+	addl $8,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1Z8
+	movl $stg_CAF_BLACKHOLE_info,-4(%edi)
+	movl 100(%ebx),%eax
+	movl %eax,0(%edi)
+	leal -4(%edi),%eax
+	pushl %eax
+	pushl %esi
+	pushl %ebx
+	call newCAF
+	addl $12,%esp
+	testl %eax,%eax
+	je _c1Za
+_c1Zb:
+	movl $stg_bh_upd_frame_info,-8(%ebp)
+	leal -4(%edi),%eax
+	movl %eax,-4(%ebp)
+	movl $c1Z1_str,-12(%ebp)
+	addl $-12,%ebp
+	jmp GHC.CString.unpackCString#_info
+_c1Z8:
+	movl $8,116(%ebx)
+_c1Z6:
+	jmp *-12(%ebx)
+_c1Za:
+	jmp *(%esi)
+.section .data
+	.align 4
+.align 1
+InnerLoop.test_1_srt:
+	.long	InnerLoop.innerLoop_3_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.test_1_closure
+InnerLoop.test_1_closure:
+	.long	InnerLoop.test_1_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	InnerLoop.test_1_srt-(InnerLoop.test_1_info)+0
+	.long	65541
+	.long	0
+	.long	65551
+.globl InnerLoop.test_1_info
+InnerLoop.test_1_info:
+_c1Zo:
+	leal -8(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c1Zr
+	movl 0(%ebp),%eax
+	movl %eax,-4(%ebp)
+	movl $InnerLoop.innerLoop_3_closure,0(%ebp)
+	movl $GHC.Classes.$fEqChar_closure,-8(%ebp)
+	addl $-8,%ebp
+	jmp GHC.List.elem_info
+_c1Zr:
+	movl $InnerLoop.test_1_closure,%esi
+	jmp *-8(%ebx)
+.section .data
+	.align 4
+.align 1
+InnerLoop.innerLoop_2_srt:
+	.long	GHC.IO.Handle.FD.openFile1_closure
+	.long	InnerLoop.innerLoop_3_closure
+	.long	GHC.IO.Handle.Text.hGetContents1_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_2_closure
+InnerLoop.innerLoop_2_closure:
+	.long	InnerLoop.innerLoop_2_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	0
+	.long	32
+s1Zz_info:
+_c1ZR:
+	addl $12,%edi
+	cmpl 92(%ebx),%edi
+	ja _c1ZV
+	movl $(,)_con_info,-8(%edi)
+	movl %esi,-4(%edi)
+	movl 0(%ebp),%eax
+	movl %eax,0(%edi)
+	leal -7(%edi),%esi
+	addl $8,%ebp
+	jmp *0(%ebp)
+_c1ZV:
+	movl $12,116(%ebx)
+_c1ZW:
+	movl $16777470,32(%ebx)
+	jmp stg_gc_ut
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_2_srt-(sat_s1Zy_info)+4
+	.long	1
+	.long	65553
+sat_s1Zy_info:
+_c1ZZ:
+	leal -20(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c201
+	movl $stg_upd_frame_info,-8(%ebp)
+	movl %esi,-4(%ebp)
+	movl 8(%esi),%eax
+	movl %eax,-16(%ebp)
+	movl $InnerLoop.test_1_closure+1,-20(%ebp)
+	movl $s1Zz_info,-12(%ebp)
+	addl $-20,%ebp
+	jmp GHC.List.$wbreak_info
+_c201:
+	jmp *-12(%ebx)
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_2_srt-(s1ZA_info)+4
+	.long	0
+	.long	65568
+s1ZA_info:
+_c203:
+	addl $12,%edi
+	cmpl 92(%ebx),%edi
+	ja _c206
+	movl $sat_s1Zy_info,-8(%edi)
+	movl %esi,0(%edi)
+	leal -8(%edi),%esi
+	addl $4,%ebp
+	jmp *0(%ebp)
+_c206:
+	movl $12,116(%ebx)
+_c207:
+	movl $254,32(%ebx)
+	jmp stg_gc_ut
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_2_srt-(s1ZB_info)+4
+	.long	0
+	.long	196640
+s1ZB_info:
+_c209:
+	movl %esi,-4(%ebp)
+	movl $s1ZA_info,0(%ebp)
+	addl $-4,%ebp
+	jmp GHC.IO.Handle.Text.hGetContents1_info
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_2_srt-(InnerLoop.innerLoop_2_info)+0
+	.long	131077
+	.long	0
+	.long	458767
+.globl InnerLoop.innerLoop_2_info
+InnerLoop.innerLoop_2_info:
+_c20b:
+	leal -8(%ebp),%eax
+	cmpl 84(%ebx),%eax
+	jb _c20d
+	movl $GHC.IO.IOMode.ReadMode_closure+1,-4(%ebp)
+	movl 0(%ebp),%eax
+	movl %eax,-8(%ebp)
+	movl $s1ZB_info,0(%ebp)
+	addl $-8,%ebp
+	jmp GHC.IO.Handle.FD.openFile1_info
+_c20d:
+	movl $InnerLoop.innerLoop_2_closure,%esi
+	jmp *-8(%ebx)
+.section .data
+	.align 4
+.align 1
+InnerLoop.innerLoop_1_srt:
+	.long	InnerLoop.innerLoop_2_closure
+.data
+	.align 4
+.align 1
+.globl InnerLoop.innerLoop_1_closure
+InnerLoop.innerLoop_1_closure:
+	.long	InnerLoop.innerLoop_1_info
+	.long	0
+.text
+	.align 4,0x90
+	.long	InnerLoop.innerLoop_1_srt-(InnerLoop.innerLoop_1_info)+0
+	.long	131077
+	.long	0
+	.long	65551
+.globl InnerLoop.innerLoop_1_info
+InnerLoop.innerLoop_1_info:
+_c20v:
+	jmp InnerLoop.innerLoop_2_info
+
+
