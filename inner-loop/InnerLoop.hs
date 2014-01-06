@@ -49,7 +49,7 @@ break0_2 f (BS0 bs) = (BS.unsafeTake i bs, BS0 $ BS.unsafeDrop i bs)
                      | otherwise = go $ inc s
             where c = chr s
 
-newtype ByteString0 = BS0 BS.ByteString
+newtype ByteString0 = BS0 ByteString
 
 readFile0 :: FilePath -> IO ByteString0
 readFile0 x = do
