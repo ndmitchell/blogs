@@ -1,0 +1,1916 @@
+
+==================== Tidy Core ====================
+Result size of Tidy Core = {terms: 139, types: 102, coercions: 20}
+
+Rec {
+InnerLoop.$wgo [Occ=LoopBreaker]
+  :: GHC.Prim.Addr# -> GHC.Prim.Addr#
+[GblId, Arity=1, Caf=NoCafRefs, Str=DmdType L]
+InnerLoop.$wgo =
+  \ (ww_s1Qq :: GHC.Prim.Addr#) ->
+    case GHC.Prim.readWord8OffAddr#
+           @ GHC.Prim.RealWorld ww_s1Qq 0 GHC.Prim.realWorld#
+    of _ { (# _, ipv1_a1Dr #) ->
+    let {
+      c1_a1uU [Dmd=Just L] :: GHC.Prim.Char#
+      [LclId, Str=DmdType]
+      c1_a1uU = GHC.Prim.chr# (GHC.Prim.word2Int# ipv1_a1Dr) } in
+    case GHC.Prim.leChar# c1_a1uU '$' of _ {
+      GHC.Types.False -> InnerLoop.$wgo (GHC.Prim.plusAddr# ww_s1Qq 1);
+      GHC.Types.True ->
+        case c1_a1uU of _ {
+          __DEFAULT -> InnerLoop.$wgo (GHC.Prim.plusAddr# ww_s1Qq 1);
+          '\NUL' -> ww_s1Qq;
+          '\n' -> ww_s1Qq;
+          '\r' -> ww_s1Qq;
+          ' ' -> ww_s1Qq;
+          '$' -> ww_s1Qq
+        }
+    }
+    }
+end Rec }
+
+InnerLoop.innerLoop_1
+  :: GHC.IO.FilePath
+     -> GHC.Prim.State# GHC.Prim.RealWorld
+     -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+           (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0) #)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=2, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=IF_ARGS [0 0] 341 30}]
+InnerLoop.innerLoop_1 =
+  \ (file_aLx :: GHC.IO.FilePath)
+    (eta_B1 :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+    case Data.ByteString.Char8.readFile1 file_aLx eta_B1
+    of _ { (# ipv_a1BV, ipv1_a1BW #) ->
+    (# ipv_a1BV,
+       let {
+         ipv2_X1CD [Dmd=Just D(LLLL)] :: InnerLoop.ByteString0
+         [LclId, Str=DmdType]
+         ipv2_X1CD =
+           case ipv1_a1BW
+           of _
+           { Data.ByteString.Internal.PS rb_a1x8 rb1_a1xf rb2_a1xg rb3_a1xh ->
+           (GHC.IO.unsafeDupablePerformIO
+              @ Data.ByteString.Internal.ByteString
+              ((\ (s_a1BS :: GHC.Prim.State# GHC.Prim.RealWorld) ->
+                  let {
+                    a_s1B7 [Dmd=Just L] :: GHC.Prim.Int#
+                    [LclId, Str=DmdType]
+                    a_s1B7 = GHC.Prim.+# rb3_a1xh 1 } in
+                  case GHC.Prim.<# a_s1B7 0 of _ {
+                    GHC.Types.False ->
+                      case GHC.Prim.newPinnedByteArray#
+                             @ GHC.Prim.RealWorld a_s1B7 s_a1BS
+                      of _ { (# ipv3_a1CO, ipv4_a1CP #) ->
+                      let {
+                        a1_s1D8 [Dmd=Just L] :: GHC.Prim.Addr#
+                        [LclId, Str=DmdType]
+                        a1_s1D8 =
+                          GHC.Prim.byteArrayContents#
+                            (ipv4_a1CP
+                             `cast` (UnsafeCo
+                                       (GHC.Prim.MutableByteArray# GHC.Prim.RealWorld)
+                                       GHC.Prim.ByteArray#
+                                     :: GHC.Prim.MutableByteArray# GHC.Prim.RealWorld
+                                          ~#
+                                        GHC.Prim.ByteArray#)) } in
+                      case {__pkg_ccall bytestring-0.10.0.0 memcpy GHC.Prim.Addr#
+                                        -> GHC.Prim.Addr#
+                                        -> GHC.Prim.Word#
+                                        -> GHC.Prim.State# GHC.Prim.RealWorld
+                                        -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Prim.Addr# #)}_a1Cc
+                             a1_s1D8
+                             (GHC.Prim.plusAddr# rb_a1x8 rb2_a1xg)
+                             (GHC.Prim.int2Word# rb3_a1xh)
+                             ipv3_a1CO
+                      of _ { (# ds4_a1Ch, _ #) ->
+                      case GHC.Prim.writeWord8OffAddr#
+                             @ GHC.Prim.RealWorld
+                             (GHC.Prim.plusAddr# a1_s1D8 rb3_a1xh)
+                             0
+                             (__word 0)
+                             ds4_a1Ch
+                      of s2_a1BF { __DEFAULT ->
+                      case GHC.Prim.touch#
+                             @ GHC.ForeignPtr.ForeignPtrContents rb1_a1xf s2_a1BF
+                      of s'_a1Bs { __DEFAULT ->
+                      let {
+                        a2_s1Da :: GHC.ForeignPtr.ForeignPtrContents
+                        [LclId, Str=DmdType]
+                        a2_s1Da = GHC.ForeignPtr.PlainPtr ipv4_a1CP } in
+                      case GHC.Prim.touch#
+                             @ GHC.ForeignPtr.ForeignPtrContents a2_s1Da s'_a1Bs
+                      of s'1_X1CH { __DEFAULT ->
+                      (# s'1_X1CH,
+                         Data.ByteString.Internal.PS a1_s1D8 a2_s1Da 0 a_s1B7 #)
+                      }
+                      }
+                      }
+                      }
+                      };
+                    GHC.Types.True ->
+                      case GHC.ForeignPtr.mallocPlainForeignPtrBytes2 of wild2_00 { }
+                  })
+               `cast` (Sym
+                         <(GHC.Types.NTCo:IO <Data.ByteString.Internal.ByteString>)>
+                       :: (GHC.Prim.State# GHC.Prim.RealWorld
+                           -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+                                 Data.ByteString.Internal.ByteString #))
+                            ~#
+                          GHC.Types.IO Data.ByteString.Internal.ByteString)))
+           `cast` (Sym <(InnerLoop.NTCo:ByteString0)>
+                   :: Data.ByteString.Internal.ByteString ~# InnerLoop.ByteString0)
+           } } in
+       let {
+         i_s1Aa [Dmd=Just D(L)] :: GHC.Types.Int
+         [LclId, Str=DmdType]
+         i_s1Aa =
+           case ipv2_X1CD
+                `cast` (<InnerLoop.NTCo:ByteString0>
+                        :: InnerLoop.ByteString0 ~# Data.ByteString.Internal.ByteString)
+           of _ { Data.ByteString.Internal.PS rb_a1Ed rb1_a1Ee rb2_a1Ef _ ->
+           let {
+             a_s1Eq [Dmd=Just L] :: GHC.Prim.Addr#
+             [LclId, Str=DmdType]
+             a_s1Eq = GHC.Prim.plusAddr# rb_a1Ed rb2_a1Ef } in
+           case InnerLoop.$wgo a_s1Eq of end_a1s9 { __DEFAULT ->
+           case GHC.Prim.touch#
+                  @ GHC.ForeignPtr.ForeignPtrContents rb1_a1Ee GHC.Prim.realWorld#
+           of _ { __DEFAULT ->
+           GHC.Types.I# (GHC.Prim.minusAddr# end_a1s9 a_s1Eq)
+           }
+           }
+           } } in
+       (Data.ByteString.Unsafe.unsafeTake
+          i_s1Aa
+          (ipv2_X1CD
+           `cast` (<InnerLoop.NTCo:ByteString0>
+                   :: InnerLoop.ByteString0 ~# Data.ByteString.Internal.ByteString)),
+        (Data.ByteString.Unsafe.unsafeDrop
+           i_s1Aa
+           (ipv2_X1CD
+            `cast` (<InnerLoop.NTCo:ByteString0>
+                    :: InnerLoop.ByteString0 ~# Data.ByteString.Internal.ByteString)))
+        `cast` (Sym <(InnerLoop.NTCo:ByteString0)>
+                :: Data.ByteString.Internal.ByteString
+                     ~#
+                   InnerLoop.ByteString0)) #)
+    }
+
+InnerLoop.innerLoop_7
+  :: GHC.IO.FilePath
+     -> GHC.Types.IO
+          (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0)
+[GblId,
+ Arity=2,
+ Str=DmdType LL,
+ Unf=Unf{Src=<vanilla>, TopLvl=True, Arity=0, Value=True,
+         ConLike=True, WorkFree=True, Expandable=True,
+         Guidance=ALWAYS_IF(unsat_ok=True,boring_ok=True)}]
+InnerLoop.innerLoop_7 =
+  InnerLoop.innerLoop_1
+  `cast` (<GHC.IO.FilePath>
+          -> Sym
+               <(GHC.Types.NTCo:IO
+                   <(Data.ByteString.Internal.ByteString, InnerLoop.ByteString0)>)>
+          :: (GHC.IO.FilePath
+              -> GHC.Prim.State# GHC.Prim.RealWorld
+              -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+                    (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0) #))
+               ~#
+             (GHC.IO.FilePath
+              -> GHC.Types.IO
+                   (Data.ByteString.Internal.ByteString, InnerLoop.ByteString0)))
+
+
+
+
+==================== Cmm ====================
+[section "data" { __stginit_main:InnerLoop:
+ }]
+
+
+
+==================== Cmm ====================
+[section "data" {
+     InnerLoop.$wgo_closure:
+         const InnerLoop.$wgo_info;
+ },
+ InnerLoop.$wgo_info()
+         { label: InnerLoop.$wgo_info
+           rep:HeapRep static { Fun {arity: 1 fun_type: ArgSpec 4} }
+         }
+     c1Ue:
+         _s1Sd::I32 = %MO_UU_Conv_W8_W32(I8[I32[Sp + 0]]);
+         _s1Sg::I32 = _s1Sd::I32;
+         _s1Sf::I32 = _s1Sg::I32;
+         _c1TY::I32 = _s1Sf::I32 <= 36;
+         ;
+         if (_c1TY::I32 >= 1) goto c1Uh;
+         _s1Tx::I32 = I32[Sp + 0] + 1;
+         I32[Sp + 0] = _s1Tx::I32;
+         jump InnerLoop.$wgo_info; // []
+     c1Uh:
+         _s1TC::I32 = _s1Sf::I32;
+         if (_s1TC::I32 < 13) goto c1Uq;
+         if (_s1TC::I32 < 32) goto c1Ur;
+         if (_s1TC::I32 < 36) goto c1Us;
+         if (_s1TC::I32 != 36) goto c1Ut;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Ut:
+         _s1TB::I32 = I32[Sp + 0] + 1;
+         I32[Sp + 0] = _s1TB::I32;
+         jump InnerLoop.$wgo_info; // []
+     c1Us:
+         if (_s1TC::I32 != 32) goto c1Ut;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Ur:
+         if (_s1TC::I32 != 13) goto c1Ut;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Uu:
+         if (_s1TC::I32 != 0) goto c1Ut;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1Uq:
+         if (_s1TC::I32 < 10) goto c1Uu;
+         if (_s1TC::I32 != 10) goto c1Ut;
+         R1 = I32[Sp + 0];
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_1_srt:
+         const GHC.ForeignPtr.mallocPlainForeignPtrBytes2_closure;
+         const Data.ByteString.Char8.readFile1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_1_closure:
+         const InnerLoop.innerLoop_1_info;
+         const 0;
+ },
+ s1UF_ret()
+         { label: s1UF_info
+           rep:StackRep [False, True, True, True, True]
+         }
+     c1VM:
+         Hp = Hp + 28;
+         if (Hp > HpLim) goto c1VQ;
+         _s1SL::I32 = R1 + 8;
+         _s1Uy::I32 = I32[Sp + 20];
+         _s1Uz::I32 = I32[Sp + 12] + I32[Sp + 8];
+         (_s1UJ::I32, PtrHint) = foreign "ccall"
+           memcpy((_s1SL::I32, PtrHint), (_s1Uz::I32, PtrHint),
+                  (_s1Uy::I32,));
+         _s1Ux::I32 = _s1SL::I32 + I32[Sp + 20];
+         I8[_s1Ux::I32] = %MO_UU_Conv_W32_W8(0);
+         I32[Hp - 24] = GHC.ForeignPtr.PlainPtr_con_info;
+         I32[Hp - 20] = R1;
+         I32[Hp - 16] = Data.ByteString.Internal.PS_con_info;
+         I32[Hp - 12] = Hp - 21;
+         I32[Hp - 8] = _s1SL::I32;
+         I32[Hp - 4] = 0;
+         I32[Hp + 0] = I32[Sp + 16];
+         R1 = Hp - 15;
+         Sp = Sp + 24;
+         jump (I32[Sp + 0]); // [R1]
+     c1VR:
+         R9 = 254;
+         jump stg_gc_ut; // [R1]
+     c1VQ:
+         HpAlloc = 28;
+         goto c1VR;
+ },
+ sat_s1UA_info()
+         { label: sat_s1UA_info
+           rep:HeapRep 1 ptrs 3 nonptrs { Fun {arity: 1 fun_type: ArgSpec 3} }
+         }
+     c1VT:
+         if (Sp - 24 < SpLim) goto c1VV;
+         _s1SD::I32 = I32[R1 + 7] + 1;
+         _c1Vl::I32 = %MO_S_Lt_W32(_s1SD::I32, 0);
+         ;
+         if (_c1Vl::I32 >= 1) goto c1VX;
+         I32[Sp - 4] = I32[R1 + 7];
+         I32[Sp - 8] = _s1SD::I32;
+         I32[Sp - 12] = I32[R1 + 11];
+         I32[Sp - 16] = I32[R1 + 15];
+         I32[Sp - 20] = I32[R1 + 3];
+         R1 = _s1SD::I32;
+         I32[Sp - 24] = s1UF_info;
+         Sp = Sp - 24;
+         jump stg_newPinnedByteArray#; // [R1]
+     c1VV: jump stg_gc_fun; // []
+     c1VX:
+         R1 = GHC.ForeignPtr.mallocPlainForeignPtrBytes2_closure;
+         jump stg_ap_0_fast; // [R1]
+ },
+ s1UH_ret()
+         { label: s1UH_info
+           rep:StackRep []
+         }
+     c1VZ:
+         Hp = Hp + 20;
+         if (Hp > HpLim) goto c1W2;
+         I32[Hp - 16] = sat_s1UA_info;
+         I32[Hp - 12] = I32[R1 + 3];
+         I32[Hp - 8] = I32[R1 + 15];
+         I32[Hp - 4] = I32[R1 + 7];
+         I32[Hp + 0] = I32[R1 + 11];
+         I32[Sp + 0] = Hp - 15;
+         jump GHC.IO.unsafeDupablePerformIO_info; // []
+     c1W3: jump stg_gc_enter_1; // [R1]
+     c1W2:
+         HpAlloc = 20;
+         goto c1W3;
+ },
+ ipv2_s1Ta_info()
+         { label: ipv2_s1Ta_info
+           rep:HeapRep 1 ptrs { Thunk }
+         }
+     c1Wj:
+         if (Sp - 12 < SpLim) goto c1Wl;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         R1 = I32[R1 + 8];
+         I32[Sp - 12] = s1UH_info;
+         Sp = Sp - 12;
+         if (R1 & 3 != 0) goto c1Wm;
+         jump I32[R1]; // [R1]
+     c1Wl: jump stg_gc_enter_1; // [R1]
+     c1Wm: jump s1UH_info; // [R1]
+ },
+ s1To_ret()
+         { label: s1To_info
+           rep:StackRep [False, True]
+         }
+     c1Wy:
+         Hp = Hp + 8;
+         if (Hp > HpLim) goto c1WE;
+         _s1UB::I32 = R1 - I32[Sp + 8];
+         I32[Hp - 4] = GHC.Types.I#_con_info;
+         I32[Hp + 0] = _s1UB::I32;
+         R1 = Hp - 3;
+         Sp = Sp + 12;
+         jump (I32[Sp + 0]); // [R1]
+     c1WF: jump stg_gc_unbx_r1; // [R1]
+     c1WE:
+         HpAlloc = 8;
+         goto c1WF;
+ },
+ s1UL_ret()
+         { label: s1UL_info
+           rep:StackRep []
+         }
+     c1WH:
+         _s1Tk::I32 = I32[R1 + 7] + I32[R1 + 11];
+         I32[Sp - 4] = I32[R1 + 3];
+         I32[Sp + 0] = _s1Tk::I32;
+         I32[Sp - 12] = _s1Tk::I32;
+         I32[Sp - 8] = s1To_info;
+         Sp = Sp - 12;
+         jump InnerLoop.$wgo_info; // []
+ },
+ i_s1Tq_info()
+         { label: i_s1Tq_info
+           rep:HeapRep 1 ptrs { Thunk }
+         }
+     c1WL:
+         if (Sp - 24 < SpLim) goto c1WN;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         R1 = I32[R1 + 8];
+         I32[Sp - 12] = s1UL_info;
+         Sp = Sp - 12;
+         if (R1 & 3 != 0) goto c1WO;
+         jump I32[R1]; // [R1]
+     c1WN: jump stg_gc_enter_1; // [R1]
+     c1WO: jump s1UL_info; // [R1]
+ },
+ sat_s1Tt_info()
+         { label: sat_s1Tt_info
+           rep:HeapRep 2 ptrs { Thunk }
+         }
+     c1WT:
+         if (Sp - 16 < SpLim) goto c1WV;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 12] = I32[R1 + 8];
+         I32[Sp - 16] = I32[R1 + 12];
+         Sp = Sp - 16;
+         jump Data.ByteString.Unsafe.unsafeDrop_info; // []
+     c1WV: jump stg_gc_enter_1; // [R1]
+ },
+ sat_s1Tu_info()
+         { label: sat_s1Tu_info
+           rep:HeapRep 2 ptrs { Thunk }
+         }
+     c1X0:
+         if (Sp - 16 < SpLim) goto c1X2;
+         I32[Sp - 8] = stg_upd_frame_info;
+         I32[Sp - 4] = R1;
+         I32[Sp - 12] = I32[R1 + 8];
+         I32[Sp - 16] = I32[R1 + 12];
+         Sp = Sp - 16;
+         jump Data.ByteString.Unsafe.unsafeTake_info; // []
+     c1X2: jump stg_gc_enter_1; // [R1]
+ },
+ s1UI_ret()
+         { label: s1UI_info
+           rep:StackRep []
+         }
+     c1X4:
+         Hp = Hp + 68;
+         if (Hp > HpLim) goto c1X7;
+         I32[Hp - 64] = ipv2_s1Ta_info;
+         I32[Hp - 56] = R1;
+         I32[Hp - 52] = i_s1Tq_info;
+         I32[Hp - 44] = Hp - 64;
+         I32[Hp - 40] = sat_s1Tt_info;
+         I32[Hp - 32] = Hp - 64;
+         I32[Hp - 28] = Hp - 52;
+         I32[Hp - 24] = sat_s1Tu_info;
+         I32[Hp - 16] = Hp - 64;
+         I32[Hp - 12] = Hp - 52;
+         I32[Hp - 8] = (,)_con_info;
+         I32[Hp - 4] = Hp - 24;
+         I32[Hp + 0] = Hp - 40;
+         R1 = Hp - 7;
+         Sp = Sp + 4;
+         jump (I32[Sp + 0]); // [R1]
+     c1X8:
+         R9 = 254;
+         jump stg_gc_ut; // [R1]
+     c1X7:
+         HpAlloc = 68;
+         goto c1X8;
+ },
+ InnerLoop.innerLoop_1_info()
+         { label: InnerLoop.innerLoop_1_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c1Xa:
+         if (Sp - 4 < SpLim) goto c1Xc;
+         I32[Sp - 4] = I32[Sp + 0];
+         I32[Sp + 0] = s1UI_info;
+         Sp = Sp - 4;
+         jump Data.ByteString.Char8.readFile1_info; // []
+     c1Xc:
+         R1 = InnerLoop.innerLoop_1_closure;
+         jump stg_gc_fun; // [R1]
+ }]
+
+
+
+==================== Cmm ====================
+[section "relreadonly" {
+     InnerLoop.innerLoop_7_srt:
+         const InnerLoop.innerLoop_1_closure;
+ },
+ section "data" {
+     InnerLoop.innerLoop_7_closure:
+         const InnerLoop.innerLoop_7_info;
+         const 0;
+ },
+ InnerLoop.innerLoop_7_info()
+         { label: InnerLoop.innerLoop_7_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 5} }
+         }
+     c1Xi: jump InnerLoop.innerLoop_1_info; // []
+ }]
+
+
+
+==================== LLVM Code ====================
+target datalayout = "e-p:32:32:32-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-f80:128:128-v64:64:64-v128:128:128-a0:0:64-f80:32:32-n8:16:32"
+target triple = "i686-pc-win32"
+
+declare  ccc i8* @memcpy(i8*, i8*, i32)
+
+declare  ccc i8* @memmove(i8*, i8*, i32)
+
+declare  ccc i8* @memset(i8*, i32, i32)
+
+declare  ccc i32 @newSpark(i8*, i8*)
+
+!0 = metadata !{metadata !"top"}
+!1 = metadata !{metadata !"stack",metadata !0}
+!2 = metadata !{metadata !"heap",metadata !0}
+!3 = metadata !{metadata !"rx",metadata !2}
+!4 = metadata !{metadata !"base",metadata !0}
+!5 = metadata !{metadata !"other",metadata !0}
+
+
+
+
+==================== LLVM Code ====================
+%__stginit_InnerLoop_struct = type <{}>
+@__stginit_InnerLoop =  global %__stginit_InnerLoop_struct<{}>
+                       
+%InnerLoop_zdwgo_closure_struct = type <{i32}>
+@InnerLoop_zdwgo_closure =  global %InnerLoop_zdwgo_closure_struct<{i32 ptrtoint (void (i32*, i32*, i32*, i32)* @InnerLoop_zdwgo_info to i32)}>
+                           
+%InnerLoop_innerLoopzu1_srt_struct = type <{i32, i32}>
+@InnerLoop_innerLoopzu1_srt = internal constant %InnerLoop_innerLoopzu1_srt_struct<{i32 ptrtoint ([0 x i32]* @base_GHCziForeignPtr_mallocPlainForeignPtrBytes2_closure to i32), i32 ptrtoint ([0 x i32]* @bytestringzm0zi10zi0zi0_DataziByteStringziChar8_readFile1_closure to i32)}>
+                              
+@base_GHCziForeignPtr_mallocPlainForeignPtrBytes2_closure = external global [0 x i32]
+                                                            
+@bytestringzm0zi10zi0zi0_DataziByteStringziChar8_readFile1_closure = external global [0 x i32]
+                                                                     
+%InnerLoop_innerLoopzu1_closure_struct = type <{i32, i32}>
+@InnerLoop_innerLoopzu1_closure =  global %InnerLoop_innerLoopzu1_closure_struct<{i32 ptrtoint (void (i32*, i32*, i32*, i32)* @InnerLoop_innerLoopzu1_info to i32), i32 0}>
+                                  
+%InnerLoop_innerLoopzu7_srt_struct = type <{i32}>
+@InnerLoop_innerLoopzu7_srt = internal constant %InnerLoop_innerLoopzu7_srt_struct<{i32 ptrtoint (%InnerLoop_innerLoopzu1_closure_struct* @InnerLoop_innerLoopzu1_closure to i32)}>
+                              
+%InnerLoop_innerLoopzu7_closure_struct = type <{i32, i32}>
+@InnerLoop_innerLoopzu7_closure =  global %InnerLoop_innerLoopzu7_closure_struct<{i32 ptrtoint (void (i32*, i32*, i32*, i32)* @InnerLoop_innerLoopzu7_info to i32), i32 0}>
+                                  
+
+
+
+==================== LLVM Code ====================
+%InnerLoop_zdwgo_info_struct = type <{i32, i32, i32}>
+@InnerLoop_zdwgo_info_itable =  constant %InnerLoop_zdwgo_info_struct<{i32 65540, i32 0, i32 15}>, section "X98A__STRIP,__me0", align 4
+                               
+define  cc 10 void @InnerLoop_zdwgo_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1Ue:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ls1Sd = alloca i32, i32 1
+  %ls1Sg = alloca i32, i32 1
+  %ls1Sf = alloca i32, i32 1
+  %lc1TY = alloca i32, i32 1
+  %ls1Tx = alloca i32, i32 1
+  %ls1TC = alloca i32, i32 1
+  %ls1TB = alloca i32, i32 1
+  %ln1ZM = load i32** %Sp_Var
+  %ln1ZN = getelementptr inbounds i32* %ln1ZM, i32 0
+  %ln1ZO = bitcast i32* %ln1ZN to i32*
+  %ln1ZP = load i32* %ln1ZO, !tbaa !1
+  %ln1ZQ = inttoptr i32 %ln1ZP to i8*
+  %ln1ZR = load i8* %ln1ZQ, !tbaa !5
+  %ln1ZS = zext i8 %ln1ZR to i32
+  store i32 %ln1ZS, i32* %ls1Sd
+  %ln1ZT = load i32* %ls1Sd
+  store i32 %ln1ZT, i32* %ls1Sg
+  %ln1ZU = load i32* %ls1Sg
+  store i32 %ln1ZU, i32* %ls1Sf
+  %ln1ZV = load i32* %ls1Sf
+  %ln1ZW = icmp ule i32 %ln1ZV, 36
+  %ln1ZX = zext i1 %ln1ZW to i32
+  store i32 %ln1ZX, i32* %lc1TY
+  %ln1ZY = load i32* %lc1TY
+  %ln1ZZ = icmp uge i32 %ln1ZY, 1
+  br i1 %ln1ZZ, label %c1Uh, label %n200
+
+n200:
+  %ln201 = load i32** %Sp_Var
+  %ln202 = getelementptr inbounds i32* %ln201, i32 0
+  %ln203 = bitcast i32* %ln202 to i32*
+  %ln204 = load i32* %ln203, !tbaa !1
+  %ln205 = add i32 %ln204, 1
+  store i32 %ln205, i32* %ls1Tx
+  %ln206 = load i32* %ls1Tx
+  %ln207 = load i32** %Sp_Var
+  %ln208 = getelementptr inbounds i32* %ln207, i32 0
+  store i32 %ln206, i32* %ln208, !tbaa !1
+  %ln209 = load i32** %Base_Var
+  %ln20a = load i32** %Sp_Var
+  %ln20b = load i32** %Hp_Var
+  %ln20c = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @InnerLoop_zdwgo_info( i32* %ln209, i32* %ln20a, i32* %ln20b, i32 %ln20c ) nounwind
+  ret void
+
+c1Uh:
+  %ln20d = load i32* %ls1Sf
+  store i32 %ln20d, i32* %ls1TC
+  %ln20e = load i32* %ls1TC
+  %ln20f = icmp ult i32 %ln20e, 13
+  br i1 %ln20f, label %c1Uq, label %n20g
+
+n20g:
+  %ln20h = load i32* %ls1TC
+  %ln20i = icmp ult i32 %ln20h, 32
+  br i1 %ln20i, label %c1Ur, label %n20j
+
+n20j:
+  %ln20k = load i32* %ls1TC
+  %ln20l = icmp ult i32 %ln20k, 36
+  br i1 %ln20l, label %c1Us, label %n20m
+
+n20m:
+  %ln20n = load i32* %ls1TC
+  %ln20o = icmp ne i32 %ln20n, 36
+  br i1 %ln20o, label %c1Ut, label %n20p
+
+n20p:
+  %ln20q = load i32** %Sp_Var
+  %ln20r = getelementptr inbounds i32* %ln20q, i32 0
+  %ln20s = bitcast i32* %ln20r to i32*
+  %ln20t = load i32* %ln20s, !tbaa !1
+  store i32 %ln20t, i32* %R1_Var
+  %ln20u = load i32** %Sp_Var
+  %ln20v = getelementptr inbounds i32* %ln20u, i32 1
+  %ln20w = ptrtoint i32* %ln20v to i32
+  %ln20x = inttoptr i32 %ln20w to i32*
+  store i32* %ln20x, i32** %Sp_Var
+  %ln20y = load i32** %Sp_Var
+  %ln20z = getelementptr inbounds i32* %ln20y, i32 0
+  %ln20A = bitcast i32* %ln20z to i32*
+  %ln20B = load i32* %ln20A, !tbaa !1
+  %ln20C = inttoptr i32 %ln20B to void (i32*, i32*, i32*, i32)*
+  %ln20D = load i32** %Base_Var
+  %ln20E = load i32** %Sp_Var
+  %ln20F = load i32** %Hp_Var
+  %ln20G = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln20C( i32* %ln20D, i32* %ln20E, i32* %ln20F, i32 %ln20G ) nounwind
+  ret void
+
+c1Ut:
+  %ln20H = load i32** %Sp_Var
+  %ln20I = getelementptr inbounds i32* %ln20H, i32 0
+  %ln20J = bitcast i32* %ln20I to i32*
+  %ln20K = load i32* %ln20J, !tbaa !1
+  %ln20L = add i32 %ln20K, 1
+  store i32 %ln20L, i32* %ls1TB
+  %ln20M = load i32* %ls1TB
+  %ln20N = load i32** %Sp_Var
+  %ln20O = getelementptr inbounds i32* %ln20N, i32 0
+  store i32 %ln20M, i32* %ln20O, !tbaa !1
+  %ln20P = load i32** %Base_Var
+  %ln20Q = load i32** %Sp_Var
+  %ln20R = load i32** %Hp_Var
+  %ln20S = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @InnerLoop_zdwgo_info( i32* %ln20P, i32* %ln20Q, i32* %ln20R, i32 %ln20S ) nounwind
+  ret void
+
+c1Us:
+  %ln20T = load i32* %ls1TC
+  %ln20U = icmp ne i32 %ln20T, 32
+  br i1 %ln20U, label %c1Ut, label %n20V
+
+n20V:
+  %ln20W = load i32** %Sp_Var
+  %ln20X = getelementptr inbounds i32* %ln20W, i32 0
+  %ln20Y = bitcast i32* %ln20X to i32*
+  %ln20Z = load i32* %ln20Y, !tbaa !1
+  store i32 %ln20Z, i32* %R1_Var
+  %ln210 = load i32** %Sp_Var
+  %ln211 = getelementptr inbounds i32* %ln210, i32 1
+  %ln212 = ptrtoint i32* %ln211 to i32
+  %ln213 = inttoptr i32 %ln212 to i32*
+  store i32* %ln213, i32** %Sp_Var
+  %ln214 = load i32** %Sp_Var
+  %ln215 = getelementptr inbounds i32* %ln214, i32 0
+  %ln216 = bitcast i32* %ln215 to i32*
+  %ln217 = load i32* %ln216, !tbaa !1
+  %ln218 = inttoptr i32 %ln217 to void (i32*, i32*, i32*, i32)*
+  %ln219 = load i32** %Base_Var
+  %ln21a = load i32** %Sp_Var
+  %ln21b = load i32** %Hp_Var
+  %ln21c = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln218( i32* %ln219, i32* %ln21a, i32* %ln21b, i32 %ln21c ) nounwind
+  ret void
+
+c1Ur:
+  %ln21d = load i32* %ls1TC
+  %ln21e = icmp ne i32 %ln21d, 13
+  br i1 %ln21e, label %c1Ut, label %n21f
+
+n21f:
+  %ln21g = load i32** %Sp_Var
+  %ln21h = getelementptr inbounds i32* %ln21g, i32 0
+  %ln21i = bitcast i32* %ln21h to i32*
+  %ln21j = load i32* %ln21i, !tbaa !1
+  store i32 %ln21j, i32* %R1_Var
+  %ln21k = load i32** %Sp_Var
+  %ln21l = getelementptr inbounds i32* %ln21k, i32 1
+  %ln21m = ptrtoint i32* %ln21l to i32
+  %ln21n = inttoptr i32 %ln21m to i32*
+  store i32* %ln21n, i32** %Sp_Var
+  %ln21o = load i32** %Sp_Var
+  %ln21p = getelementptr inbounds i32* %ln21o, i32 0
+  %ln21q = bitcast i32* %ln21p to i32*
+  %ln21r = load i32* %ln21q, !tbaa !1
+  %ln21s = inttoptr i32 %ln21r to void (i32*, i32*, i32*, i32)*
+  %ln21t = load i32** %Base_Var
+  %ln21u = load i32** %Sp_Var
+  %ln21v = load i32** %Hp_Var
+  %ln21w = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln21s( i32* %ln21t, i32* %ln21u, i32* %ln21v, i32 %ln21w ) nounwind
+  ret void
+
+c1Uu:
+  %ln21x = load i32* %ls1TC
+  %ln21y = icmp ne i32 %ln21x, 0
+  br i1 %ln21y, label %c1Ut, label %n21z
+
+n21z:
+  %ln21A = load i32** %Sp_Var
+  %ln21B = getelementptr inbounds i32* %ln21A, i32 0
+  %ln21C = bitcast i32* %ln21B to i32*
+  %ln21D = load i32* %ln21C, !tbaa !1
+  store i32 %ln21D, i32* %R1_Var
+  %ln21E = load i32** %Sp_Var
+  %ln21F = getelementptr inbounds i32* %ln21E, i32 1
+  %ln21G = ptrtoint i32* %ln21F to i32
+  %ln21H = inttoptr i32 %ln21G to i32*
+  store i32* %ln21H, i32** %Sp_Var
+  %ln21I = load i32** %Sp_Var
+  %ln21J = getelementptr inbounds i32* %ln21I, i32 0
+  %ln21K = bitcast i32* %ln21J to i32*
+  %ln21L = load i32* %ln21K, !tbaa !1
+  %ln21M = inttoptr i32 %ln21L to void (i32*, i32*, i32*, i32)*
+  %ln21N = load i32** %Base_Var
+  %ln21O = load i32** %Sp_Var
+  %ln21P = load i32** %Hp_Var
+  %ln21Q = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln21M( i32* %ln21N, i32* %ln21O, i32* %ln21P, i32 %ln21Q ) nounwind
+  ret void
+
+c1Uq:
+  %ln21R = load i32* %ls1TC
+  %ln21S = icmp ult i32 %ln21R, 10
+  br i1 %ln21S, label %c1Uu, label %n21T
+
+n21T:
+  %ln21U = load i32* %ls1TC
+  %ln21V = icmp ne i32 %ln21U, 10
+  br i1 %ln21V, label %c1Ut, label %n21W
+
+n21W:
+  %ln21X = load i32** %Sp_Var
+  %ln21Y = getelementptr inbounds i32* %ln21X, i32 0
+  %ln21Z = bitcast i32* %ln21Y to i32*
+  %ln220 = load i32* %ln21Z, !tbaa !1
+  store i32 %ln220, i32* %R1_Var
+  %ln221 = load i32** %Sp_Var
+  %ln222 = getelementptr inbounds i32* %ln221, i32 1
+  %ln223 = ptrtoint i32* %ln222 to i32
+  %ln224 = inttoptr i32 %ln223 to i32*
+  store i32* %ln224, i32** %Sp_Var
+  %ln225 = load i32** %Sp_Var
+  %ln226 = getelementptr inbounds i32* %ln225, i32 0
+  %ln227 = bitcast i32* %ln226 to i32*
+  %ln228 = load i32* %ln227, !tbaa !1
+  %ln229 = inttoptr i32 %ln228 to void (i32*, i32*, i32*, i32)*
+  %ln22a = load i32** %Base_Var
+  %ln22b = load i32** %Sp_Var
+  %ln22c = load i32** %Hp_Var
+  %ln22d = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln229( i32* %ln22a, i32* %ln22b, i32* %ln22c, i32 %ln22d ) nounwind
+  ret void
+
+}
+
+
+
+
+
+==================== LLVM Code ====================
+%s1UF_ret_struct = type <{i32, i32}>
+@s1UF_info_itable = internal constant %s1UF_ret_struct<{i32 965, i32 32}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1UF_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1VM:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ls1SL = alloca i32, i32 1
+  %ls1Uy = alloca i32, i32 1
+  %ls1Uz = alloca i32, i32 1
+  %ls1UJ = alloca i32, i32 1
+  %ls1Ux = alloca i32, i32 1
+  %ln23I = load i32** %Hp_Var
+  %ln23J = getelementptr inbounds i32* %ln23I, i32 7
+  %ln23K = ptrtoint i32* %ln23J to i32
+  %ln23L = inttoptr i32 %ln23K to i32*
+  store i32* %ln23L, i32** %Hp_Var
+  %ln23M = load i32** %Hp_Var
+  %ln23N = ptrtoint i32* %ln23M to i32
+  %ln23O = load i32** %Base_Var
+  %ln23P = getelementptr inbounds i32* %ln23O, i32 23
+  %ln23Q = bitcast i32* %ln23P to i32*
+  %ln23R = load i32* %ln23Q, !tbaa !4
+  %ln23S = icmp ugt i32 %ln23N, %ln23R
+  br i1 %ln23S, label %c1VQ, label %n23T
+
+n23T:
+  %ln23U = load i32* %R1_Var
+  %ln23V = add i32 %ln23U, 8
+  store i32 %ln23V, i32* %ls1SL
+  %ln23W = load i32** %Sp_Var
+  %ln23X = getelementptr inbounds i32* %ln23W, i32 5
+  %ln23Y = bitcast i32* %ln23X to i32*
+  %ln23Z = load i32* %ln23Y, !tbaa !1
+  store i32 %ln23Z, i32* %ls1Uy
+  %ln240 = load i32** %Sp_Var
+  %ln241 = getelementptr inbounds i32* %ln240, i32 3
+  %ln242 = bitcast i32* %ln241 to i32*
+  %ln243 = load i32* %ln242, !tbaa !1
+  %ln244 = load i32** %Sp_Var
+  %ln245 = getelementptr inbounds i32* %ln244, i32 2
+  %ln246 = bitcast i32* %ln245 to i32*
+  %ln247 = load i32* %ln246, !tbaa !1
+  %ln248 = add i32 %ln243, %ln247
+  store i32 %ln248, i32* %ls1Uz
+  %ln249 = load i32* %ls1SL
+  %ln24a = inttoptr i32 %ln249 to i8*
+  %ln24b = load i32* %ls1Uz
+  %ln24c = inttoptr i32 %ln24b to i8*
+  %ln24d = load i32* %ls1Uy
+  %ln24e = call ccc i8* (i8*,i8*,i32)* @memcpy( i8* %ln24a, i8* %ln24c, i32 %ln24d ) nounwind
+  %ln24f = ptrtoint i8* %ln24e to i32
+  store i32 %ln24f, i32* %ls1UJ
+  %ln24g = load i32* %ls1SL
+  %ln24h = load i32** %Sp_Var
+  %ln24i = getelementptr inbounds i32* %ln24h, i32 5
+  %ln24j = bitcast i32* %ln24i to i32*
+  %ln24k = load i32* %ln24j, !tbaa !1
+  %ln24l = add i32 %ln24g, %ln24k
+  store i32 %ln24l, i32* %ls1Ux
+  %ln24m = load i32* %ls1Ux
+  %ln24n = trunc i32 0 to i8
+  %ln24o = inttoptr i32 %ln24m to i8*
+  store i8 %ln24n, i8* %ln24o, !tbaa !5
+  %ln24p = ptrtoint [0 x i32]* @base_GHCziForeignPtr_PlainPtr_con_info to i32
+  %ln24q = load i32** %Hp_Var
+  %ln24r = getelementptr inbounds i32* %ln24q, i32 -6
+  store i32 %ln24p, i32* %ln24r, !tbaa !2
+  %ln24s = load i32* %R1_Var
+  %ln24t = load i32** %Hp_Var
+  %ln24u = getelementptr inbounds i32* %ln24t, i32 -5
+  store i32 %ln24s, i32* %ln24u, !tbaa !2
+  %ln24v = ptrtoint [0 x i32]* @bytestringzm0zi10zi0zi0_DataziByteStringziInternal_PS_con_info to i32
+  %ln24w = load i32** %Hp_Var
+  %ln24x = getelementptr inbounds i32* %ln24w, i32 -4
+  store i32 %ln24v, i32* %ln24x, !tbaa !2
+  %ln24y = load i32** %Hp_Var
+  %ln24z = ptrtoint i32* %ln24y to i32
+  %ln24A = add i32 %ln24z, -21
+  %ln24B = load i32** %Hp_Var
+  %ln24C = getelementptr inbounds i32* %ln24B, i32 -3
+  store i32 %ln24A, i32* %ln24C, !tbaa !2
+  %ln24D = load i32* %ls1SL
+  %ln24E = load i32** %Hp_Var
+  %ln24F = getelementptr inbounds i32* %ln24E, i32 -2
+  store i32 %ln24D, i32* %ln24F, !tbaa !2
+  %ln24G = load i32** %Hp_Var
+  %ln24H = getelementptr inbounds i32* %ln24G, i32 -1
+  store i32 0, i32* %ln24H, !tbaa !2
+  %ln24I = load i32** %Sp_Var
+  %ln24J = getelementptr inbounds i32* %ln24I, i32 4
+  %ln24K = bitcast i32* %ln24J to i32*
+  %ln24L = load i32* %ln24K, !tbaa !1
+  %ln24M = load i32** %Hp_Var
+  %ln24N = getelementptr inbounds i32* %ln24M, i32 0
+  store i32 %ln24L, i32* %ln24N, !tbaa !2
+  %ln24O = load i32** %Hp_Var
+  %ln24P = ptrtoint i32* %ln24O to i32
+  %ln24Q = add i32 %ln24P, -15
+  store i32 %ln24Q, i32* %R1_Var
+  %ln24R = load i32** %Sp_Var
+  %ln24S = getelementptr inbounds i32* %ln24R, i32 6
+  %ln24T = ptrtoint i32* %ln24S to i32
+  %ln24U = inttoptr i32 %ln24T to i32*
+  store i32* %ln24U, i32** %Sp_Var
+  %ln24V = load i32** %Sp_Var
+  %ln24W = getelementptr inbounds i32* %ln24V, i32 0
+  %ln24X = bitcast i32* %ln24W to i32*
+  %ln24Y = load i32* %ln24X, !tbaa !1
+  %ln24Z = inttoptr i32 %ln24Y to void (i32*, i32*, i32*, i32)*
+  %ln250 = load i32** %Base_Var
+  %ln251 = load i32** %Sp_Var
+  %ln252 = load i32** %Hp_Var
+  %ln253 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln24Z( i32* %ln250, i32* %ln251, i32* %ln252, i32 %ln253 ) nounwind
+  ret void
+
+c1VR:
+  %ln254 = load i32** %Base_Var
+  %ln255 = getelementptr inbounds i32* %ln254, i32 8
+  store i32 254, i32* %ln255, !tbaa !4
+  %ln256 = load i32** %Base_Var
+  %ln257 = load i32** %Sp_Var
+  %ln258 = load i32** %Hp_Var
+  %ln259 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @stg_gc_ut( i32* %ln256, i32* %ln257, i32* %ln258, i32 %ln259 ) nounwind
+  ret void
+
+c1VQ:
+  %ln25a = load i32** %Base_Var
+  %ln25b = getelementptr inbounds i32* %ln25a, i32 29
+  store i32 28, i32* %ln25b, !tbaa !4
+  br label %c1VR
+
+}
+
+
+@base_GHCziForeignPtr_PlainPtr_con_info = external global [0 x i32]
+                                          
+@bytestringzm0zi10zi0zi0_DataziByteStringziInternal_PS_con_info = external global [0 x i32]
+                                                                  
+declare  cc 10 void @stg_gc_ut(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%s1UA_info_struct = type <{i32, i32, i32, i32}>
+@s1UA_info_itable = internal constant %s1UA_info_struct<{i32 add (i32 sub (i32 ptrtoint (%InnerLoop_innerLoopzu1_srt_struct* @InnerLoop_innerLoopzu1_srt to i32),i32 ptrtoint (void (i32*, i32*, i32*, i32)* @s1UA_info to i32)),i32 0), i32 65539, i32 196609, i32 65545}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1UA_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1VT:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ls1SD = alloca i32, i32 1
+  %lc1Vl = alloca i32, i32 1
+  %ln26n = load i32** %Sp_Var
+  %ln26o = getelementptr inbounds i32* %ln26n, i32 -6
+  %ln26p = ptrtoint i32* %ln26o to i32
+  %ln26q = load i32** %Base_Var
+  %ln26r = getelementptr inbounds i32* %ln26q, i32 21
+  %ln26s = bitcast i32* %ln26r to i32*
+  %ln26t = load i32* %ln26s, !tbaa !4
+  %ln26u = icmp ult i32 %ln26p, %ln26t
+  br i1 %ln26u, label %c1VV, label %n26v
+
+n26v:
+  %ln26w = load i32* %R1_Var
+  %ln26x = add i32 %ln26w, 7
+  %ln26y = inttoptr i32 %ln26x to i32*
+  %ln26z = load i32* %ln26y, !tbaa !3
+  %ln26A = add i32 %ln26z, 1
+  store i32 %ln26A, i32* %ls1SD
+  %ln26B = load i32* %ls1SD
+  %ln26C = icmp slt i32 %ln26B, 0
+  %ln26D = zext i1 %ln26C to i32
+  store i32 %ln26D, i32* %lc1Vl
+  %ln26E = load i32* %lc1Vl
+  %ln26F = icmp uge i32 %ln26E, 1
+  br i1 %ln26F, label %c1VX, label %n26G
+
+n26G:
+  %ln26H = load i32* %R1_Var
+  %ln26I = add i32 %ln26H, 7
+  %ln26J = inttoptr i32 %ln26I to i32*
+  %ln26K = load i32* %ln26J, !tbaa !3
+  %ln26L = load i32** %Sp_Var
+  %ln26M = getelementptr inbounds i32* %ln26L, i32 -1
+  store i32 %ln26K, i32* %ln26M, !tbaa !1
+  %ln26N = load i32* %ls1SD
+  %ln26O = load i32** %Sp_Var
+  %ln26P = getelementptr inbounds i32* %ln26O, i32 -2
+  store i32 %ln26N, i32* %ln26P, !tbaa !1
+  %ln26Q = load i32* %R1_Var
+  %ln26R = add i32 %ln26Q, 11
+  %ln26S = inttoptr i32 %ln26R to i32*
+  %ln26T = load i32* %ln26S, !tbaa !3
+  %ln26U = load i32** %Sp_Var
+  %ln26V = getelementptr inbounds i32* %ln26U, i32 -3
+  store i32 %ln26T, i32* %ln26V, !tbaa !1
+  %ln26W = load i32* %R1_Var
+  %ln26X = add i32 %ln26W, 15
+  %ln26Y = inttoptr i32 %ln26X to i32*
+  %ln26Z = load i32* %ln26Y, !tbaa !3
+  %ln270 = load i32** %Sp_Var
+  %ln271 = getelementptr inbounds i32* %ln270, i32 -4
+  store i32 %ln26Z, i32* %ln271, !tbaa !1
+  %ln272 = load i32* %R1_Var
+  %ln273 = add i32 %ln272, 3
+  %ln274 = inttoptr i32 %ln273 to i32*
+  %ln275 = load i32* %ln274, !tbaa !3
+  %ln276 = load i32** %Sp_Var
+  %ln277 = getelementptr inbounds i32* %ln276, i32 -5
+  store i32 %ln275, i32* %ln277, !tbaa !1
+  %ln278 = load i32* %ls1SD
+  store i32 %ln278, i32* %R1_Var
+  %ln279 = ptrtoint void (i32*, i32*, i32*, i32)* @s1UF_info to i32
+  %ln27a = load i32** %Sp_Var
+  %ln27b = getelementptr inbounds i32* %ln27a, i32 -6
+  store i32 %ln279, i32* %ln27b, !tbaa !1
+  %ln27c = load i32** %Sp_Var
+  %ln27d = getelementptr inbounds i32* %ln27c, i32 -6
+  %ln27e = ptrtoint i32* %ln27d to i32
+  %ln27f = inttoptr i32 %ln27e to i32*
+  store i32* %ln27f, i32** %Sp_Var
+  %ln27g = load i32** %Base_Var
+  %ln27h = load i32** %Sp_Var
+  %ln27i = load i32** %Hp_Var
+  %ln27j = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @stg_newPinnedByteArrayzh( i32* %ln27g, i32* %ln27h, i32* %ln27i, i32 %ln27j ) nounwind
+  ret void
+
+c1VV:
+  %ln27k = load i32** %Base_Var
+  %ln27l = getelementptr inbounds i32* %ln27k, i32 -2
+  %ln27m = bitcast i32* %ln27l to i32*
+  %ln27n = load i32* %ln27m, !tbaa !4
+  %ln27o = inttoptr i32 %ln27n to void (i32*, i32*, i32*, i32)*
+  %ln27p = load i32** %Base_Var
+  %ln27q = load i32** %Sp_Var
+  %ln27r = load i32** %Hp_Var
+  %ln27s = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln27o( i32* %ln27p, i32* %ln27q, i32* %ln27r, i32 %ln27s ) nounwind
+  ret void
+
+c1VX:
+  %ln27t = ptrtoint [0 x i32]* @base_GHCziForeignPtr_mallocPlainForeignPtrBytes2_closure to i32
+  store i32 %ln27t, i32* %R1_Var
+  %ln27u = load i32** %Base_Var
+  %ln27v = load i32** %Sp_Var
+  %ln27w = load i32** %Hp_Var
+  %ln27x = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @stg_ap_0_fast( i32* %ln27u, i32* %ln27v, i32* %ln27w, i32 %ln27x ) nounwind
+  ret void
+
+}
+
+
+declare  cc 10 void @stg_newPinnedByteArrayzh(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+declare  cc 10 void @stg_ap_0_fast(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%s1UH_ret_struct = type <{i32, i32, i32}>
+@s1UH_info_itable = internal constant %s1UH_ret_struct<{i32 add (i32 sub (i32 ptrtoint (%InnerLoop_innerLoopzu1_srt_struct* @InnerLoop_innerLoopzu1_srt to i32),i32 ptrtoint (void (i32*, i32*, i32*, i32)* @s1UH_info to i32)),i32 0), i32 0, i32 65568}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1UH_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1VZ:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln28v = load i32** %Hp_Var
+  %ln28w = getelementptr inbounds i32* %ln28v, i32 5
+  %ln28x = ptrtoint i32* %ln28w to i32
+  %ln28y = inttoptr i32 %ln28x to i32*
+  store i32* %ln28y, i32** %Hp_Var
+  %ln28z = load i32** %Hp_Var
+  %ln28A = ptrtoint i32* %ln28z to i32
+  %ln28B = load i32** %Base_Var
+  %ln28C = getelementptr inbounds i32* %ln28B, i32 23
+  %ln28D = bitcast i32* %ln28C to i32*
+  %ln28E = load i32* %ln28D, !tbaa !4
+  %ln28F = icmp ugt i32 %ln28A, %ln28E
+  br i1 %ln28F, label %c1W2, label %n28G
+
+n28G:
+  %ln28H = ptrtoint void (i32*, i32*, i32*, i32)* @s1UA_info to i32
+  %ln28I = load i32** %Hp_Var
+  %ln28J = getelementptr inbounds i32* %ln28I, i32 -4
+  store i32 %ln28H, i32* %ln28J, !tbaa !2
+  %ln28K = load i32* %R1_Var
+  %ln28L = add i32 %ln28K, 3
+  %ln28M = inttoptr i32 %ln28L to i32*
+  %ln28N = load i32* %ln28M, !tbaa !3
+  %ln28O = load i32** %Hp_Var
+  %ln28P = getelementptr inbounds i32* %ln28O, i32 -3
+  store i32 %ln28N, i32* %ln28P, !tbaa !2
+  %ln28Q = load i32* %R1_Var
+  %ln28R = add i32 %ln28Q, 15
+  %ln28S = inttoptr i32 %ln28R to i32*
+  %ln28T = load i32* %ln28S, !tbaa !3
+  %ln28U = load i32** %Hp_Var
+  %ln28V = getelementptr inbounds i32* %ln28U, i32 -2
+  store i32 %ln28T, i32* %ln28V, !tbaa !2
+  %ln28W = load i32* %R1_Var
+  %ln28X = add i32 %ln28W, 7
+  %ln28Y = inttoptr i32 %ln28X to i32*
+  %ln28Z = load i32* %ln28Y, !tbaa !3
+  %ln290 = load i32** %Hp_Var
+  %ln291 = getelementptr inbounds i32* %ln290, i32 -1
+  store i32 %ln28Z, i32* %ln291, !tbaa !2
+  %ln292 = load i32* %R1_Var
+  %ln293 = add i32 %ln292, 11
+  %ln294 = inttoptr i32 %ln293 to i32*
+  %ln295 = load i32* %ln294, !tbaa !3
+  %ln296 = load i32** %Hp_Var
+  %ln297 = getelementptr inbounds i32* %ln296, i32 0
+  store i32 %ln295, i32* %ln297, !tbaa !2
+  %ln298 = load i32** %Hp_Var
+  %ln299 = ptrtoint i32* %ln298 to i32
+  %ln29a = add i32 %ln299, -15
+  %ln29b = load i32** %Sp_Var
+  %ln29c = getelementptr inbounds i32* %ln29b, i32 0
+  store i32 %ln29a, i32* %ln29c, !tbaa !1
+  %ln29d = load i32** %Base_Var
+  %ln29e = load i32** %Sp_Var
+  %ln29f = load i32** %Hp_Var
+  %ln29g = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @base_GHCziIO_unsafeDupablePerformIO_info( i32* %ln29d, i32* %ln29e, i32* %ln29f, i32 %ln29g ) nounwind
+  ret void
+
+c1W3:
+  %ln29h = load i32** %Base_Var
+  %ln29i = getelementptr inbounds i32* %ln29h, i32 -3
+  %ln29j = bitcast i32* %ln29i to i32*
+  %ln29k = load i32* %ln29j, !tbaa !4
+  %ln29l = inttoptr i32 %ln29k to void (i32*, i32*, i32*, i32)*
+  %ln29m = load i32** %Base_Var
+  %ln29n = load i32** %Sp_Var
+  %ln29o = load i32** %Hp_Var
+  %ln29p = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln29l( i32* %ln29m, i32* %ln29n, i32* %ln29o, i32 %ln29p ) nounwind
+  ret void
+
+c1W2:
+  %ln29q = load i32** %Base_Var
+  %ln29r = getelementptr inbounds i32* %ln29q, i32 29
+  store i32 20, i32* %ln29r, !tbaa !4
+  br label %c1W3
+
+}
+
+
+declare  cc 10 void @base_GHCziIO_unsafeDupablePerformIO_info(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%s1Ta_info_struct = type <{i32, i32, i32}>
+@s1Ta_info_itable = internal constant %s1Ta_info_struct<{i32 add (i32 sub (i32 ptrtoint (%InnerLoop_innerLoopzu1_srt_struct* @InnerLoop_innerLoopzu1_srt to i32),i32 ptrtoint (void (i32*, i32*, i32*, i32)* @s1Ta_info to i32)),i32 0), i32 1, i32 65553}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1Ta_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1Wj:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2ah = load i32** %Sp_Var
+  %ln2ai = getelementptr inbounds i32* %ln2ah, i32 -3
+  %ln2aj = ptrtoint i32* %ln2ai to i32
+  %ln2ak = load i32** %Base_Var
+  %ln2al = getelementptr inbounds i32* %ln2ak, i32 21
+  %ln2am = bitcast i32* %ln2al to i32*
+  %ln2an = load i32* %ln2am, !tbaa !4
+  %ln2ao = icmp ult i32 %ln2aj, %ln2an
+  br i1 %ln2ao, label %c1Wl, label %n2ap
+
+n2ap:
+  %ln2aq = ptrtoint [0 x i32]* @stg_upd_frame_info to i32
+  %ln2ar = load i32** %Sp_Var
+  %ln2as = getelementptr inbounds i32* %ln2ar, i32 -2
+  store i32 %ln2aq, i32* %ln2as, !tbaa !1
+  %ln2at = load i32* %R1_Var
+  %ln2au = load i32** %Sp_Var
+  %ln2av = getelementptr inbounds i32* %ln2au, i32 -1
+  store i32 %ln2at, i32* %ln2av, !tbaa !1
+  %ln2aw = load i32* %R1_Var
+  %ln2ax = add i32 %ln2aw, 8
+  %ln2ay = inttoptr i32 %ln2ax to i32*
+  %ln2az = load i32* %ln2ay, !tbaa !3
+  store i32 %ln2az, i32* %R1_Var
+  %ln2aA = ptrtoint void (i32*, i32*, i32*, i32)* @s1UH_info to i32
+  %ln2aB = load i32** %Sp_Var
+  %ln2aC = getelementptr inbounds i32* %ln2aB, i32 -3
+  store i32 %ln2aA, i32* %ln2aC, !tbaa !1
+  %ln2aD = load i32** %Sp_Var
+  %ln2aE = getelementptr inbounds i32* %ln2aD, i32 -3
+  %ln2aF = ptrtoint i32* %ln2aE to i32
+  %ln2aG = inttoptr i32 %ln2aF to i32*
+  store i32* %ln2aG, i32** %Sp_Var
+  %ln2aH = load i32* %R1_Var
+  %ln2aI = and i32 %ln2aH, 3
+  %ln2aJ = icmp ne i32 %ln2aI, 0
+  br i1 %ln2aJ, label %c1Wm, label %n2aK
+
+n2aK:
+  %ln2aL = load i32* %R1_Var
+  %ln2aM = inttoptr i32 %ln2aL to i32*
+  %ln2aN = load i32* %ln2aM, !tbaa !3
+  %ln2aO = inttoptr i32 %ln2aN to void (i32*, i32*, i32*, i32)*
+  %ln2aP = load i32** %Base_Var
+  %ln2aQ = load i32** %Sp_Var
+  %ln2aR = load i32** %Hp_Var
+  %ln2aS = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2aO( i32* %ln2aP, i32* %ln2aQ, i32* %ln2aR, i32 %ln2aS ) nounwind
+  ret void
+
+c1Wl:
+  %ln2aT = load i32** %Base_Var
+  %ln2aU = getelementptr inbounds i32* %ln2aT, i32 -3
+  %ln2aV = bitcast i32* %ln2aU to i32*
+  %ln2aW = load i32* %ln2aV, !tbaa !4
+  %ln2aX = inttoptr i32 %ln2aW to void (i32*, i32*, i32*, i32)*
+  %ln2aY = load i32** %Base_Var
+  %ln2aZ = load i32** %Sp_Var
+  %ln2b0 = load i32** %Hp_Var
+  %ln2b1 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2aX( i32* %ln2aY, i32* %ln2aZ, i32* %ln2b0, i32 %ln2b1 ) nounwind
+  ret void
+
+c1Wm:
+  %ln2b2 = load i32** %Base_Var
+  %ln2b3 = load i32** %Sp_Var
+  %ln2b4 = load i32** %Hp_Var
+  %ln2b5 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @s1UH_info( i32* %ln2b2, i32* %ln2b3, i32* %ln2b4, i32 %ln2b5 ) nounwind
+  ret void
+
+}
+
+
+@stg_upd_frame_info = external global [0 x i32]
+                      
+
+
+
+==================== LLVM Code ====================
+%s1To_ret_struct = type <{i32, i32}>
+@s1To_info_itable = internal constant %s1To_ret_struct<{i32 66, i32 32}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1To_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1Wy:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ls1UB = alloca i32, i32 1
+  %ln2bQ = load i32** %Hp_Var
+  %ln2bR = getelementptr inbounds i32* %ln2bQ, i32 2
+  %ln2bS = ptrtoint i32* %ln2bR to i32
+  %ln2bT = inttoptr i32 %ln2bS to i32*
+  store i32* %ln2bT, i32** %Hp_Var
+  %ln2bU = load i32** %Hp_Var
+  %ln2bV = ptrtoint i32* %ln2bU to i32
+  %ln2bW = load i32** %Base_Var
+  %ln2bX = getelementptr inbounds i32* %ln2bW, i32 23
+  %ln2bY = bitcast i32* %ln2bX to i32*
+  %ln2bZ = load i32* %ln2bY, !tbaa !4
+  %ln2c0 = icmp ugt i32 %ln2bV, %ln2bZ
+  br i1 %ln2c0, label %c1WE, label %n2c1
+
+n2c1:
+  %ln2c2 = load i32* %R1_Var
+  %ln2c3 = load i32** %Sp_Var
+  %ln2c4 = getelementptr inbounds i32* %ln2c3, i32 2
+  %ln2c5 = bitcast i32* %ln2c4 to i32*
+  %ln2c6 = load i32* %ln2c5, !tbaa !1
+  %ln2c7 = sub i32 %ln2c2, %ln2c6
+  store i32 %ln2c7, i32* %ls1UB
+  %ln2c8 = ptrtoint [0 x i32]* @ghczmprim_GHCziTypes_Izh_con_info to i32
+  %ln2c9 = load i32** %Hp_Var
+  %ln2ca = getelementptr inbounds i32* %ln2c9, i32 -1
+  store i32 %ln2c8, i32* %ln2ca, !tbaa !2
+  %ln2cb = load i32* %ls1UB
+  %ln2cc = load i32** %Hp_Var
+  %ln2cd = getelementptr inbounds i32* %ln2cc, i32 0
+  store i32 %ln2cb, i32* %ln2cd, !tbaa !2
+  %ln2ce = load i32** %Hp_Var
+  %ln2cf = ptrtoint i32* %ln2ce to i32
+  %ln2cg = add i32 %ln2cf, -3
+  store i32 %ln2cg, i32* %R1_Var
+  %ln2ch = load i32** %Sp_Var
+  %ln2ci = getelementptr inbounds i32* %ln2ch, i32 3
+  %ln2cj = ptrtoint i32* %ln2ci to i32
+  %ln2ck = inttoptr i32 %ln2cj to i32*
+  store i32* %ln2ck, i32** %Sp_Var
+  %ln2cl = load i32** %Sp_Var
+  %ln2cm = getelementptr inbounds i32* %ln2cl, i32 0
+  %ln2cn = bitcast i32* %ln2cm to i32*
+  %ln2co = load i32* %ln2cn, !tbaa !1
+  %ln2cp = inttoptr i32 %ln2co to void (i32*, i32*, i32*, i32)*
+  %ln2cq = load i32** %Base_Var
+  %ln2cr = load i32** %Sp_Var
+  %ln2cs = load i32** %Hp_Var
+  %ln2ct = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2cp( i32* %ln2cq, i32* %ln2cr, i32* %ln2cs, i32 %ln2ct ) nounwind
+  ret void
+
+c1WF:
+  %ln2cu = load i32** %Base_Var
+  %ln2cv = load i32** %Sp_Var
+  %ln2cw = load i32** %Hp_Var
+  %ln2cx = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @stg_gc_unbx_r1( i32* %ln2cu, i32* %ln2cv, i32* %ln2cw, i32 %ln2cx ) nounwind
+  ret void
+
+c1WE:
+  %ln2cy = load i32** %Base_Var
+  %ln2cz = getelementptr inbounds i32* %ln2cy, i32 29
+  store i32 8, i32* %ln2cz, !tbaa !4
+  br label %c1WF
+
+}
+
+
+@ghczmprim_GHCziTypes_Izh_con_info = external global [0 x i32]
+                                     
+declare  cc 10 void @stg_gc_unbx_r1(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%s1UL_ret_struct = type <{i32, i32}>
+@s1UL_info_itable = internal constant %s1UL_ret_struct<{i32 0, i32 32}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1UL_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1WH:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ls1Tk = alloca i32, i32 1
+  %ln2d6 = load i32* %R1_Var
+  %ln2d7 = add i32 %ln2d6, 7
+  %ln2d8 = inttoptr i32 %ln2d7 to i32*
+  %ln2d9 = load i32* %ln2d8, !tbaa !3
+  %ln2da = load i32* %R1_Var
+  %ln2db = add i32 %ln2da, 11
+  %ln2dc = inttoptr i32 %ln2db to i32*
+  %ln2dd = load i32* %ln2dc, !tbaa !3
+  %ln2de = add i32 %ln2d9, %ln2dd
+  store i32 %ln2de, i32* %ls1Tk
+  %ln2df = load i32* %R1_Var
+  %ln2dg = add i32 %ln2df, 3
+  %ln2dh = inttoptr i32 %ln2dg to i32*
+  %ln2di = load i32* %ln2dh, !tbaa !3
+  %ln2dj = load i32** %Sp_Var
+  %ln2dk = getelementptr inbounds i32* %ln2dj, i32 -1
+  store i32 %ln2di, i32* %ln2dk, !tbaa !1
+  %ln2dl = load i32* %ls1Tk
+  %ln2dm = load i32** %Sp_Var
+  %ln2dn = getelementptr inbounds i32* %ln2dm, i32 0
+  store i32 %ln2dl, i32* %ln2dn, !tbaa !1
+  %ln2do = load i32* %ls1Tk
+  %ln2dp = load i32** %Sp_Var
+  %ln2dq = getelementptr inbounds i32* %ln2dp, i32 -3
+  store i32 %ln2do, i32* %ln2dq, !tbaa !1
+  %ln2dr = ptrtoint void (i32*, i32*, i32*, i32)* @s1To_info to i32
+  %ln2ds = load i32** %Sp_Var
+  %ln2dt = getelementptr inbounds i32* %ln2ds, i32 -2
+  store i32 %ln2dr, i32* %ln2dt, !tbaa !1
+  %ln2du = load i32** %Sp_Var
+  %ln2dv = getelementptr inbounds i32* %ln2du, i32 -3
+  %ln2dw = ptrtoint i32* %ln2dv to i32
+  %ln2dx = inttoptr i32 %ln2dw to i32*
+  store i32* %ln2dx, i32** %Sp_Var
+  %ln2dy = load i32** %Base_Var
+  %ln2dz = load i32** %Sp_Var
+  %ln2dA = load i32** %Hp_Var
+  %ln2dB = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @InnerLoop_zdwgo_info( i32* %ln2dy, i32* %ln2dz, i32* %ln2dA, i32 %ln2dB ) nounwind
+  ret void
+
+}
+
+
+
+
+
+==================== LLVM Code ====================
+%s1Tq_info_struct = type <{i32, i32}>
+@s1Tq_info_itable = internal constant %s1Tq_info_struct<{i32 1, i32 17}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1Tq_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1WL:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2er = load i32** %Sp_Var
+  %ln2es = getelementptr inbounds i32* %ln2er, i32 -6
+  %ln2et = ptrtoint i32* %ln2es to i32
+  %ln2eu = load i32** %Base_Var
+  %ln2ev = getelementptr inbounds i32* %ln2eu, i32 21
+  %ln2ew = bitcast i32* %ln2ev to i32*
+  %ln2ex = load i32* %ln2ew, !tbaa !4
+  %ln2ey = icmp ult i32 %ln2et, %ln2ex
+  br i1 %ln2ey, label %c1WN, label %n2ez
+
+n2ez:
+  %ln2eA = ptrtoint [0 x i32]* @stg_upd_frame_info to i32
+  %ln2eB = load i32** %Sp_Var
+  %ln2eC = getelementptr inbounds i32* %ln2eB, i32 -2
+  store i32 %ln2eA, i32* %ln2eC, !tbaa !1
+  %ln2eD = load i32* %R1_Var
+  %ln2eE = load i32** %Sp_Var
+  %ln2eF = getelementptr inbounds i32* %ln2eE, i32 -1
+  store i32 %ln2eD, i32* %ln2eF, !tbaa !1
+  %ln2eG = load i32* %R1_Var
+  %ln2eH = add i32 %ln2eG, 8
+  %ln2eI = inttoptr i32 %ln2eH to i32*
+  %ln2eJ = load i32* %ln2eI, !tbaa !3
+  store i32 %ln2eJ, i32* %R1_Var
+  %ln2eK = ptrtoint void (i32*, i32*, i32*, i32)* @s1UL_info to i32
+  %ln2eL = load i32** %Sp_Var
+  %ln2eM = getelementptr inbounds i32* %ln2eL, i32 -3
+  store i32 %ln2eK, i32* %ln2eM, !tbaa !1
+  %ln2eN = load i32** %Sp_Var
+  %ln2eO = getelementptr inbounds i32* %ln2eN, i32 -3
+  %ln2eP = ptrtoint i32* %ln2eO to i32
+  %ln2eQ = inttoptr i32 %ln2eP to i32*
+  store i32* %ln2eQ, i32** %Sp_Var
+  %ln2eR = load i32* %R1_Var
+  %ln2eS = and i32 %ln2eR, 3
+  %ln2eT = icmp ne i32 %ln2eS, 0
+  br i1 %ln2eT, label %c1WO, label %n2eU
+
+n2eU:
+  %ln2eV = load i32* %R1_Var
+  %ln2eW = inttoptr i32 %ln2eV to i32*
+  %ln2eX = load i32* %ln2eW, !tbaa !3
+  %ln2eY = inttoptr i32 %ln2eX to void (i32*, i32*, i32*, i32)*
+  %ln2eZ = load i32** %Base_Var
+  %ln2f0 = load i32** %Sp_Var
+  %ln2f1 = load i32** %Hp_Var
+  %ln2f2 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2eY( i32* %ln2eZ, i32* %ln2f0, i32* %ln2f1, i32 %ln2f2 ) nounwind
+  ret void
+
+c1WN:
+  %ln2f3 = load i32** %Base_Var
+  %ln2f4 = getelementptr inbounds i32* %ln2f3, i32 -3
+  %ln2f5 = bitcast i32* %ln2f4 to i32*
+  %ln2f6 = load i32* %ln2f5, !tbaa !4
+  %ln2f7 = inttoptr i32 %ln2f6 to void (i32*, i32*, i32*, i32)*
+  %ln2f8 = load i32** %Base_Var
+  %ln2f9 = load i32** %Sp_Var
+  %ln2fa = load i32** %Hp_Var
+  %ln2fb = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2f7( i32* %ln2f8, i32* %ln2f9, i32* %ln2fa, i32 %ln2fb ) nounwind
+  ret void
+
+c1WO:
+  %ln2fc = load i32** %Base_Var
+  %ln2fd = load i32** %Sp_Var
+  %ln2fe = load i32** %Hp_Var
+  %ln2ff = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @s1UL_info( i32* %ln2fc, i32* %ln2fd, i32* %ln2fe, i32 %ln2ff ) nounwind
+  ret void
+
+}
+
+
+
+
+
+==================== LLVM Code ====================
+%s1Tt_info_struct = type <{i32, i32}>
+@s1Tt_info_itable = internal constant %s1Tt_info_struct<{i32 2, i32 19}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1Tt_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1WT:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2fY = load i32** %Sp_Var
+  %ln2fZ = getelementptr inbounds i32* %ln2fY, i32 -4
+  %ln2g0 = ptrtoint i32* %ln2fZ to i32
+  %ln2g1 = load i32** %Base_Var
+  %ln2g2 = getelementptr inbounds i32* %ln2g1, i32 21
+  %ln2g3 = bitcast i32* %ln2g2 to i32*
+  %ln2g4 = load i32* %ln2g3, !tbaa !4
+  %ln2g5 = icmp ult i32 %ln2g0, %ln2g4
+  br i1 %ln2g5, label %c1WV, label %n2g6
+
+n2g6:
+  %ln2g7 = ptrtoint [0 x i32]* @stg_upd_frame_info to i32
+  %ln2g8 = load i32** %Sp_Var
+  %ln2g9 = getelementptr inbounds i32* %ln2g8, i32 -2
+  store i32 %ln2g7, i32* %ln2g9, !tbaa !1
+  %ln2ga = load i32* %R1_Var
+  %ln2gb = load i32** %Sp_Var
+  %ln2gc = getelementptr inbounds i32* %ln2gb, i32 -1
+  store i32 %ln2ga, i32* %ln2gc, !tbaa !1
+  %ln2gd = load i32* %R1_Var
+  %ln2ge = add i32 %ln2gd, 8
+  %ln2gf = inttoptr i32 %ln2ge to i32*
+  %ln2gg = load i32* %ln2gf, !tbaa !3
+  %ln2gh = load i32** %Sp_Var
+  %ln2gi = getelementptr inbounds i32* %ln2gh, i32 -3
+  store i32 %ln2gg, i32* %ln2gi, !tbaa !1
+  %ln2gj = load i32* %R1_Var
+  %ln2gk = add i32 %ln2gj, 12
+  %ln2gl = inttoptr i32 %ln2gk to i32*
+  %ln2gm = load i32* %ln2gl, !tbaa !3
+  %ln2gn = load i32** %Sp_Var
+  %ln2go = getelementptr inbounds i32* %ln2gn, i32 -4
+  store i32 %ln2gm, i32* %ln2go, !tbaa !1
+  %ln2gp = load i32** %Sp_Var
+  %ln2gq = getelementptr inbounds i32* %ln2gp, i32 -4
+  %ln2gr = ptrtoint i32* %ln2gq to i32
+  %ln2gs = inttoptr i32 %ln2gr to i32*
+  store i32* %ln2gs, i32** %Sp_Var
+  %ln2gt = load i32** %Base_Var
+  %ln2gu = load i32** %Sp_Var
+  %ln2gv = load i32** %Hp_Var
+  %ln2gw = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @bytestringzm0zi10zi0zi0_DataziByteStringziUnsafe_unsafeDrop_info( i32* %ln2gt, i32* %ln2gu, i32* %ln2gv, i32 %ln2gw ) nounwind
+  ret void
+
+c1WV:
+  %ln2gx = load i32** %Base_Var
+  %ln2gy = getelementptr inbounds i32* %ln2gx, i32 -3
+  %ln2gz = bitcast i32* %ln2gy to i32*
+  %ln2gA = load i32* %ln2gz, !tbaa !4
+  %ln2gB = inttoptr i32 %ln2gA to void (i32*, i32*, i32*, i32)*
+  %ln2gC = load i32** %Base_Var
+  %ln2gD = load i32** %Sp_Var
+  %ln2gE = load i32** %Hp_Var
+  %ln2gF = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2gB( i32* %ln2gC, i32* %ln2gD, i32* %ln2gE, i32 %ln2gF ) nounwind
+  ret void
+
+}
+
+
+declare  cc 10 void @bytestringzm0zi10zi0zi0_DataziByteStringziUnsafe_unsafeDrop_info(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%s1Tu_info_struct = type <{i32, i32}>
+@s1Tu_info_itable = internal constant %s1Tu_info_struct<{i32 2, i32 19}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1Tu_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1X0:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2ho = load i32** %Sp_Var
+  %ln2hp = getelementptr inbounds i32* %ln2ho, i32 -4
+  %ln2hq = ptrtoint i32* %ln2hp to i32
+  %ln2hr = load i32** %Base_Var
+  %ln2hs = getelementptr inbounds i32* %ln2hr, i32 21
+  %ln2ht = bitcast i32* %ln2hs to i32*
+  %ln2hu = load i32* %ln2ht, !tbaa !4
+  %ln2hv = icmp ult i32 %ln2hq, %ln2hu
+  br i1 %ln2hv, label %c1X2, label %n2hw
+
+n2hw:
+  %ln2hx = ptrtoint [0 x i32]* @stg_upd_frame_info to i32
+  %ln2hy = load i32** %Sp_Var
+  %ln2hz = getelementptr inbounds i32* %ln2hy, i32 -2
+  store i32 %ln2hx, i32* %ln2hz, !tbaa !1
+  %ln2hA = load i32* %R1_Var
+  %ln2hB = load i32** %Sp_Var
+  %ln2hC = getelementptr inbounds i32* %ln2hB, i32 -1
+  store i32 %ln2hA, i32* %ln2hC, !tbaa !1
+  %ln2hD = load i32* %R1_Var
+  %ln2hE = add i32 %ln2hD, 8
+  %ln2hF = inttoptr i32 %ln2hE to i32*
+  %ln2hG = load i32* %ln2hF, !tbaa !3
+  %ln2hH = load i32** %Sp_Var
+  %ln2hI = getelementptr inbounds i32* %ln2hH, i32 -3
+  store i32 %ln2hG, i32* %ln2hI, !tbaa !1
+  %ln2hJ = load i32* %R1_Var
+  %ln2hK = add i32 %ln2hJ, 12
+  %ln2hL = inttoptr i32 %ln2hK to i32*
+  %ln2hM = load i32* %ln2hL, !tbaa !3
+  %ln2hN = load i32** %Sp_Var
+  %ln2hO = getelementptr inbounds i32* %ln2hN, i32 -4
+  store i32 %ln2hM, i32* %ln2hO, !tbaa !1
+  %ln2hP = load i32** %Sp_Var
+  %ln2hQ = getelementptr inbounds i32* %ln2hP, i32 -4
+  %ln2hR = ptrtoint i32* %ln2hQ to i32
+  %ln2hS = inttoptr i32 %ln2hR to i32*
+  store i32* %ln2hS, i32** %Sp_Var
+  %ln2hT = load i32** %Base_Var
+  %ln2hU = load i32** %Sp_Var
+  %ln2hV = load i32** %Hp_Var
+  %ln2hW = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @bytestringzm0zi10zi0zi0_DataziByteStringziUnsafe_unsafeTake_info( i32* %ln2hT, i32* %ln2hU, i32* %ln2hV, i32 %ln2hW ) nounwind
+  ret void
+
+c1X2:
+  %ln2hX = load i32** %Base_Var
+  %ln2hY = getelementptr inbounds i32* %ln2hX, i32 -3
+  %ln2hZ = bitcast i32* %ln2hY to i32*
+  %ln2i0 = load i32* %ln2hZ, !tbaa !4
+  %ln2i1 = inttoptr i32 %ln2i0 to void (i32*, i32*, i32*, i32)*
+  %ln2i2 = load i32** %Base_Var
+  %ln2i3 = load i32** %Sp_Var
+  %ln2i4 = load i32** %Hp_Var
+  %ln2i5 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2i1( i32* %ln2i2, i32* %ln2i3, i32* %ln2i4, i32 %ln2i5 ) nounwind
+  ret void
+
+}
+
+
+declare  cc 10 void @bytestringzm0zi10zi0zi0_DataziByteStringziUnsafe_unsafeTake_info(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%s1UI_ret_struct = type <{i32, i32, i32}>
+@s1UI_info_itable = internal constant %s1UI_ret_struct<{i32 add (i32 sub (i32 ptrtoint (%InnerLoop_innerLoopzu1_srt_struct* @InnerLoop_innerLoopzu1_srt to i32),i32 ptrtoint (void (i32*, i32*, i32*, i32)* @s1UI_info to i32)),i32 0), i32 0, i32 65568}>, section "X98A__STRIP,__me0", align 4
+                    
+define internal cc 10 void @s1UI_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1X4:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2jx = load i32** %Hp_Var
+  %ln2jy = getelementptr inbounds i32* %ln2jx, i32 17
+  %ln2jz = ptrtoint i32* %ln2jy to i32
+  %ln2jA = inttoptr i32 %ln2jz to i32*
+  store i32* %ln2jA, i32** %Hp_Var
+  %ln2jB = load i32** %Hp_Var
+  %ln2jC = ptrtoint i32* %ln2jB to i32
+  %ln2jD = load i32** %Base_Var
+  %ln2jE = getelementptr inbounds i32* %ln2jD, i32 23
+  %ln2jF = bitcast i32* %ln2jE to i32*
+  %ln2jG = load i32* %ln2jF, !tbaa !4
+  %ln2jH = icmp ugt i32 %ln2jC, %ln2jG
+  br i1 %ln2jH, label %c1X7, label %n2jI
+
+n2jI:
+  %ln2jJ = ptrtoint void (i32*, i32*, i32*, i32)* @s1Ta_info to i32
+  %ln2jK = load i32** %Hp_Var
+  %ln2jL = getelementptr inbounds i32* %ln2jK, i32 -16
+  store i32 %ln2jJ, i32* %ln2jL, !tbaa !2
+  %ln2jM = load i32* %R1_Var
+  %ln2jN = load i32** %Hp_Var
+  %ln2jO = getelementptr inbounds i32* %ln2jN, i32 -14
+  store i32 %ln2jM, i32* %ln2jO, !tbaa !2
+  %ln2jP = ptrtoint void (i32*, i32*, i32*, i32)* @s1Tq_info to i32
+  %ln2jQ = load i32** %Hp_Var
+  %ln2jR = getelementptr inbounds i32* %ln2jQ, i32 -13
+  store i32 %ln2jP, i32* %ln2jR, !tbaa !2
+  %ln2jS = load i32** %Hp_Var
+  %ln2jT = getelementptr inbounds i32* %ln2jS, i32 -16
+  %ln2jU = ptrtoint i32* %ln2jT to i32
+  %ln2jV = load i32** %Hp_Var
+  %ln2jW = getelementptr inbounds i32* %ln2jV, i32 -11
+  store i32 %ln2jU, i32* %ln2jW, !tbaa !2
+  %ln2jX = ptrtoint void (i32*, i32*, i32*, i32)* @s1Tt_info to i32
+  %ln2jY = load i32** %Hp_Var
+  %ln2jZ = getelementptr inbounds i32* %ln2jY, i32 -10
+  store i32 %ln2jX, i32* %ln2jZ, !tbaa !2
+  %ln2k0 = load i32** %Hp_Var
+  %ln2k1 = getelementptr inbounds i32* %ln2k0, i32 -16
+  %ln2k2 = ptrtoint i32* %ln2k1 to i32
+  %ln2k3 = load i32** %Hp_Var
+  %ln2k4 = getelementptr inbounds i32* %ln2k3, i32 -8
+  store i32 %ln2k2, i32* %ln2k4, !tbaa !2
+  %ln2k5 = load i32** %Hp_Var
+  %ln2k6 = getelementptr inbounds i32* %ln2k5, i32 -13
+  %ln2k7 = ptrtoint i32* %ln2k6 to i32
+  %ln2k8 = load i32** %Hp_Var
+  %ln2k9 = getelementptr inbounds i32* %ln2k8, i32 -7
+  store i32 %ln2k7, i32* %ln2k9, !tbaa !2
+  %ln2ka = ptrtoint void (i32*, i32*, i32*, i32)* @s1Tu_info to i32
+  %ln2kb = load i32** %Hp_Var
+  %ln2kc = getelementptr inbounds i32* %ln2kb, i32 -6
+  store i32 %ln2ka, i32* %ln2kc, !tbaa !2
+  %ln2kd = load i32** %Hp_Var
+  %ln2ke = getelementptr inbounds i32* %ln2kd, i32 -16
+  %ln2kf = ptrtoint i32* %ln2ke to i32
+  %ln2kg = load i32** %Hp_Var
+  %ln2kh = getelementptr inbounds i32* %ln2kg, i32 -4
+  store i32 %ln2kf, i32* %ln2kh, !tbaa !2
+  %ln2ki = load i32** %Hp_Var
+  %ln2kj = getelementptr inbounds i32* %ln2ki, i32 -13
+  %ln2kk = ptrtoint i32* %ln2kj to i32
+  %ln2kl = load i32** %Hp_Var
+  %ln2km = getelementptr inbounds i32* %ln2kl, i32 -3
+  store i32 %ln2kk, i32* %ln2km, !tbaa !2
+  %ln2kn = ptrtoint [0 x i32]* @ghczmprim_GHCziTuple_Z2T_con_info to i32
+  %ln2ko = load i32** %Hp_Var
+  %ln2kp = getelementptr inbounds i32* %ln2ko, i32 -2
+  store i32 %ln2kn, i32* %ln2kp, !tbaa !2
+  %ln2kq = load i32** %Hp_Var
+  %ln2kr = getelementptr inbounds i32* %ln2kq, i32 -6
+  %ln2ks = ptrtoint i32* %ln2kr to i32
+  %ln2kt = load i32** %Hp_Var
+  %ln2ku = getelementptr inbounds i32* %ln2kt, i32 -1
+  store i32 %ln2ks, i32* %ln2ku, !tbaa !2
+  %ln2kv = load i32** %Hp_Var
+  %ln2kw = getelementptr inbounds i32* %ln2kv, i32 -10
+  %ln2kx = ptrtoint i32* %ln2kw to i32
+  %ln2ky = load i32** %Hp_Var
+  %ln2kz = getelementptr inbounds i32* %ln2ky, i32 0
+  store i32 %ln2kx, i32* %ln2kz, !tbaa !2
+  %ln2kA = load i32** %Hp_Var
+  %ln2kB = ptrtoint i32* %ln2kA to i32
+  %ln2kC = add i32 %ln2kB, -7
+  store i32 %ln2kC, i32* %R1_Var
+  %ln2kD = load i32** %Sp_Var
+  %ln2kE = getelementptr inbounds i32* %ln2kD, i32 1
+  %ln2kF = ptrtoint i32* %ln2kE to i32
+  %ln2kG = inttoptr i32 %ln2kF to i32*
+  store i32* %ln2kG, i32** %Sp_Var
+  %ln2kH = load i32** %Sp_Var
+  %ln2kI = getelementptr inbounds i32* %ln2kH, i32 0
+  %ln2kJ = bitcast i32* %ln2kI to i32*
+  %ln2kK = load i32* %ln2kJ, !tbaa !1
+  %ln2kL = inttoptr i32 %ln2kK to void (i32*, i32*, i32*, i32)*
+  %ln2kM = load i32** %Base_Var
+  %ln2kN = load i32** %Sp_Var
+  %ln2kO = load i32** %Hp_Var
+  %ln2kP = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2kL( i32* %ln2kM, i32* %ln2kN, i32* %ln2kO, i32 %ln2kP ) nounwind
+  ret void
+
+c1X8:
+  %ln2kQ = load i32** %Base_Var
+  %ln2kR = getelementptr inbounds i32* %ln2kQ, i32 8
+  store i32 254, i32* %ln2kR, !tbaa !4
+  %ln2kS = load i32** %Base_Var
+  %ln2kT = load i32** %Sp_Var
+  %ln2kU = load i32** %Hp_Var
+  %ln2kV = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @stg_gc_ut( i32* %ln2kS, i32* %ln2kT, i32* %ln2kU, i32 %ln2kV ) nounwind
+  ret void
+
+c1X7:
+  %ln2kW = load i32** %Base_Var
+  %ln2kX = getelementptr inbounds i32* %ln2kW, i32 29
+  store i32 68, i32* %ln2kX, !tbaa !4
+  br label %c1X8
+
+}
+
+
+@ghczmprim_GHCziTuple_Z2T_con_info = external global [0 x i32]
+                                     
+
+
+
+==================== LLVM Code ====================
+%InnerLoop_innerLoopzu1_info_struct = type <{i32, i32, i32, i32}>
+@InnerLoop_innerLoopzu1_info_itable =  constant %InnerLoop_innerLoopzu1_info_struct<{i32 add (i32 sub (i32 ptrtoint (%InnerLoop_innerLoopzu1_srt_struct* @InnerLoop_innerLoopzu1_srt to i32),i32 ptrtoint (void (i32*, i32*, i32*, i32)* @InnerLoop_innerLoopzu1_info to i32)),i32 0), i32 131077, i32 0, i32 196623}>, section "X98A__STRIP,__me0", align 4
+                                      
+define  cc 10 void @InnerLoop_innerLoopzu1_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1Xa:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2ly = load i32** %Sp_Var
+  %ln2lz = getelementptr inbounds i32* %ln2ly, i32 -1
+  %ln2lA = ptrtoint i32* %ln2lz to i32
+  %ln2lB = load i32** %Base_Var
+  %ln2lC = getelementptr inbounds i32* %ln2lB, i32 21
+  %ln2lD = bitcast i32* %ln2lC to i32*
+  %ln2lE = load i32* %ln2lD, !tbaa !4
+  %ln2lF = icmp ult i32 %ln2lA, %ln2lE
+  br i1 %ln2lF, label %c1Xc, label %n2lG
+
+n2lG:
+  %ln2lH = load i32** %Sp_Var
+  %ln2lI = getelementptr inbounds i32* %ln2lH, i32 0
+  %ln2lJ = bitcast i32* %ln2lI to i32*
+  %ln2lK = load i32* %ln2lJ, !tbaa !1
+  %ln2lL = load i32** %Sp_Var
+  %ln2lM = getelementptr inbounds i32* %ln2lL, i32 -1
+  store i32 %ln2lK, i32* %ln2lM, !tbaa !1
+  %ln2lN = ptrtoint void (i32*, i32*, i32*, i32)* @s1UI_info to i32
+  %ln2lO = load i32** %Sp_Var
+  %ln2lP = getelementptr inbounds i32* %ln2lO, i32 0
+  store i32 %ln2lN, i32* %ln2lP, !tbaa !1
+  %ln2lQ = load i32** %Sp_Var
+  %ln2lR = getelementptr inbounds i32* %ln2lQ, i32 -1
+  %ln2lS = ptrtoint i32* %ln2lR to i32
+  %ln2lT = inttoptr i32 %ln2lS to i32*
+  store i32* %ln2lT, i32** %Sp_Var
+  %ln2lU = load i32** %Base_Var
+  %ln2lV = load i32** %Sp_Var
+  %ln2lW = load i32** %Hp_Var
+  %ln2lX = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @bytestringzm0zi10zi0zi0_DataziByteStringziChar8_readFile1_info( i32* %ln2lU, i32* %ln2lV, i32* %ln2lW, i32 %ln2lX ) nounwind
+  ret void
+
+c1Xc:
+  %ln2lY = ptrtoint %InnerLoop_innerLoopzu1_closure_struct* @InnerLoop_innerLoopzu1_closure to i32
+  store i32 %ln2lY, i32* %R1_Var
+  %ln2lZ = load i32** %Base_Var
+  %ln2m0 = getelementptr inbounds i32* %ln2lZ, i32 -2
+  %ln2m1 = bitcast i32* %ln2m0 to i32*
+  %ln2m2 = load i32* %ln2m1, !tbaa !4
+  %ln2m3 = inttoptr i32 %ln2m2 to void (i32*, i32*, i32*, i32)*
+  %ln2m4 = load i32** %Base_Var
+  %ln2m5 = load i32** %Sp_Var
+  %ln2m6 = load i32** %Hp_Var
+  %ln2m7 = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* %ln2m3( i32* %ln2m4, i32* %ln2m5, i32* %ln2m6, i32 %ln2m7 ) nounwind
+  ret void
+
+}
+
+
+declare  cc 10 void @bytestringzm0zi10zi0zi0_DataziByteStringziChar8_readFile1_info(i32* noalias nocapture, i32* noalias nocapture, i32* noalias nocapture, i32) align 4
+
+
+
+
+==================== LLVM Code ====================
+%InnerLoop_innerLoopzu7_info_struct = type <{i32, i32, i32, i32}>
+@InnerLoop_innerLoopzu7_info_itable =  constant %InnerLoop_innerLoopzu7_info_struct<{i32 add (i32 sub (i32 ptrtoint (%InnerLoop_innerLoopzu7_srt_struct* @InnerLoop_innerLoopzu7_srt to i32),i32 ptrtoint (void (i32*, i32*, i32*, i32)* @InnerLoop_innerLoopzu7_info to i32)),i32 0), i32 131077, i32 0, i32 65551}>, section "X98A__STRIP,__me0", align 4
+                                      
+define  cc 10 void @InnerLoop_innerLoopzu7_info(i32* noalias nocapture %Base_Arg, i32* noalias nocapture %Sp_Arg, i32* noalias nocapture %Hp_Arg, i32 %R1_Arg) align 4 nounwind section "X98A__STRIP,__me1"
+{
+c1Xi:
+  %Base_Var = alloca i32*, i32 1
+  store i32* %Base_Arg, i32** %Base_Var
+  %Sp_Var = alloca i32*, i32 1
+  store i32* %Sp_Arg, i32** %Sp_Var
+  %Hp_Var = alloca i32*, i32 1
+  store i32* %Hp_Arg, i32** %Hp_Var
+  %R1_Var = alloca i32, i32 1
+  store i32 %R1_Arg, i32* %R1_Var
+  %ln2mc = load i32** %Base_Var
+  %ln2md = load i32** %Sp_Var
+  %ln2me = load i32** %Hp_Var
+  %ln2mf = load i32* %R1_Var
+  tail call cc 10 void (i32*,i32*,i32*,i32)* @InnerLoop_innerLoopzu1_info( i32* %ln2mc, i32* %ln2md, i32* %ln2me, i32 %ln2mf ) nounwind
+  ret void
+
+}
+
+
+
+
