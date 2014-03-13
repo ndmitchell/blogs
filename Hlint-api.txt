@@ -1,0 +1,12 @@
+HLint API
+
+<a href="http://community.haskell.org/~ndm/hlint">HLint</a> is a tool for making suggestions about your Haskell source code, available as a standalone tool (via <tt>cabal install hlint</tt>) and from several Haskell IDE's including the FP Complete IDE, Eclipse FP and IHaskell. Until now, HLint has provided an API which took a list of command line arguments, and essentially ran the hlint executable, but in process. With the release of hlint-1.8.58 I've now included a "real" API as <a href="">Language.Haskell.HLint2</a>. Some features include:
+
+<ul>
+<li>You can create your own hint as a Haskell function, using the HLint facilities to apply it to your code.</li>
+<li>More information is provided about the resulting suggestions, including source spans.</li>
+<li>The API accepts haskell-src-exts modules, and provides easy ways to parse strings, meaning files are not required and you can use existing syntax trees.</li>
+<li>Some of the utilities used inside HLint are now available, including liberal name resolution and lenient parsing.</li>
+</ul>
+
+I recommend all users of the old API migrate to the new one, as I intend to phase out the old API in the near future (please let me know if that will cause you any problems). I plan to evolve the new API in response to user feedback, and then in a little while delete the old API, rename HLint2 to HLint, and bump the version number. I welcome feedback on the API, and am always curious to see where HLint gets used.
