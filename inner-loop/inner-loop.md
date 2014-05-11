@@ -1,16 +1,16 @@
-# Optimising Haskell: a tight inner loop
+# Optimising Haskell for a tight inner loop
 
-_Summary: I walk through optimising a Haskell string splitter to get a nice short inner loop in assembly. We look at the Haskell code, the generated Core, C-- and assembly._
+_Summary: I walk through optimising a Haskell string splitter to get a nice tight inner loop. We look at the Haskell code, the generated Core, C-- and assembly._
 
 Let's start with some simple code:
 
     break (`elem` " \r\n$") src
 
-This code scans a string looking for a space, newline or `$` and returns the string before and the string after. Our goal is to make this code faster - by the end we'll get down to 6 assembly instructions per input character. Before making things go faster we should write test cases (so we don't break anything), profile (so we are optimising the right thing) and write benchmarks (to check our changes make things go faster). For this article, we're going to skip all that, and only look at the generated Core, C-- and assembly - making hypothesises about what _should_ go faster. The complete code is [available online](https://github.com/ndmitchell/blogs/blob/master/inner-loop/InnerLoop.hs), along with the [Core/C--/assembly for each step](https://github.com/ndmitchell/blogs/tree/master/inner-loop).
+This code scans a string looking for a space, newline or `$` and returns the string before and the string after. Our goal is to make this code faster - by the end we'll get down to 6 assembly instructions per input character. Before making things go faster we should write test cases (so we don't break anything), profile (so we are optimising the right thing) and write benchmarks (to check our changes make things go faster). For this article, we're going to skip all that, and only look at the generated Core, C-- and assembly - making guesses about what _should_ go faster. The complete code is [available online](https://github.com/ndmitchell/blogs/blob/master/inner-loop/InnerLoop.hs), along with the [Core/C--/assembly for each step](https://github.com/ndmitchell/blogs/tree/master/inner-loop).
 
-** Version 1**
+**Version 1**
 
-To turn our example into a complete program, we can write:
+To turn our example into a complete program, we write:
 
     module InnerLoop(innerLoop) where
 
@@ -38,7 +38,7 @@ The full output of `log.txt` is available [here](https://github.com/ndmitchell/b
             (# a, b #) -> (a, b)
         ...
 
-The best way to read the Core is by looking for what you can understand, and ignoring the rest - it contains a lot of boring detail. We can see that a lot of things are fully qualified, e.g. `GHC.List.elem`. Some things have also been a bit mangled, e.g. `$wbreak`, which is roughly `break`. The interesting thing here is that `break` is being passed `test_1`. Looking at `test_1` (which will be called on each character), we can see we are passing `GHC.Classes.$fEqChar` - a pair containing a function of how to perform equality on characters - to the `elem` function. For each character we are going to end up looping through a 4 element list (`innerLoop_3`) and each comparison will be going through a higher order function. Clearly we need to improve our `test` function.
+The best way to read the Core is by looking for what you can understand, and ignoring the rest - it contains a lot of boring detail. We can see that a lot of things are fully qualified, e.g. `GHC.List.elem`. Some things have also been a bit mangled, e.g. `$wbreak`, which is roughly `break`. The interesting thing here is that `break` is being passed `test_1`. Looking at `test_1` (which will be called on each character), we can see we are passing `$fEqChar` - a pair containing a function of how to perform equality on characters - to the `elem` function. For each character we are going to end up looping through a 4 element list (`innerLoop_3`) and each comparison will be going through a higher order function. Clearly we need to improve our `test` function.
 
 **Version 2**
 
@@ -89,7 +89,7 @@ For many people this is the reasonable-performance version they should stick wit
           GHC.Types.True -> (# w, l_a1J9 #)
         }
 
-The first thing that should strike you is the large number of `#` symbols. In Core, a `#` means you are doing strict primitive operations on unboxed values, so if the optimiser has managed to get down to `#` that is good. You'll also notice values of type `State# RealWorld` which I've renamed `w` - these are an encoding of the `IO` monad, but have zero runtime cost, so can be ignored. Looking at the rest of the code, we have a loop with a pointer to the current character (`a :: Addr#`) and an index of how far through the buffer we are (`i :: Int#`). At each character we first test if the index exceeds the length, and if it doesn't, read a character and match it against the options. If it doesn't match we continue by adding 1 to the address and 1 to the index. Of course, having to loop over two values is a bit unfortunate.
+The first thing that should strike you is the large number of `#` symbols. In Core, a `#` means you are doing strict primitive operations on unboxed values, so if the optimiser has managed to get down to `#` that is good. You'll also notice values of type `State# RealWorld` which I've renamed `w` - these are an encoding of the `IO` monad, but have zero runtime cost, and can be ignored. Looking at the rest of the code, we have a loop with a pointer to the current character (`a :: Addr#`) and an index of how far through the buffer we are (`i :: Int#`). At each character we first test if the index exceeds the length, and if it doesn't, read a character and match it against the options. If it doesn't match we continue by adding 1 to the address and 1 to the index. Of course, having to loop over two values is a bit unfortunate.
 
 **Version 4**
 
@@ -244,13 +244,16 @@ Now looking at [the Core](https://github.com/ndmitchell/blogs/blob/master/inner-
 
 The code looks reasonable, but the final `\NUL` indicates that the code first checks if the character is `\NUL` (or `\0`) and only then does our fast `< $` test.
 
-** Version 7**
+**Version 7**
 
 To perform our `< $` test before checking for `\0` we need to modify `go`. We require that the argument predicate must return `False` on `\0` (otherwise we'll run off the end of the string) and can then write:
 
     go s@(Ptr a) | f c = a
                  | otherwise = go $ inc s
         where c = chr s
+
+    test x = x <= '$' &&
+        (x == ' ' || x == '\r' || x == '\n' || x == '$' || x == '\0')
 
 [The Core](https://github.com/ndmitchell/blogs/blob/master/inner-loop/log7.txt) reads:
 

@@ -2,7 +2,7 @@
 
 _Summary: Ninja is a build system focused on being fast. Some limited benchmarking suggests the Shake build system might be faster._
 
-The [Shake build tool](https://github.com/ndmitchell/shake#readme) aims to be both [powerful and fast](https://github.com/ndmitchell/shake/blob/master/docs/Why.md#readme). The [Ninja build tool](http://martine.github.io/ninja/) describes itself as small with a focus on speed. Now that Shake can [run Ninja build files](https://github.com/ndmitchell/shake/blob/master/docs/Ninja.md#readme), I benchmarked Shake against Ninja.
+The [Shake build system](https://github.com/ndmitchell/shake#readme) aims to be both [powerful and fast](https://github.com/ndmitchell/shake/blob/master/docs/Why.md#readme). The [Ninja build system](http://martine.github.io/ninja/) describes itself as small with a focus on speed. Now that Shake can [run Ninja build files](https://github.com/ndmitchell/shake/blob/master/docs/Ninja.md#readme), I benchmarked Shake against Ninja.
 
 **The Test**
 
