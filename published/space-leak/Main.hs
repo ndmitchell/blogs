@@ -11,9 +11,14 @@ O(1) at all optimisation
 -}
 
 import Data.List
+import Data.Monoid
 
 
-main = print (sum7 [1..10000000] :: Int)
+main = print $ mean [1..1000000]
+
+
+mean xs = sum7 xs `div` length xs
+-- print (sum8 [1..10000000] :: Int)
 
 
 sum1 (x:xs) = x + sum1 xs
@@ -33,3 +38,6 @@ sum4 [] = 0
 sum5 = foldr (+) 0
 sum6 = foldl (+) 0
 sum7 = foldl' (+) 0
+
+
+sum8 = getSum . mconcat . map Sum
