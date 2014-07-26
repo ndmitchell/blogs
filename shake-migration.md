@@ -20,7 +20,7 @@ Becomes:
 In addition:
 
 * Variables in Make usually map to normal Haskell variables.
-* Definitions of rules and dependencies uses the functions from `Development.Shake`. For example, `.PHONY` maps to the `phony` function.
+* Definitions of rules and dependencies use the functions from `Development.Shake`. For example, `.PHONY` maps to the `phony` function.
 * Filepath manipulation uses the functions from `Development.Shake.FilePath`.
 * Dynamically generated include files can be handled with `needMakefileDependencies` from `Development.Shake.Util`.
 
@@ -48,7 +48,7 @@ Shake demands that it built all the dependencies (it checks the modification tim
 
 **Run Make and Shake in parallel**
 
-One you have migrated enough of the build system to be useful (the usual targets in the most common configuration), you should start encourage some developers to try Shake instead of Make. These developers will find things that don't work properly, hidden features in the Make system that no one knew about etc. Expect to fix problems and iterate several times.
+One you have migrated enough of the build system to be useful (the usual targets in the most common configuration), you should encourage some developers to try Shake instead of Make. These developers will find things that don't work properly, hidden features in the Make system that no one knew about etc. Expect to fix problems and iterate several times.
 
 Hopefully the Shake system will be faster and more robust. Once these advantages have encouraged all the main developers to make the switch, you should delete/disable the Make system and expect it to bitrot quickly.
 
@@ -67,7 +67,7 @@ Now you are invoking the `ls` command directly, capturing the output using Shake
 
     getDirectoryFiles "." ["*"]
 
-Which is the Shake tracked way of getting a list of files. Similarly, operations calling `sed` or `for` through `Shell` should probably be gradually converted to Shake/Haskell operations.
+Which is the Shake tracked way of getting a list of files. Similarly, calling `sed` or `for` through `Shell` should probably be gradually converted to Shake/Haskell operations.
 
 **Refactor the whole**
 
@@ -77,4 +77,4 @@ Once you have converted the whole build system, and disabled the original Make s
 
 Build systems (even in Shake) are complex entities, with intricate coordination between files, which mostly run untyped external commands with many platform/version differences. As a result, build systems are often complex to write.
 
-If you have a problem using Shake, just ask. If you can boil down the problem to something fairly standalone, ask on [StackOverflow](http://stackoverflow.com/questions/tagged/shake-build-system) with the tag `shake-build-system`. If you are looking for more general advice, ask on the [mailing list](https://groups.google.com/forum/?fromgroups#!forum/shake-build-system).
+If you have a problem using Shake, just ask. If you can boil down the problem to something fairly standalone, ask on [StackOverflow](http://stackoverflow.com/questions/tagged/shake-build-system) with the tag `shake-build-system`. If you are looking for more general advice, ask on the [mailing list](https://groups.google.com/forum/?fromgroups#!forum/shake-build-system). If you succeed, write a blog post and [tweet me](https://twitter.com/ndm_haskell).
