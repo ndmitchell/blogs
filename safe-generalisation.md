@@ -2,14 +2,14 @@
 
 _Summary: The Safe library now has exact versions of `take`/`drop`, with twelve functions implemented on top of a generalised `splitAt`._ 
 
-The [Safe library](https://github.com/ndmitchell/safe) is a simple Haskell library that provides versions of standard `Prelude` and `Data.List` functions that usually throw errors (e.g. `tail`), but wrapped to provide better error messages (e.g. `tailNote`), default values (e.g. `tailDef`) and `Maybe` results (e.g. `tailMay`).
+The [Safe library](http://hackage.haskell.org/package/safe) is a simple Haskell library that provides versions of standard `Prelude` and `Data.List` functions that usually throw errors (e.g. `tail`), but wrapped to provide better error messages (e.g. `tailNote`), default values (e.g. `tailDef`) and `Maybe` results (e.g. `tailMay`).
 
-I recently released version 0.3.5, which provides a new module `Safe.Exact` containing crashing versions of functions such as `zip`/`zipWith` (which error if the lists are not equal) and `take`/`drop`/`splitAt` (which error if there are not enough elements), then wraps them to provide safe variants. As an example, the library provides:
+I recently released version 0.3.5, which provides a new module `Safe.Exact` containing crashing versions of functions such as `zip`/`zipWith` (which error if the lists are not equal length) and `take`/`drop`/`splitAt` (which error if there are not enough elements), then wraps them to provide safe variants. As an example, the library provides:
 
     takeExact    :: Int -> [a] -> [a]
     takeExactMay :: Int -> [a] -> Maybe [a]
 
-And some sample evaluations:
+These are like `take`, but if the `Int` is larger than the length of the list it will throw an error or return `Nothing`. Some sample evaluations:
 
     takeExactMay 2 [1,2,3] == Just [1,2]
     takeExact    2 [1,2,3] == [1,2]
@@ -34,11 +34,11 @@ The library provides `takeExact`, `dropExact` and `splitAtExact`, plus `Def`/`Ma
 
 Here the `splitAtExact_` function has a parameterised return type `r`, along with three functional arguments that construct and consume the `r` values. The functional arguments are:
 
-* `err :: String -> r`, says how to convert an error into a result value. For up-front checks this can produce a `Nothing`, for on-demand checks this calls `error`.
+* `err :: String -> r`, says how to convert an error into a result value. For up-front checks this produces a `Nothing`, for on-demand checks this calls `error`.
 * `nil :: [a] -> r`, says what to do once we have consumed the full number of elements. For `take` we discard all the remaining elements, for `drop` we are only interested in the remaining elements.
 * `cons :: a -> r -> r`, says how to deal with one element before we reach the index. For `take` this will be `(:)`, but for functions producing a `Maybe` we have to check the `r` parameter first.
 
-With this generalisation, I was able to write all 12 variants. As a few examples:
+With this generalisation, I was able to write all twelve variants. As a few examples:
 
     addNote fun msg = error $ "Safe.Exact." ++ fun ++ ", " ++ msg
 
@@ -56,5 +56,4 @@ With this generalisation, I was able to write all 12 variants. As a few examples
     splitAtExactMay = splitAtExact_ (const Nothing)
         (\x -> Just ([], x)) (\a b -> fmap (first (a:)) b)
 
-If I hadn't been writing the Safe library I would probably have defined `takeExact` and `dropExact` in terms of `splitAtExact`, but then calling `dropExact` would give an error message about `splitAtExact`, which for the Safe library is unacceptable. However, for most code, it would be perfectly reasonable.
- 
+Normally I would have defined `takeExact` and `dropExact` in terms of `fst`/`snd` on top of `splitAtExact`. However, in the Safe library error messages are of paramount importance, so I go to additional effort to ensure the error says `takeExact` and not `splitAtExact`.
