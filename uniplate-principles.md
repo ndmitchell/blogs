@@ -8,7 +8,7 @@
         | Literal Int
         | Pair (Tree a) (Tree a)
 
-    walk :: Tree a -> Either a ([Tree a], [Tree b] -> Tree b)
+    walk :: Tree a -> ([a], [Tree a], [b] -> [Tree b] -> Tree b)
     walk (Value x) = Left x
     walk (List xs) = Right (xs, List)
     walk (Label x y) = Right ([y], \[y] -> Label x y)
