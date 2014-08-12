@@ -1,8 +1,27 @@
 # Safe Library rewrite, generalisation
 
-A new version of the Safe library is out. There are the same two old modules (Safe and Safe.Foldable), plus a new Safe.Exact module. The idea of Safe.Exact is it takes functions in the Prelude/Data.List which are total, but which arguably shouldn't be, produces a non-total version, then produces several "Safe" equivalents. As an example: (e.g. `take 3 "12"` could reasonably error , creates 
+_Summary: The Safe library now has exact versions of `take`/`drop`, with twelve functions implemented on top of a generalised `splitAt`._ 
 
-    {-# INLINE splitAtExact_ #-}
+The [Safe library](https://github.com/ndmitchell/safe) is a simple Haskell library that provides versions of standard `Prelude` and `Data.List` functions that usually throw errors (e.g. `tail`), but wrapped to provide better error messages (e.g. `tailNote`), default values (e.g. `tailDef`) and `Maybe` results (e.g. `tailMay`).
+
+I recently released version 0.3.5, which provides a new module `Safe.Exact` containing crashing versions of functions such as `zip`/`zipWith` (which error if the lists are not equal) and `take`/`drop`/`splitAt` (which error if there are not enough elements), then wraps them to provide safe variants. As an example, the library provides:
+
+    takeExact    :: Int -> [a] -> [a]
+    takeExactMay :: Int -> [a] -> Maybe [a]
+
+And some sample evaluations:
+
+    takeExactMay 2 [1,2,3] == Just [1,2]
+    takeExact    2 [1,2,3] == [1,2]
+    takeExactMay 2 [1] == Nothing
+    takeExact    2 [1] ==
+        1:error "Safe.Exact.takeExact, index too large, index=2, length=1"
+    take 1 (takeExact 2 [1]) == [1]
+
+So `takeExactMay` computes up-front whether the whole computation will succeed, and returns a `Nothing` if it will fail. In contrast, `takeExact` produces elements while they are present, but if you demand an additional element that is missing it will result in an error. All the exceptions in the Safe library are designed to provide the maximum level of detail about what went wrong, here telling us the index we were after and the length of the list.
+
+The library provides `takeExact`, `dropExact` and `splitAtExact`, plus `Def`/`May`/`Note` versions, resulting in twelve similar functions. While the implementation of any one function is reasonably short (although not that short, once proper error messages are provided), I didn't want to write the same code twelve times. However, generalising over functions that check up-front and those that check on-demand requires a bit of thought. In the end I settled for:
+
     splitAtExact_ :: (String -> r) -> ([a] -> r) -> (a -> r -> r) -> Int -> [a] -> r
     splitAtExact_ err nil cons o xs
         | o < 0 = err $ "index must not be negative, index=" ++ show o
@@ -10,48 +29,32 @@ A new version of the Safe library is out. There are the same two old modules (Sa
         where
             f 0 xs = nil xs
             f i (x:xs) = x `cons` f (i-1) xs
-            f i [] = err $ "index too large, index=" ++ show o ++ ", length=" ++ show (o-i)
+            f i [] = err $
+                "index too large, index=" ++ show o ++ ", length=" ++ show (o-i)
 
-Which allows me to define:
+Here the `splitAtExact_` function has a parameterised return type `r`, along with three functional arguments that construct and consume the `r` values. The functional arguments are:
 
-    -- |
-    -- > takeExact n xs =
-    -- >   | n >= 0 && n <= length xs = take n xs
-    -- >   | otherwise                = error "some message"
-    takeExact :: Int -> [a] -> [a]
-    takeExact = splitAtExact_ (addNote "" "takeExact") (const []) (:)
+* `err :: String -> r`, says how to convert an error into a result value. For up-front checks this can produce a `Nothing`, for on-demand checks this calls `error`.
+* `nil :: [a] -> r`, says what to do once we have consumed the full number of elements. For `take` we discard all the remaining elements, for `drop` we are only interested in the remaining elements.
+* `cons :: a -> r -> r`, says how to deal with one element before we reach the index. For `take` this will be `(:)`, but for functions producing a `Maybe` we have to check the `r` parameter first.
+
+With this generalisation, I was able to write all 12 variants. As a few examples:
+
+    addNote fun msg = error $ "Safe.Exact." ++ fun ++ ", " ++ msg
+
+    takeExact = splitAtExact_ (addNote "takeExact") (const []) (:)
     
-    -- |
-    -- > dropExact n xs =
-    -- >   | n >= 0 && n <= length xs = drop n xs
-    -- >   | otherwise                = error "some message"
-    dropExact :: Int -> [a] -> [a]
-    dropExact = splitAtExact_ (addNote "" "dropExact") id (flip const)
-    
-    -- |
-    -- > splitAtExact n xs =
-    -- >   | n >= 0 && n <= length xs = splitAt n xs
-    -- >   | otherwise                = error "some message"
-    splitAtExact :: Int -> [a] -> ([a], [a])
-    splitAtExact = splitAtExact_ (addNote "" "splitAtExact")
-        (\x -> ([], x)) (\a b -> first (a:) b)
-    
-    takeExactNote :: String -> Int -> [a] -> [a]
-    takeExactNote note = splitAtExact_ (addNote note "takeExactNote") (const []) (:)
-    
-    takeExactMay :: Int -> [a] -> Maybe [a]
+    dropExact = splitAtExact_ (addNote "dropExact") id (flip const)
+
     takeExactMay = splitAtExact_ (const Nothing) (const $ Just []) (\a -> fmap (a:))
-    
-    dropExactNote :: String -> Int -> [a] -> [a]
-    dropExactNote note = splitAtExact_ (addNote note "dropExactNote") id (flip const)
-    
-    dropExactMay :: Int -> [a] -> Maybe [a]
+
     dropExactMay = splitAtExact_ (const Nothing) Just (flip const)
-    
-    splitAtExactNote :: String -> Int -> [a] -> ([a], [a])
-    splitAtExactNote note = splitAtExact_ (addNote note "splitAtExactNote")
+
+    splitAtExact = splitAtExact_ (addNote "splitAtExact")
         (\x -> ([], x)) (\a b -> first (a:) b)
-    
-    splitAtExactMay :: Int -> [a] -> Maybe ([a], [a])
+
     splitAtExactMay = splitAtExact_ (const Nothing)
         (\x -> Just ([], x)) (\a b -> fmap (first (a:)) b)
+
+If I hadn't been writing the Safe library I would probably have defined `takeExact` and `dropExact` in terms of `splitAtExact`, but then calling `dropExact` would give an error message about `splitAtExact`, which for the Safe library is unacceptable. However, for most code, it would be perfectly reasonable.
+ 
