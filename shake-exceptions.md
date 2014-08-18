@@ -25,3 +25,16 @@ Have you seen actionFinally?
         tmpDir <- liftIO getTemporaryDirectory
         path <- liftIO $ createTempDirectory tmpDir "ghc"
         actionFinally (removeDirectoryRecursive path) $ do
+
+### Resource finalisation
+
+In Shake I implement this with...
+
+Since I can't rely on the continuations exception handler being called, I instead have a different mechanism for implementing the places where Shake needs it. It's quite rare, only when the user calls `actionFinally` or `actionOnException`, which is rare. Since the functionality is used rarely, and I make no guarantees 
+
+For that I have a Cleaner. Quite simple:
+
+    withCleanup :: (Cleanup -> IO a) -> IO a
+    
+    addCleanup :: Cleanup -> IO () -> IO (Bool -> IO ())
+
