@@ -80,90 +80,14 @@ We now check if the `Step` for this rule is greater than the `Step` at which `de
 
 Note that instead of storing one `ModTime` per dependency+1, we now store exactly one `ModTime` plus two small `Step` values.
 
-
- Rather than storing historical `ModTime` values, so they can be compared for equality with the current 
-
-
-So basically, we check the passed in `Modtime` matches what we recorded, and we check the dependencies all match `database`.
-
-Next step is to index by revision observing there is only one revision of a `ModTime` per run.
-
-    mtime :: File -> Revision -> ModTime
-
-    database :: File -> (Revision, [(File, Revision)])
-
-Next we note that actually all the `Revision`'s in a set are the same:
-
-    mtime :: File -> Revision -> ModTime
-
-    database :: File -> (Revision, [File])
-
-By this stage `valid` has become:
-
-    valid :: File -> ModTime -> Bool
-    valid file mNow =
-        mNow == mtime file r &&
-        [mtime f (fst (database f)) == m | (f,m) <- deps]
-        where (r, deps) = database file
-
-
-Next we observe that there are actually only two operations we need on mtime:
-
-    mtimeCurrent :: File -> ModTime
-
-    mtimeEqualCurrent :: File -> Revision -> Bool
-
-Now we assume that in revisions never change then go back to being equal:
-
-    database :: File -> (ModTime, Revision, Revision, [File])
-
-
-Where `valid` checks that a `File` and the current on-disk `ModTime` and checks that the file is consistent. This is only suitable if all the dependencies are made `valid` first.
-
 The problem with the existing model is that we store each `File`/`ModTime` pair once for the file itself, and once for every dependency. That's a fairly large amount of information, and in Shake both values can be arbitrarily large for user rules. We can avoid the duplicated `File` values by instead assigning a small identifier to each one, which we'll call `FileId`, and storing an isomorphism between `File` and `FileId`.
 
-Now each `File` is stored exactly once. We could use the same trick for `ModTime`, but we can actually do slightly better, avoiding an extra mapping, and adding some useful information for profiling at the same time. To proceed we need to think about what dependency operations we perform:
-
-    valid :: FileId -> ModTime -> Bool
-    valid id mNow =
-        where (_, mOld, deps) = database id
-
-    currentModtime :: FileId -> ModTime
-    currentModtime f =
-        where (_, m, _) = 
-
-
-to make two observations:
 
 Since a `File` will only be rebuilt at most once per Shake run, if we have a global counter of how many runs of Shake we have made (let's call it `Revision`), we can instead keep a mapping:
 
-    values :: (FileId, Revision) -> ModTime
-
-    database :: FileId -> (File, Revision, [(FileId, Revision)])
-
-This step is worse, but sets us up for the next step. We're really interested in asking two questions:
-
-* Give a `FileId`, what is the current `ModTime`. To find that, we get the `Revision` for the `FileId`, then look up the `ModTime`.
-* Given a `(FileId, Revision)` pair, is that still valid. To find that, we get the current `ModTime` for the `FileId` (as above), then just look up the pair we have directly, and compute whether the two are equal.
-
-    currentValue :: FileId -> ModTime
-    currentValue id = map2 (id, r)
-        where (_, r, _) = map1 id
-
-    consistentValue :: FileId -> Revision -> Bool
-    consistentValue id r = currentValue id == map2 (id, r)
-
-So now, provided we can still provide those two functions, we are safe to optimise the implementation.
-
 The key observation is that if a value changes, and then changes back, we don't really care about what `consistentValue` returns. For `ModTime` changing back would imply time travel. Therefore, we can instead store the output of `currentValue` (a `ModTime`), plus the minimum value of `Revision` which would return `True`. Another way of stating that is you record the revision you last built at, and the revision you last changed at.
 
-Absolutely key to have both, so you can use your change when comparing against upstream, and your built when comparing against downstream.
-
-But each file might be quite big, so we really only want to store them once and refer to them by a small identifier:
-
-    FileId := (File, ModTime, Revision, Revision, [FileId])
-
-And that is what Shake uses internally.
+We still store each file many times, but we fix that by creating an isomorphism between `File` and `Id` which we can navigate in both ways.
 
 **Implementing the Model**
 
@@ -180,7 +104,9 @@ For those who like very concrete details, which might change at any point in the
 
 The diff from the conceptual model is:
 
-* `ModTime` became `Value`, `Revision` became `Step`, `FileId` became `Id`.
-* The `File` is not stored in `Result` since we keep a separate bidirectional mapping of between `FileId` and `File`. Partly this is done so it is easier to assign a `FileId` before we have built the file, and partly because we need to map both ways.
+* `ModTime` became `Value`, because Shake deals with lots of types of rules.
 * The dependencies are stored as a list of lists, so we still have access to the parallelism provided by `need`, and if we start rebuilding some dependencies we can do so in parallel.
 * We also store `execution` and `traces` so we can produce profiling reports.
+* I haven't shown the `File`/`Id` mapping here - that lives elsewhere.
+
+The code is quite close to the model.
