@@ -1,39 +1,55 @@
 # Upper bounds or not?
 
-There is currently a ferocious debate going on about whether packages should have upper bounds for their dependencies or not. Concretely, given `mypackage` and `dependency-1.0.2`, should I write `dependency >= 1` (no upper bounds) or `dependency >= 1 && < 1.1` ([PVP](Package versioning policy) upper bounds). I came to the conclusion that it depends on whether you have an automated bounds-bumping service, and if you do then both the bounds above are wrong, it should be `dependency >= 1 && dependency <= 1.0.2`.
+_Summary: I thought through the issue of upper bounds on Haskell package dependencies, and it turns out I don't agree with anyone :-)_
+
+There is currently a debate about whether Haskell packages should have upper bounds for their dependencies or not. Concretely, given `mypackage` and `dependency-1.0.2`, should I write `dependency >= 1` (no upper bounds) or `dependency >= 1 && < 1.1` ([PVP/Package versioning policy](https://www.haskell.org/haskellwiki/Package_versioning_policy) upper bounds). I came to the conclusion that the bounds should be `dependency >= 1`, but that [Hackage](https://hackage.haskell.org/) should automatically add an upper bound of `dependency <= 1.0.2`.
 
 **Rock vs Hard Place**
 
 The reason the debate has continued so long is because both choices are unpleasant:
 
-* Add PVP upper bounds, and have valid install plans rejected and users needlessly downgraded to old versions of packages which are inferior. If one package requires a minimum version of above _n_, and another requires a maximum below _n_, they can't be combined. 
-* Don't add upper bounds, and have packages break because they are no longer compatible. Of course, even if dependent packages add new functions/instances they might still break even with PVP compliant upper bounds, and some people violate PVP.
+* Don't add upper bounds, and have packages break for your users because they are no longer compatible.
+* Add PVP upper bounds, and have reasonable install plans rejected and users needlessly downgraded to old versions of packages. If one package requires a minimum version of above _n_, and another requires a maximum below _n_, they can't be combined. The PVP allows adding new functions, so even if all your dependencies follow the PVP, the code might still fail to compile.
 
-I would argue that the two relevant factors in choosing are how likely the code is to be broken by a newer version, and how long it will take to update the `.cabal` file.
+I believe there are two relevant relevant factors in choosing which scheme to follow.
 
-Let us assume that the `.cabal` file can be updated in minutes. If there are excessively restrictive bounds for a few minutes it doesn't matter - the code will be out of date, but only by a few minutes, and new packages requiring the latest version are unlikely.
+_Factor 1: How long will it take to update the `.cabal` file_
 
-As the `.cabal` file takes longer to update, the problems with restrictive bounds get worse. For abandoned projects, the restrictive upper bounds make them unusable, but even recently written code can break very fast. However, most code has a habit of working with newer versions of dependencies, so the argument towards no upper bounds gets increasingly strong as the probability of failures decreases and the latency increases. The fact that two variable factors combine to produce a binary decision is likely the reason for such strong debate.
+Let us assume that the `.cabal` file can be updated in minutes. If there are excessively restrictive bounds for a few minutes it doesn't matter - the code will be out of date, but only by a few minutes, and other packages requiring the latest version are unlikely.
 
-**The Answer**
+As the `.cabal` file takes longer to update, the problems with restrictive bounds become worse. For abandoned projects, the restrictive upper bounds make them unusable. For actively maintained projects with many dependencies, bounds bumps can be required weekly, and a two week vacation can break actively maintained code.
 
-Throughout, I assume that all package authors would like to support the latest version of all dependencies, that packages can be automatically tested in some way (e.g. Travis) and that packages are supported by semi-engaged authors. Packages for which those conditions do not hold aren't really packages anyone should be relying upon.
+_Factor 2: How likely is the dependency upgrade to break_
 
-Assuming these conditions, you want 
+If upgrading a dependency breaks the package, then upper bounds are a good idea. In general it is impossible to predict whether a dependency upgrade will break a package or not, but my experience is that most packages usually work fine. For some projects, there are stated compatibility ranges, e.g. [Snap](https://hackage.haskell.org/package/snap) declares that any API will be supported for two 0.1 releases. For other projects, some dependencies are so tightly-coupled that every 0.1 increment will almost certainly fail to compile, e.g. the [HLint](https://hackage.haskell.org/package/hlint) dependency on [Haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts). 
 
+The fact that these two variable factors are used to arrive at a binary decision is likely the reason the Haskell community has yet to reach a conclusion.
 
-**The Tool**
+**My Answer**
 
-The tool we need would:
+My current preference is to normally omit upper bounds. I do that because:
 
-* Monitor packages for upper-bound violations.
-* Send a pull request.
+* For projects I usually heavily, e.g. haskell-src-exts, I have fairly regular communication with the maintainers, so am not surprised by releases.
+* For most projects I depend on only a fraction of the API, e.g. [wai](https://hackage.haskell.org/package/wai), and most changes are irrelevant to me.
+* Michael Snoyman and the excellent [Stackage](http://www.stackage.org/) alert me to broken upgrades quickly, so I can respond when things go wrong.
+* I maintain quite a few projects, and the administrative overhead of uploading new versions, testing, waiting for continuous-integration results etc would cut down on real coding time. (While the Hackage facility to [edit the metadata](https://github.com/haskell/hackage-server/issues/52) would be quicker, I think that tweaking fundamentals of my package, but skipping the revision control and continuous integration, seems misguided.)
+* The PVP is a heuristic, but usually the upper bound is too tight, and occasionally the upper bound is too loose. Relying on the PVP to provide bounds is no silver bullet.
 
+On the negative side, occasionally my packages no longer compile for my users (very rarely, and for short periods of time, but it has happened). Of course, I don't like that at all, so do include upper bounds for things like haskell-src-exts.
 
-Both these states are unpleasant, but which to pick depends on two factors:
+**The Right Answer**
 
-* What the probability of a release failing in each way is.
-* How long the window of breakage is.
+I want my packages to use versions of dependencies such that:
 
-In particular, I would argue that if the window of potential breakage is short (on the order of minutes) then adding upper bounds is the right thing to do - if a package builds with upper bounds 10 minutes ago, it probably will continue to do so for the next 10 minutes. In contrast, if the window of breakage is long (on the order of days) it is far more likely that packages requiring new functionality will be released and you will be using old code. I believe the argument that if the window is short you should use upper bounds is compelling, but that if the window is long the argument you shouldn't use them is weaker.
+* All the features I require are present.
+* There are no future changes that stop my code from compiling or passing its test suite.
 
+I can achieve the first objective by specifying a lower bound, which I do. There is no way to predict the future, so no way I can restrict the upper bound perfectly in advance. The right answer must involve:
+
+* On every dependency upgrade, Hackage (or some agent of Hackage) must try to compile and test my package. Many Haskell packages are already tested using [Travis CI](https://travis-ci.org/), so reusing those tests seems a good way to gauge success.
+* If the compile and tests pass, then the bounds can be increased to the version just tested.
+* If the compile or tests fail, then the bounds must be tightened to exclude the new version, and the author needs to be informed.
+
+With this infrastructure, the time a dependency is too tight is small, and the chance of breakage is unknown, meaning that Hackage packages should have exact upper bounds - much tighter than PVP upper bounds.
+
+_Caveats:_ I am unsure whether such regularly changing metadata should be incorporated into the `.cabal` file or not. I realise the above setup requires quite a lot of Hackage infrastructure, but will buy anyone who sorts it out some beer.
