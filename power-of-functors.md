@@ -28,6 +28,8 @@ Functors are also much simpler in terms of laws. There are two laws:
 
 That property simply means that if you leave the children the same, the outer structure will not change. That is usually easy to check. The difficult part is that you have transformed all the children exactly once – but fortunately the type checker perfectly captures that invariant (thanks to theorems for free).
  
+https://www.fpcomplete.com/user/edwardk/snippets/fmap - the second law is actually a consequence of the first.
+
 If you have a 1 element structure, I know of two cases where you might not want a functor instance:
 
 * You have a value on the left of an arrow – for example data Foo a = Foo (a -> Int) cannot be made a functor, since we have no way to change the our incoming b back to an a.
