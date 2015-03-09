@@ -6,9 +6,9 @@ Haskell forces all programmers to understand some details of the `Monad` typecla
 
 An intuitive description of a functor is:
 
-> A container whose contents I can replace, without changing the shape of the container.
+> A container whose contents can be replaced, without changing the shape of the container.
 
-Some example functors include lists and `Maybe`. Both contain values, and you can replace the values inside them. In fact, most values with a single type parameter can be made functors. For example, in [CmdArgs](link) I define something similar to:
+Some example functors include lists and `Maybe`. Both contain values, and you can replace the values inside them. In fact, most types with a single type parameter can be made functors. For example, in [CmdArgs](https://hackage.haskell.org/package/cmdargs/docs/System-Console-CmdArgs-Explicit.html#t:Group) I define something similar to:
 
     data Group a = Group {groupUnnamed :: [a], groupNamed :: [(String, [a])]}
 
@@ -46,8 +46,8 @@ Both these laws can serve as the basis for optimisation opportunities, reducing 
 
 In general, most data types that take a type parameter can be made functors, but there are a few common exceptions:
 
-* You have a value on the left of an arrow – for example `data Foo a = Foo (a -> Int)` cannot be made a functor, since we have no way to change the our incoming `b` back to an `a`.
+* You have a value on the left of an arrow – for example `data Foo a = Foo (a -> Int)` cannot be made a functor, since we have no way to change the incoming `b` back to an `a`.
 * You have an invariant relating the structure and the elements. For example `data OrdList a = Nil | Gt a (OrdList a)`, where all functions on `OrdList` have an `Ord` context, and `OrdList` is exported abstractly. Here the functor would break the abstraction.
-* You require an instance for the element type, e.g. `Data.Vector.Storable` requires a `Storable` instance to create a vector, which `Functor` does not provide.
+* You require an instance for the element type, e.g. `Data.Vector.Storable` requires a `Storable` instance to create a vector, which `Functor` does not allow.
 
 The name functor may sound scary, or confusing to C++ programmers (who accidentally say functor to mean function) – but they are a nice simple abstraction.
