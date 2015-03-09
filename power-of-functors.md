@@ -1,39 +1,53 @@
-# The Power of Functor
+# Implementing a Functor instance
 
-_Summary: Functor is a bit like Monad, but much simpler. Unfortunately it tends to get ignored as Monads are required for IO, but it’s actually rather useful._
+_Summary: Implementing a Functor instance is much easier than implementing a Monad instance, and can turn out to be quite useful._
 
-One type class that sometimes gets overlooked by intermediate Haskell programmers is Functor. Functor has some similarities to Monad – they are both higher-kinded (see below) and taken from category theory. Haskell forces all programmers to understand some details of Monad to do basic IO, but there is nothing that requires learning functors. However, Functor is much simpler than Monad, has some commonalities that might help understanding Monads, and is useful in its own right.
+Haskell forces all programmers to understand some details of the `Monad` typeclass to do basic IO, but currently nothing forces people to learn the `Functor` typeclass. However, `Functor` is much simpler than `Monad`, and all `Monad`s must be `Functor`s, so thinking more about `Functor` can be a nice route to understanding `Monad` better.
 
 An intuitive description of a functor is:
 
-* A container whose contents I can replace, without changing the shape of the container.
+> A container whose contents I can replace, without changing the shape of the container.
 
-Some example functors include lists and Maybe. Both contain values, and contain ways to replace the values inside them. But in fact, most values with a single type parameter can be made functors (there are exceptions, see below). For example, in CmdArgs I defined something similar to:
+Some example functors include lists and `Maybe`. Both contain values, and you can replace the values inside them. In fact, most values with a single type parameter can be made functors. For example, in [CmdArgs](link) I define something similar to:
 
     data Group a = Group {groupUnnamed :: [a], groupNamed :: [(String, [a])]}
 
-This Group structure contains a’s inside it. It’s useful to operate on all the underlying a values and transform them. If a /= String, and I am doing an a->a transformation, then I could use Uniplate transform instead. However, a functor is much more natural (but not always applicable). It’s easy to write a functor instance:
+This `Group` structure contains `a` values inside it. Sometimes it is useful to transform all the underlying `a` values, perhaps to a different type. The `Functor` instance has a single member:
+
+    fmap :: Functor f => (a -> b) -> f a -> f b
+
+For the above type, we instantiate `f` to `Group` so we get:
+
+    fmap :: (a -> b) -> Group a -> Group b
+
+We can implement `fmap` by applying `f` to every `a` value inside `Group`:
 
     instance Functor Group where
-        fmap f (Group a b) = Group (map f a) [(x, map f b) | (x,y) <- b]
+        fmap f (Group a b) = Group (map f a) [(x, map f y) | (x,y) <- b]
 
-The different thing to Eq/Ord is that this is a higher-kinded type class. The Group type usually takes 1 type argument, but here we have given it none.
+Note in particular that `Group` is usually written `Group a`, but in the instance declaration we're omitting the `a`, to say `Group` itself (without any arguments) is a functor. Providing insufficient type arguments like that makes `Functor` a higher-kinded type class, in contrast to those like `Eq` or `Ord` which would have been on `Group a`.
 
-In general, if you have a data type that takes a type parameter, and stores that parameter inside, then you can probably create a functor instance. If you do create a functor instance, it will probably come in use.
+When implementing `fmap` the type checker eliminates most bad implementations,  so the only law you need to think about is that `fmap id = id` - given the identity function, the value shouldn't change. We can show this law for `Group` with:
 
-Functors are also much simpler in terms of laws. There are two laws:
+    Group a b = fmap id (Group a b)
+    -- inline fmap
+    Group a b = Group (map id a) [(x, map id y) | (x,y) <- b]
+    -- map id x ==> x
+    Group a b = Group a [(x, y) | (x,y) <- b]
+    -- simplify list comprehension
+    Group a b = Group a b
+    -- equal
 
-    fmap id  ==  id
+In fact, the function `map` is just `fmap` specialised to `[]`, so the rule `map id x ==> x` is just applying the `fmap id = id` law on lists. From this law, [we can derive](https://www.fpcomplete.com/user/edwardk/snippets/fmap) the additional law that: 
+
     fmap (f . g)  ==  fmap f . fmap g
 
-That property simply means that if you leave the children the same, the outer structure will not change. That is usually easy to check. The difficult part is that you have transformed all the children exactly once – but fortunately the type checker perfectly captures that invariant (thanks to theorems for free).
- 
-https://www.fpcomplete.com/user/edwardk/snippets/fmap - the second law is actually a consequence of the first.
+Both these laws can serve as the basis for optimisation opportunities, reducing the number of times we traverse a value, and GHC exploits these laws for the list type.
 
-If you have a 1 element structure, I know of two cases where you might not want a functor instance:
+In general, most data types that take a type parameter can be made functors, but there are a few common exceptions:
 
-* You have a value on the left of an arrow – for example data Foo a = Foo (a -> Int) cannot be made a functor, since we have no way to change the our incoming b back to an a.
-* You have an invariant relating the structure and the elements. For example data OrdList a = Nil | Gt a (OrdList a), where all functions on the list have an Ord context, and OrdList is exported abstractly. Here the functor would break the abstraction.
+* You have a value on the left of an arrow – for example `data Foo a = Foo (a -> Int)` cannot be made a functor, since we have no way to change the our incoming `b` back to an `a`.
+* You have an invariant relating the structure and the elements. For example `data OrdList a = Nil | Gt a (OrdList a)`, where all functions on `OrdList` have an `Ord` context, and `OrdList` is exported abstractly. Here the functor would break the abstraction.
+* You require an instance for the element type, e.g. `Data.Vector.Storable` requires a `Storable` instance to create a vector, which `Functor` does not provide.
 
-The name function may sound scary, or confusing to C++ programmers (where functor means function) – but they are a nice simple abstraction.
-
+The name functor may sound scary, or confusing to C++ programmers (who accidentally say functor to mean function) – but they are a nice simple abstraction.
