@@ -2,40 +2,42 @@
 
 _Summary: Writing a fast continuous integration server is tricky._
 
-When I started writing the continuous integration server Bake, I thought I had a good idea of what would go fast. It turned out I was wrong. The problem Bake is trying to solve is:
+When I started writing the continuous integration server [Bake](https://github.com/ndmitchell/bake), I thought I had a good idea of what would go fast. It turned out I was wrong. The problem Bake is trying to solve is:
 
 * You have a set of tests that must pass, which take several hours to run.
 * You have a current state of the world, which passes all the tests.
-* You have a stream of incoming patches that can be applied to the current state, there may be hundreds of patches per day.
-* You want to advance the state by applying patches, ensuring the current state always passes.
-* You want to reject bad patches and apply good patches as fast as possible, which involves running as few tests as possible.
+* You have a stream of hundreds of incoming patches per day that can be applied to the current state.
+* You want to advance the state by applying patches, ensuring the current state always passes all tests.
+* You want to reject bad patches and apply good patches as fast as possible.
 
-While test dependencies can describe properties such as you must compile before running any tests, it turns out compilation is quite special due to its incremental nature.
+I assume that tests can express dependencies, such as you must compile before running any tests. It turns out that compilation is a bit special due to its incremental nature.
 
-#### The (wrong) Solution
+Both my wrong solution, and my subsequent better solution, are based on the idea of a candidate - a sequence of patches applied to the current state that is the focus of testing. The solutions differ in when patches are added/removed from the candidate and how the candidates are compiled.
 
-My initial solution was based on the notion of a frontier - a sequence of patches applied to the current state that is the focus of testing. Each potential state (a state plus a sequence of patches) operated in its own directory. When created, each directory is copied from the nearest available potential state so that incremental compilation can reduce rebuilding.
+#### A Wrong Solution
 
-The strategy was that each incoming patch was immediately included in the frontier, compiled, and run on all tests. I would always run the test that had not passed for the longest time, to increase confidence in more patches. Concretely, if I have tested `T1` on patch `P1`, and `P2` comes in, I start testing `T2` on the combination of `P1+P2`. After that passes I can be somewhat confident that `P1` passes both `T1` and `T2`, despite not having run `T2` on just `P1`.
+My initial solution compiled and ran each candidate in a separate directory. When the directory was first created, it copied a nearby candidate to try and benefit from incremental compilation.
 
-If a test fails, I bisect to find the patch in question, reject it, and immediately throw it out of the frontier.
+Each incoming patch was immediately included in the candidate, compiled, and run on all tests. I would always run the test that had not passed for the longest time, to increase confidence in more patches. Concretely, if I have tested `T1` on patch `P1`, and `P2` comes in, I start testing `T2` on the combination of `P1+P2`. After that passes I can be somewhat confident that `P1` passes both `T1` and `T2`, despite not having run `T2` on just `P1`.
+
+If a test fails, I bisect to find the patch in question, reject it, and immediately throw it out of the candidate, usually requiring a recompile.
 
 #### The Problems
 
-There are several problems with this approach:
+There are two main problems with this approach:
 
 * I'm regularly throwing patches out of the frontier, or bisecting over subsets of the frontier, each requires a significant amount of compilation, as it has to recompile all subsequent patches.
 * I'm regularly adding patches to the frontier, each of which requires an incremental compilation. However, copying a directory of lots of small files (the typical output of a compiler) is fantastically expensive on Windows, so even when incremental compilation is fast, the initialisation time is large.
 
-The basic problem ended up being that the strategy spent all time copying and compiling, and relatively little time testing.
+This solution spent all the time copying and compiling, and relatively little time testing.
 
-#### A Better Approach
+#### A Better Solution
 
-My improved approach is to take a set of patches and consider them, running all tests until they all pass, without extending to the frontier. When all the tests pass on the current frontier, I make that the new state, and extend the frontier with all new patches.
+My improved approach is to take a set of patches and consider them, running all tests until they all pass, without extending the candidate. When all the tests pass on the current candidate, I make that the new state, and extend the candidate with all new patches.
 
-In order to benefit from incremental compilation, I always compile in the same directory, and I compile each patch in series, then zip up the interesting files (the test executables and test data). Concretely, given `P1+P2+P3`, I compile `P1` and zip the results, then `P1+P2` and zip, then `P1+P2+P3` and zip. To bisect, I just unzip the relevant directory. It turns out that on Windows, creating the zip is relatively quick, but extracting it is much more expensive, but that only needs to be done if a bisection is required, and only for _O(log n)_ points. I also only need to zip the stuff required for testing, not for building, which is often much smaller.
+In order to benefit from incremental compilation, I always compile in the same directory, and I compile each patch in series, and zip up the interesting files at each step (the test executables and test data). Concretely, given `P1+P2+P3`, I compile `P1` and zip the results, then `P1+P2` and zip, then `P1+P2+P3` and zip. To bisect, I just unzip the relevant directory. It turns out that on Windows, creating the zip is relatively quick, but extracting it is much more expensive, but that only needs to be done if a bisection is required, and only for _O(log n)_ points. I also only need to zip the stuff required for testing, not for building, which is often much smaller.
 
-When testing a frontier, if nothing fails, I update the state. If anything fails I bisect to figure out who should be rejected, but don't reject until I've completed all tests. After identifying all failing tests, and the patch that caused each of them to fail, I throw those patches out of the frontier. I then rebuild with the revised frontier and run only those tests that failed last time around, trying to seek out tests where two independent patches in a frontier both broke them. I repeat with an increasingly small set of tests that failed last time, until no tests fail. Once there are no failing tests, I extend the frontier with all new patches, but do not update the state.
+When testing a candidate, if nothing fails, I update the state. If anything fails I bisect to figure out who should be rejected, but don't reject until I've completed all tests. After identifying all failing tests, and the patch that caused each of them to fail, I throw those patches out of the frontier. I then rebuild with the revised candidate and run only those tests that failed last time around, trying to seek out tests where two independent patches in a candidate both broke them. I repeat with an increasingly small set of tests that failed last time, until no tests fail. Once there are no failing tests, I extend the candidate with all new patches, but do not update the state.
 
 As a small tweak, if there are two patches in the queue from the same person, where one is a superset of the other, I ignore the subset. The idea is that if the base commit has an error I don't want to track it down twice, once to the first failing commit and then again to the second one.
 

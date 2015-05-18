@@ -2,7 +2,7 @@
 
 _Summary: The development version of `ghcid` seemed to have some problems with terminating when Control-C was hit, so I investigated and learnt some things._
 
-Given a long-running/interactive console program (e.g. [`ghcid`](https://github.com/ndmitchell/ghcid)), when the user hits Control-C/Ctrl-C the program should abort. In this post I'll describe how that works in Haskell, how it can break, and what asynchronous exceptions have to do with it.
+Given a long-running/interactive console program (e.g. [`ghcid`](https://github.com/ndmitchell/ghcid)), when the user hits Control-C/Ctrl-C the program should abort. In this post I'll describe how that works in Haskell, how it can fail, and what asynchronous exceptions have to do with it.
 
 #### What happens when the user hits Ctrl-C?
 
@@ -18,7 +18,7 @@ There are a few options:
  
 * If you are running inside an _exception handler_ (e.g. `catch` or `try`) which is capable of catching `UserInterrupt` then the `UserInterrupt` exception will be returned. The program can then take whatever action it wishes, including rethrowing `UserInterrupt` or exiting the program.
 
-* If you are running with exceptions _masked_, then the exception will be delayed until you stop being masked. The most common way to be running while masked is if the code is the second argument to `finally` or one of the first two arguments to `bracket`. Since Ctrl-C will be delayed while the program is masked, you should only do quick things while masked.
+* If you are running with exceptions _masked_, then the exception will be delayed until you stop being masked. The most common way of running while masked is if the code is the second argument to `finally` or one of the first two arguments to `bracket`. Since Ctrl-C will be delayed while the program is masked, you should only do quick things while masked.
 
 #### How might I lose `UserInterrupt`?
 
@@ -32,27 +32,25 @@ If there is any exception, just return the original path. Unfortunately, the `ca
 
 #### What is an async exception?
 
-In Haskell there are two distinct ways to throw exceptions, synchronously and asynchronously. Synchronous exceptions are raised on the calling thread, using functions such as `throw` and `error`. In contrast asynchronous exceptions are raised on a different thread, using `throwTo`.
+In Haskell there are two distinct ways to throw exceptions, synchronously and asynchronously.
 
-* You can throw an exception 
+* _Synchronous exceptions_ are raised on the calling thread, using functions such as `throw` and `error`. The point at which a synchronous exception is raised is explicit and can be relied upon.
+* _Asynchronous exceptions_ are raised by a different thread, using `throwTo` and a different thread id. The exact point at which the exception occurs can vary.
 
-
-#### Is `UserInterrupt` an async exception?
+#### How is the type `AsyncException` related?
 
 In Haskell, there is a type called `AsyncException`, containing four exceptions - each special in their own way:
 
-* `StackOverflow` - the current thread's stack exceeded its limit.
+* `StackOverflow` - the current thread has exceeded its stack limit.
 * `HeapOverflow` - never actually raised.
 * `ThreadKilled` - raised by calling `killThread` on this thread. Used when a programmer wants to kill a thread.
-* `UserInterrupt` - the one we've been talking about so far, raise on the main thread by the user hitting Ctrl-C.
+* `UserInterrupt` - the one we've been talking about so far, raised on the main thread by the user hitting Ctrl-C.
 
-While these 
-
-In our particular case of `caonicalizePathSafe`, if `canonicalizePath` causes a `StackOverflow`, we probably are happy to take the fallback case, but more likely the stack was already close to the limit and will occur again soon. If the programmer calls `killThread` we should exit, but in `ghcid` I know I won't kill this thread.
+While these have a type `AsyncException`, that's only a hint as to their intended purpose. You can throw any exception either synchronously or asynchronously. In our particular case of `caonicalizePathSafe`, if `canonicalizePath` causes a `StackOverflow`, we probably are happy to take the fallback case, but likely the stack was already close to the limit and will occur again soon. If the programmer calls `killThread` we should exit, but in `ghcid` we know this thread won't be killed.
 
 #### How can I catch avoid catching async exceptions?
 
-There are two ways to avoid catching async exceptions. Firstly, since we expect `canonicalizePath` to complete quickly, we can just mask all async exceptions:
+There are several ways to avoid catching async exceptions. Firstly, since we expect `canonicalizePath` to complete quickly, we can just mask all async exceptions:
 
     canonicalizePathSafe x = mask_ $
         canonicalizePath x `catch` \(_ :: SomeException) -> return x
@@ -68,11 +66,18 @@ Alternatively, we can catch only non-async exceptions:
 
     async e = isJust (fromException e :: Maybe AsyncException)
 
-We use `catchJust` to only catch exceptions which aren't of type `AsyncException`, so `UserInterrupt` will not be caught.
+We use `catchJust` to only catch exceptions which aren't of type `AsyncException`, so `UserInterrupt` will not be caught. Of course, this actually avoids catching exceptions of type `AsyncException`, which is only related to async exceptions by a convention not enforced by the type system.
+
+Finally, we can catch only the relevant exceptions:
+
+    canonicalizePathSafe x = canonicalizePath x `catch`
+        \(_ :: IOException) -> return x
+
+Unfortunately, I don't know what the relevant exceptions are - on Windows `canonicalizePath` never seems to throw an exception. However, `IOException` seems like a reasonable guess.
 
 #### How to robustly deal with `UserInterrupt`?
 
-I've showed how to make `canonicalizePathSafe` not interfere with `UserInterrupt`, but now I need to audit every piece of code (including library functions) that runs on the main thread to ensure it doesn't catch `UserInterrupt`. That is very fragile. A simpler alternative is to push all computation off the main thread:
+I've showed how to make `canonicalizePathSafe` not interfere with `UserInterrupt`, but now I need to audit every piece of code (including library functions I use) that runs on the main thread to ensure it doesn't catch `UserInterrupt`. That is fragile. A simpler alternative is to push all computation off the main thread:
 
     import Control.Concurrent.Extra
     import Control.Exception.Extra
@@ -86,13 +91,17 @@ I've showed how to make `canonicalizePathSafe` not interfere with `UserInterrupt
     main :: IO ()
     main = ctrlC $ ... as before ...
 
-We are using the `Barrier` type from [my previous blog post](), which is available from the [`extra` package](). We create a `barrier`, run the main thread on a forked thread, then marshal completion/exceptions back to the main thread. Since the main thread has no `catch` operations and only a few (audited) functions on it, we can be sure that Ctrl-C will quickly abort the program.
+We are using the `Barrier` type from [my previous blog post](), which is available from the [`extra` package](). We create a `barrier`, run the main action on a forked thread, then marshal completion/exceptions back to the main thread. Since the main thread has no `catch` operations and only a few (audited) functions on it, we can be sure that Ctrl-C will quickly abort the program.
+
+Using version 1.1.1 of the `extra` package we can simplify the code to `ctrlC = join . onceFork`.
 
 #### What about cleanup?
 
-Now that we've pushed the actions on to a different thread, the `finally` sections on other threads. In general, on program shutdown most cleanup actions are unnecessary. As an example, `ghcid` spawns a copy of `ghci`, but on shutdown the pipes are closed and the `ghci` process exits on its own.
+Now we've pushed most actions off the main thread, any `finally` sections are on other threads, and will be skipped if the user hits Ctrl-C. Typically this isn't a problem, as program shutdown automatically cleans all non-persistent resources. As an example, `ghcid` spawns a copy of `ghci`, but on shutdown the pipes are closed and the `ghci` process exits on its own. If we do want robust cleanup of resources such as temporary files we would need to run the cleanup from the main thread, likely using `finally`.
 
-If you want cleanup, and it has to happen, you should arrange for it to happen on the main thread.
+#### Should async exceptions be treated differently?
+
+At the moment, Haskell defines many exceptions, any of which can be thrown either synchronously or asynchronously, but then hints that some are probably async exceptions. That's not a very Haskell-like thing to do. Perhaps there should be a `catch` which ignores exceptions thrown with `throwTo`? Perhaps the sync and async exceptions should be of different types? It seems unfortunate that functions have to care about async exceptions as much as they do.
 
 #### Disclaimer
 
