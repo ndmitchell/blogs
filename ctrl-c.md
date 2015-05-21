@@ -28,7 +28,7 @@ The easiest way to "lose" a `UserInterrupt` is to catch it and not rethrow it. T
     canonicalizePathSafe x = canonicalizePath x `catch`
         \(_ :: SomeException) -> return x
 
-If there is any exception, just return the original path. Unfortunately, the `catch` will also catch and discard `UserInterrupt`. If the user hits Ctrl-C while `canonicalizePath` is running the program won't abort. The reason is that `UserInterrupt` is not thrown in response to the code inside the `catch`, so ignoring `UserInterrupt` is the wrong thing to do.
+If there is any exception, just return the original path. Unfortunately, the `catch` will also catch and discard `UserInterrupt`. If the user hits Ctrl-C while `canonicalizePath` is running the program won't abort. The problem is that `UserInterrupt` is not thrown in response to the code inside the `catch`, so ignoring `UserInterrupt` is the wrong thing to do.
 
 #### What is an async exception?
 
@@ -102,6 +102,14 @@ Now we've pushed most actions off the main thread, any `finally` sections are on
 #### Should async exceptions be treated differently?
 
 At the moment, Haskell defines many exceptions, any of which can be thrown either synchronously or asynchronously, but then hints that some are probably async exceptions. That's not a very Haskell-like thing to do. Perhaps there should be a `catch` which ignores exceptions thrown with `throwTo`? Perhaps the sync and async exceptions should be of different types? It seems unfortunate that functions have to care about async exceptions as much as they do.
+
+#### Combining `mask` and `StackOverflow`
+
+As a curiosity, I tried to combine a function that stack overflows (at `-O0` only) and `mask`. Specifically:
+
+    main = mask_ $ print $ foldl (+) 0 [1..1000000]
+
+I then ran that with `+RTS -K1k`. That prints out the value computed by the `foldl` three times (seemingly just a buffering issue), then fails with a `StackOverflow` exception. If I remove the `mask`, it just fails with `StackOverflow`. It seems that by disabling `StackOverflow` I'm allowed to increase my stack size arbitrarily. Changing `print` to `appendFile` causes the file to be created but not written to, so it seems there are certainly oddities about combining these features.
 
 #### Disclaimer
 
