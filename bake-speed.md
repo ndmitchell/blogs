@@ -26,18 +26,18 @@ If a test fails, I bisect to find the patch in question, reject it, and immediat
 
 There are two main problems with this approach:
 
-* I'm regularly throwing patches out of the frontier, or bisecting over subsets of the frontier, each requires a significant amount of compilation, as it has to recompile all subsequent patches.
-* I'm regularly adding patches to the frontier, each of which requires an incremental compilation. However, copying a directory of lots of small files (the typical output of a compiler) is fantastically expensive on Windows, so even when incremental compilation is fast, the initialisation time is large.
+* I'm regularly throwing patches out of the candidate, or bisecting over subsets of the candidate, each requires a significant amount of compilation, as it has to recompile all subsequent patches.
+* I'm regularly adding patches to the candidate, each of which requires an incremental compilation. However, copying a directory of lots of small files (the typical output of a compiler) is fantastically expensive on Windows, so even when incremental compilation is fast, the initialisation time is large.
 
 This solution spent all the time copying and compiling, and relatively little time testing.
 
 #### A Better Solution
 
-My improved approach is to take a set of patches and consider them, running all tests until they all pass, without extending the candidate. When all the tests pass on the current candidate, I make that the new state, and extend the candidate with all new patches.
+To benefit from incremental compilation and avoid copying costs, I always compile in the same directory. Given a candidate, I compile each patch in the series one after another, and after each compilation I zip up the interesting files (the test executables and test data). To bisect, I just unzip the relevant files. On Windows, unzipping is much more expensive than zipping, and only needs to be done when bisecting is required. I also only need to zip the stuff required for testing, not for building, which is often much smaller.
 
-In order to benefit from incremental compilation, I always compile in the same directory, and I compile each patch in series, and zip up the interesting files at each step (the test executables and test data). Concretely, given `P1+P2+P3`, I compile `P1` and zip the results, then `P1+P2` and zip, then `P1+P2+P3` and zip. To bisect, I just unzip the relevant directory. It turns out that on Windows, creating the zip is relatively quick, but extracting it is much more expensive, but that only needs to be done if a bisection is required, and only for _O(log n)_ points. I also only need to zip the stuff required for testing, not for building, which is often much smaller.
+When testing a candidate, I run all tests without extending the candidate. If all the tests pass I update the state and create a new candidate containing all the new patches.
 
-When testing a candidate, if nothing fails, I update the state. If anything fails I bisect to figure out who should be rejected, but don't reject until I've completed all tests. After identifying all failing tests, and the patch that caused each of them to fail, I throw those patches out of the frontier. I then rebuild with the revised candidate and run only those tests that failed last time around, trying to seek out tests where two independent patches in a candidate both broke them. I repeat with an increasingly small set of tests that failed last time, until no tests fail. Once there are no failing tests, I extend the candidate with all new patches, but do not update the state.
+If any test fails I bisect to figure out who should be rejected, but don't reject until I've completed all tests. After identifying all failing tests, and the patch that caused each of them to fail, I throw those patches out of the candidate. I then rebuild with the revised candidate and run only those tests that failed last time around, trying to seek out tests where two patches in a candidate both broke them. I keep repeating with only the tests that failed last time, until no tests fail. Once there are no failing tests, I extend the candidate with all new patches, but do not update the state.
 
 As a small tweak, if there are two patches in the queue from the same person, where one is a superset of the other, I ignore the subset. The idea is that if the base commit has an error I don't want to track it down twice, once to the first failing commit and then again to the second one.
 
