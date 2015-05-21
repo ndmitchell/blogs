@@ -46,7 +46,7 @@ In Haskell, there is a type called `AsyncException`, containing four exceptions 
 * `ThreadKilled` - raised by calling `killThread` on this thread. Used when a programmer wants to kill a thread.
 * `UserInterrupt` - the one we've been talking about so far, raised on the main thread by the user hitting Ctrl-C.
 
-While these have a type `AsyncException`, that's only a hint as to their intended purpose. You can throw any exception either synchronously or asynchronously. In our particular case of `caonicalizePathSafe`, if `canonicalizePath` causes a `StackOverflow`, we probably are happy to take the fallback case, but likely the stack was already close to the limit and will occur again soon. If the programmer calls `killThread` we should exit, but in `ghcid` we know this thread won't be killed.
+While these have a type `AsyncException`, that's only a hint as to their intended purpose. You can throw any exception either synchronously or asynchronously. In our particular case of `caonicalizePathSafe`, if `canonicalizePath` causes a `StackOverflow`, we probably are happy to take the fallback case, but likely the stack was already close to the limit and will occur again soon. If the programmer calls `killThread` that thread should terminate, but in `ghcid` we know this thread won't be killed.
 
 #### How can I catch avoid catching async exceptions?
 
@@ -66,7 +66,7 @@ Alternatively, we can catch only non-async exceptions:
 
     async e = isJust (fromException e :: Maybe AsyncException)
 
-We use `catchJust` to only catch exceptions which aren't of type `AsyncException`, so `UserInterrupt` will not be caught. Of course, this actually avoids catching exceptions of type `AsyncException`, which is only related to async exceptions by a convention not enforced by the type system.
+We use `catchJust` to only catch exceptions which aren't of type `AsyncException`, so `UserInterrupt` will not be caught. Of course, this actually avoids catching exceptions of type `AsyncException`, which is only related to async exceptions by a partial convention not enforced by the type system.
 
 Finally, we can catch only the relevant exceptions:
 
@@ -91,7 +91,7 @@ I've showed how to make `canonicalizePathSafe` not interfere with `UserInterrupt
     main :: IO ()
     main = ctrlC $ ... as before ...
 
-We are using the `Barrier` type from [my previous blog post](), which is available from the [`extra` package](). We create a `barrier`, run the main action on a forked thread, then marshal completion/exceptions back to the main thread. Since the main thread has no `catch` operations and only a few (audited) functions on it, we can be sure that Ctrl-C will quickly abort the program.
+We are using the `Barrier` type from [my previous blog post](http://neilmitchell.blogspot.co.uk/2012/06/flavours-of-mvar_04.html), which is available from the [`extra` package](https://hackage.haskell.org/package/extra). We create a `Barrier`, run the main action on a forked thread, then marshal completion/exceptions back to the main thread. Since the main thread has no `catch` operations and only a few (audited) functions on it, we can be sure that Ctrl-C will quickly abort the program.
 
 Using version 1.1.1 of the `extra` package we can simplify the code to `ctrlC = join . onceFork`.
 
@@ -101,15 +101,15 @@ Now we've pushed most actions off the main thread, any `finally` sections are on
 
 #### Should async exceptions be treated differently?
 
-At the moment, Haskell defines many exceptions, any of which can be thrown either synchronously or asynchronously, but then hints that some are probably async exceptions. That's not a very Haskell-like thing to do. Perhaps there should be a `catch` which ignores exceptions thrown with `throwTo`? Perhaps the sync and async exceptions should be of different types? It seems unfortunate that functions have to care about async exceptions as much as they do.
+At the moment, Haskell defines many exceptions, any of which can be thrown either synchronously or asynchronously, but then hints that some are probably async exceptions. That's not a very Haskell-like thing to do. Perhaps there should be a `catch` which ignores exceptions thrown asynchronously? Perhaps the sync and async exceptions should be of different types? It seems unfortunate that functions have to care about async exceptions as much as they do.
 
 #### Combining `mask` and `StackOverflow`
 
-As a curiosity, I tried to combine a function that stack overflows (at `-O0` only) and `mask`. Specifically:
+As a curiosity, I tried to combine a function that stack overflows (using `-O0`) and `mask`. Specifically:
 
     main = mask_ $ print $ foldl (+) 0 [1..1000000]
 
-I then ran that with `+RTS -K1k`. That prints out the value computed by the `foldl` three times (seemingly just a buffering issue), then fails with a `StackOverflow` exception. If I remove the `mask`, it just fails with `StackOverflow`. It seems that by disabling `StackOverflow` I'm allowed to increase my stack size arbitrarily. Changing `print` to `appendFile` causes the file to be created but not written to, so it seems there are certainly oddities about combining these features.
+I then ran that with `+RTS -K1k`. That prints out the value computed by the `foldl` three times (seemingly just a buffering issue), then fails with a `StackOverflow` exception. If I remove the `mask`, it just fails with `StackOverflow`. It seems that by disabling `StackOverflow` I'm allowed to increase my stack size arbitrarily. Changing `print` to `appendFile` causes the file to be created but not written to, so it seems there are oddities about combining these features.
 
 #### Disclaimer
 
