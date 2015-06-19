@@ -10,7 +10,7 @@ When I started writing the continuous integration server [Bake](https://github.c
 * You want to advance the state by applying patches, ensuring the current state always passes all tests.
 * You want to reject bad patches and apply good patches as fast as possible.
 
-I assume that tests can express dependencies, such as you must compile before running any tests. It turns out that compilation is a bit special due to its incremental nature.
+I assume that tests can express dependencies, such as you must compile before running any tests. The test that performs compilation is special because it can go much faster if only a few things have changed, benefiting from incremental compilation.
 
 Both my wrong solution, and my subsequent better solution, are based on the idea of a candidate - a sequence of patches applied to the current state that is the focus of testing. The solutions differ in when patches are added/removed from the candidate and how the candidates are compiled.
 
@@ -18,22 +18,24 @@ Both my wrong solution, and my subsequent better solution, are based on the idea
 
 My initial solution compiled and ran each candidate in a separate directory. When the directory was first created, it copied a nearby candidate to try and benefit from incremental compilation.
 
-Each incoming patch was immediately included in the candidate, compiled, and run on all tests. I would always run the test that had not passed for the longest time, to increase confidence in more patches. Concretely, if I have tested `T1` on patch `P1`, and `P2` comes in, I start testing `T2` on the combination of `P1+P2`. After that passes I can be somewhat confident that `P1` passes both `T1` and `T2`, despite not having run `T2` on just `P1`.
+Each incoming patch was immediately included in the candidate, compiled, and run on all tests. I would always run the test that had not passed for the longest time, to increase confidence in more patches. Concretely, if I have run test `T1` on patch `P1`, and `P2` comes in, I start testing `T2` on the combination of `P1+P2`. After that passes I can be somewhat confident that `P1` passes both `T1` and `T2`, despite not having run `T2` on just `P1`.
 
-If a test fails, I bisect to find the patch in question, reject it, and immediately throw it out of the candidate, usually requiring a recompile.
+If a test fails, I bisect to find the patch that broke it, reject the patch, and immediately throw it out of the candidate.
 
 #### The Problems
 
-There are two main problems with this approach:
+There are three main problems with this approach:
 
-* I'm regularly throwing patches out of the candidate, or bisecting over subsets of the candidate, each requires a significant amount of compilation, as it has to recompile all subsequent patches.
-* I'm regularly adding patches to the candidate, each of which requires an incremental compilation. However, copying a directory of lots of small files (the typical output of a compiler) is fantastically expensive on Windows, so even when incremental compilation is fast, the initialisation time is large.
+* Every compilation starts with a copy of a nearby candidate. Copying a directory of lots of small files (the typical output of a compiler) is fantastically expensive on Windows.
+* When bisecting, I have to compile at lots of prefixes of the candidate, the cost of which varies significantly based on the directory it starts from.
+* I'm regularly throwing patches out of the candidate, which requires a significant amount of compilation, as it has to recompile all patches that were after the rejected patch.
+* I'm regularly adding patches to the candidate, each of which requires an incremental compilation, but tends to be dominated by the directory copy. 
 
 This solution spent all the time copying and compiling, and relatively little time testing.
 
 #### A Better Solution
 
-To benefit from incremental compilation and avoid copying costs, I always compile in the same directory. Given a candidate, I compile each patch in the series one after another, and after each compilation I zip up the interesting files (the test executables and test data). To bisect, I just unzip the relevant files. On Windows, unzipping is much more expensive than zipping, and only needs to be done when bisecting is required. I also only need to zip the stuff required for testing, not for building, which is often much smaller.
+To benefit from incremental compilation and avoid copying costs, I always compile in the same directory. Given a candidate, I compile each patch in the series one after another, and after each compilation I zip up the interesting files (the test executables and test data). To bisect, I unzip the relevant files to a different directory. On Windows, unzipping is much more expensive than zipping, but that only needs to be done when bisecting is required. I also only need to zip the stuff required for testing, not for building, which is often much smaller.
 
 When testing a candidate, I run all tests without extending the candidate. If all the tests pass I update the state and create a new candidate containing all the new patches.
 
@@ -43,7 +45,7 @@ As a small tweak, if there are two patches in the queue from the same person, wh
 
 #### Using this approach in Bake
 
-First, the standard disclaimer: Bake may not meet your needs - it is a lot less developed than other continuous integration systems. If you do decide to use Bake, you should run from the git repo, as the Hackage release is far behind.
+First, the standard disclaimer: Bake may not meet your needs - it is a lot less developed than other continuous integration systems. If you do decide to use Bake, you should run from the git repo, as the Hackage release is far behind. That said, Bake is now in a reasonable shape, and might be suitable for early adopters.
 
 In Bake this approach is implemented in the `StepGit` module, with the `ovenStepGit` function. Since Bake doesn't have the notion of building patches in series it pretends (to the rest of Bake) that it's building the final result, but secretly caches the intermediate steps. If there is a failure when compiling, it caches that failure, and reports it to each step in the bisection, so Bake tracks down the correct root cause.
 
