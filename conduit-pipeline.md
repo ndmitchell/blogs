@@ -2,11 +2,11 @@
 
 _Summary: I wrote a Conduit combinator which makes the upstream and downstream run in parallel. It makes Hoogle database generation faster._
 
-The Hoogle database generation parses lines one-by-one using [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts), and then encodes each line and writes it to a file. Using Conduit, that ends up being:
+The Hoogle database generation parses lines one-by-one using [haskell-src-exts](https://hackage.haskell.org/package/haskell-src-exts), and then encodes each line and writes it to a file. Using Conduit, that ends up being roughly:
 
     parse =$= write
 
-Conduit ensures that parsing and writing are interleaved, so each line is parsed and written before the next is parsed - ensuring minimal space usage. Recently the FP Complete guys [profiled Hoogle database generation](https://www.fpcomplete.com/blog/2015/04/ghc-prof-flamegraph#a-larger-example) and found each of these pieces takes roughly the same amount of time. Therefore, it seems likely that if we could parse the _next_ line while writing the _previous_ line we should be able to speed up database generation. I think of this as analogous to CPU pipelining, where the next instruction is decoded while the current one is executed.
+Conduit ensures that parsing and writing are interleaved, so each line is parsed and written before the next is parsed - ensuring minimal space usage. Recently the FP Complete guys [profiled Hoogle database generation](https://www.fpcomplete.com/blog/2015/04/ghc-prof-flamegraph#a-larger-example) and found each of these pieces takes roughly the same amount of time, and together are the bottleneck. Therefore, it seems likely that if we could parse the _next_ line while writing the _previous_ line we should be able to speed up database generation. I think of this as analogous to CPU pipelining, where the next instruction is decoded while the current one is executed.
 
 I came up with the combinator:
 
@@ -20,9 +20,9 @@ Given a buffer size `10` (the maximum number of elements in memory simultaneousl
 
 ### The Result
 
-When using 2 threads the Hoogle 5 database creation drops from 45s to 30s. The CPU usage during the pipelined stage hovers between 180% and 200%, suggesting the stages are quite well balanced (as the profile suggested). The parsing stage is currently a little slower than the writing, so a buffer of 10 is plenty - increasing the buffer makes no meaningful difference. The reason the drop is only by 33% is that the non-pipelined steps (parsing Cabal files, writing summary information) take about 12s.
+When using 2 threads the Hoogle 5 database creation drops from 45s to 30s. The CPU usage during the pipelined stage hovers between 180% and 200%, suggesting the stages are quite well balanced (as the profile suggested). The parsing stage is currently a little slower than the writing, so a buffer of 10 is plenty - increasing the buffer makes no meaningful difference. The reason the drop in total time is only by 33% is that the non-pipelined steps (parsing Cabal files, writing summary information) take about 12s.
 
-Note that Hoogle 5 remains unreleased, but can be obtained from [the git repo](http://github.com/ndmitchell/hoogle) and will hopefully be ready soon.
+Note that Hoogle 5 remains unreleased, but can be tested from [the git repo](http://github.com/ndmitchell/hoogle) and will hopefully be ready soon.
 
 ### The Code
 
@@ -30,7 +30,7 @@ The idea is to run the `Consumer` on a separate thread, and on the main thread k
 
     pipelineC :: Int -> Consumer o IO r -> Consumer o IO r
     pipelineC buffer sink = do
-        sem <- liftIO $ newQSem buffer  -- how many are in flow, to avoid memory leaks
+        sem <- liftIO $ newQSem buffer  -- how many are in flow, to avoid excess memory
         chan <- liftIO newChan          -- the items in flow (type o)
         bar <- liftIO newBarrier        -- the result type (type r)
         me <- liftIO myThreadId
@@ -48,7 +48,7 @@ The idea is to run the `Consumer` on a separate thread, and on the main thread k
         liftIO $ writeChan chan Nothing
         liftIO $ waitBarrier bar
 
-We are using a channel `chan` to move elements from producer to consumer, a quantity semaphore `sem` to limit the number of items in the channel, and a barrier `bar` to store the return result (see [this post](http://neilmitchell.blogspot.co.uk/2012/06/flavours-of-mvar_04.html)). On the consumer thread we read from the channel and `yield` to the consumer. On the main thread we `awaitForever` and write to the channel. At the end we move the result back from the consumer thread to the main thread. The full implementation is [in the repo](https://github.com/ndmitchell/hoogle/blob/236cd2f786147361d57793f1b0e3301eafd2a107/src/General/Conduit.hs#L82).
+We are using a channel `chan` to move elements from producer to consumer, a quantity semaphore `sem` to limit the number of items in the channel, and a barrier `bar` to store the return result (see [about the barrier type](http://neilmitchell.blogspot.co.uk/2012/06/flavours-of-mvar_04.html)). On the consumer thread we read from the channel and `yield` to the consumer. On the main thread we `awaitForever` and write to the channel. At the end we move the result back from the consumer thread to the main thread. The full implementation is [in the repo](https://github.com/ndmitchell/hoogle/blob/236cd2f786147361d57793f1b0e3301eafd2a107/src/General/Conduit.hs#L82).
 
 ### Enhancements
 
