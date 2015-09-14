@@ -2,7 +2,7 @@
 
 _Summary: We have a version of `mapM` for `IO` that takes _O(1)_ stack and is faster than the standard Haskell/GHC one for long lists._
 
-The standard Haskell/GHC base library `sequence` function in `IO` takes _O(n)_ stack space. However, working with Tom Ellis, we came up with a version that takes _O(1)_ stack space. In reality, our version is slower at reasonable sizes, but faster at huge sizes (100,000+ elements). The standard definition of `sequence` (when specialised for both `IO` and `[]`) is equivalent to:
+The standard Haskell/GHC base library `sequence` function in `IO` takes _O(n)_ stack space. However, working with Tom Ellis, we came up with a version that takes _O(1)_ stack space. Our version is slower at reasonable sizes, but faster at huge sizes (100,000+ elements). The standard definition of `sequence` (when specialised for both `IO` and `[]`) is equivalent to:
 
     sequence :: [IO a] -> IO [a]
     sequence [] = return []
@@ -20,7 +20,7 @@ For those not familiar with `IO`, it is internally defined as:
 
     newtype IO a = IO (State# RealWorld -> (# State# RealWorld, a #)
 
-Each `IO` action takes a `RealWorld` token and returns a `RealWorld` token, which ensures that `IO` actions run in order. See [here]() for a full tutorial.
+Each `IO` action takes a `RealWorld` token and returns a `RealWorld` token, which ensures that `IO` actions run in order. See [here](http://blog.ezyang.com/2011/05/unraveling-the-mystery-of-the-io-monad/) for a full tutorial.
 
 Our observation was that this version requires _O(n)_ stack space, as each recursive call is performed inside a `case`. The algorithm proceeds in two phases:
 
