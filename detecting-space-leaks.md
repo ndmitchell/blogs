@@ -1,8 +1,87 @@
-# Automatically detecting space leaks
+# Detecting Space Leaks
 
-_Summary: Below is an approach that might detect space leaks._
+_Summary: Here is a technique for detecting space leaks quite easily, it's even found one in the base library._
 
-Every large Haskell program almost inevitably contains space leaks. Space leaks are often tricky to detect, but relatively easy to fix once detected. While on the train, myself and Tom Ellis were discussing space leaks. We came up with some ideas on how to detect space leaks. These ideas have already detected a space leak in the Haskell/GHC `base` libraries [`maximumBy` function](https://ghc.haskell.org/trac/ghc/ticket/10830), which has now been fixed.
+Every large Haskell program almost inevitably contains space leaks. Space leaks are often difficult to detect, but relatively easy to fix once detected (typically insert a `!`). In conjunction with Tom Ellis, we found a fairly simple method to detect such leaks. These ideas have already detected a space leak in the Haskell/GHC `base` libraries [`maximumBy` function](https://ghc.haskell.org/trac/ghc/ticket/10830), which has now been fixed. For a background on space leaks, see [this article]().
+
+Our approach is based around the observation that most space leaks result in an excess use of stack. If you look for the part of the program that results in the largest stack usage, that is the biggest space leak, and the one that should be fixed first.
+
+### Method
+
+Given a program, and a representative run (e.g. the test suite, a suitable input file):
+
+* Compile the program for profiling, e.g. `ghc --make Main.hs -rtsopts -prof -auto-all`.
+* Run the program with a specific stack size, e.g. `./Main +RTS -K100K` to run with a 100Kb stack.
+* Increase/decrease the stack size until you have determined the minimum stack for which the program succeeds, e.g. `-K33K`.
+* Reduce the stack by a small amount and rerun with `-xc`, e.g. `./Main +RTS -K32K -xc`.
+* The `-xc` run will print out the stack trace on every exception, look for the one with `StackOverflow` (likely the last one) and look at the stack trace to determine roughly where the leak is.
+* Attempt to fix the space leak, confirm by rerunning with `-K32K`.
+* Repeat until the test works with a small stack, typically `-K1K`.
+* Add something to your test suite to ensure that if the a space leak is ever introduced then it fails.
+
+### Example 1: Using Shake
+
+Applying these techniques to the Shake test suite, I used the test `./shake-test self test`, which compiles Shake using Shake. Initially it failed at `-K32K`, and the stack trace produced by `-xc` was:
+
+    *** Exception (reporting due to +RTS -xc): (THUNK_STATIC), stack trace:
+      Development.Shake.Profile.generateSummary,
+      called from Development.Shake.Profile.writeProfile,
+      called from Development.Shake.Core.run.\.\.\,
+      called from Development.Shake.Core.run.\.\,
+      called from Development.Shake.Database.withDatabase.\,
+      called from Development.Shake.Storage.withStorage.continue.\,
+      called from Development.Shake.Storage.flushThread,
+      called from Development.Shake.Storage.withStorage.continue,
+      called from Development.Shake.Storage.withStorage.\,
+      called from General.FileLock.withLockFile.\,
+      called from General.FileLock.withLockFile,
+      called from Development.Shake.Storage.withStorage,
+      called from Development.Shake.Database.withDatabase,
+      called from Development.Shake.Core.run.\,
+      called from General.Cleanup.withCleanup,
+      called from Development.Shake.Core.lineBuffering,
+      called from Development.Shake.Core.run,
+      called from Development.Shake.Shake.shake,
+      called from Development.Shake.Args.shakeArgsWith,
+      called from Test.Type.shakeWithClean,
+      called from Test.Type.shaken.\,
+      called from Test.Type.noTest,
+      called from Test.Type.shaken,
+      called from Test.Self.main,
+      called from Test.main,
+      called from :Main.CAF:main
+    stack overflow
+
+Looking at the `generateSummary` function, it does no real processing itself, merely summarizes a list of profile entries - producing a number of summary lines with code such as:
+
+    let f xs = if null xs then "0s" else (\(a,b) -> showDuration a ++ " (" ++ b ++ ")") $ maximumBy (compare `on` fst) xs in
+        "* The longest rule takes " ++ f (map (prfExecution &&& prfName) xs) ++
+        ", and the longest traced command takes " ++ f (map (prfTime &&& prfCommand) $ concatMap prfTraces xs) ++ "."
+
+Most of the code is `map`, `sort`, `maximumBy` and `sum` in various combinations. By commenting out various lines I was able to still produce the space leak using `maximumBy` alone. By reimplementing `maximumBy` in terms of `foldl'`, the error went away. Small benchmarks show that is a regression in GHC 7.10, which I reported as [GHC ticket 10830](https://ghc.haskell.org/trac/ghc/ticket/10830).
+
+After fixing `maximumBy` I was able to reduce the stack to `-K1K`, and have added such a check to the test suite. While this space leak was not actually problematic in practice (it's rarely used code which isn't performance sensitive), it's nice to fix anyway, and good to have a guarantee of other performance.
+
+### Caveats
+
+Before running this method, I was unaware Shake had a space leak, and while it's a fairly small one.
+
+-O2 and profiling may introduce/remove space leaks
+
+stack omits duplicate elements
+
+no stack trace for the base libraries
+
+there are lots of exceptions before
+
+there are a handful of exceptions after
+
+mapM leaks
+
+does it detect all space leaks? There can be small space leaks (2 or 3 elements) which retain a lot of space, say in a map. 
+
+### Results
+
 
 **The Problem**
 
