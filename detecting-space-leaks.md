@@ -1,10 +1,10 @@
 # Detecting Space Leaks
 
-_Summary: Here is a technique for detecting space leaks quite easily, it's even found one in the base library._
+_Summary: Below is a technique for easily detecting space leaks, it's even found a space leak in the base library._
 
-Every large Haskell program almost inevitably contains space leaks. Space leaks are often difficult to detect, but relatively easy to fix once detected (typically insert a `!`). In conjunction with Tom Ellis, we found a fairly simple method to detect such leaks. These ideas have already detected a space leak in the Haskell/GHC `base` libraries [`maximumBy` function](https://ghc.haskell.org/trac/ghc/ticket/10830), which has now been fixed. For a background on space leaks, see [this article]().
+Every large Haskell program almost inevitably contains space leaks. Space leaks are often difficult to detect, but relatively easy to fix once detected (typically insert a `!`). In conjunction with Tom Ellis, we found a fairly simple method to detect such leaks. These ideas have detected four space leaks so far, including one in the Haskell/GHC `base` libraries [`maximumBy` function](https://ghc.haskell.org/trac/ghc/ticket/10830), which has now been fixed. For a background on space leaks, see [this article]().
 
-Our approach is based around the observation that most space leaks result in an excess use of stack. If you look for the part of the program that results in the largest stack usage, that is the biggest space leak, and the one that should be fixed first.
+Our approach is based around the observation that most space leaks result in an excess use of stack. If you look for the part of the program that results in the largest stack usage, that is the most likely space leak, and the one that should be investigated first.
 
 ### Method
 
@@ -14,10 +14,12 @@ Given a program, and a representative run (e.g. the test suite, a suitable input
 * Run the program with a specific stack size, e.g. `./Main +RTS -K100K` to run with a 100Kb stack.
 * Increase/decrease the stack size until you have determined the minimum stack for which the program succeeds, e.g. `-K33K`.
 * Reduce the stack by a small amount and rerun with `-xc`, e.g. `./Main +RTS -K32K -xc`.
-* The `-xc` run will print out the stack trace on every exception, look for the one with `StackOverflow` (likely the last one) and look at the stack trace to determine roughly where the leak is.
+* The `-xc` run will print out the stack trace on every exception, look for the one which says `stack overflow` (likely the last one) and look at the stack trace to determine roughly where the leak is.
 * Attempt to fix the space leak, confirm by rerunning with `-K32K`.
 * Repeat until the test works with a small stack, typically `-K1K`.
-* Add something to your test suite to ensure that if the a space leak is ever introduced then it fails.
+* Add something to your test suite to ensure that if the a space leak is ever introduced then it fails, e.g. `ghc-options: -with-rtsopts=-K1K` in Cabal.
+
+I have followed these steps for [Shake](), [Hoogle]() and [HLint](), all of which now contain `-K1K` in the test suite or test scripts.
 
 ### Example 1: Using Shake
 
@@ -58,126 +60,34 @@ Looking at the `generateSummary` function, it does no real processing itself, me
         "* The longest rule takes " ++ f (map (prfExecution &&& prfName) xs) ++
         ", and the longest traced command takes " ++ f (map (prfTime &&& prfCommand) $ concatMap prfTraces xs) ++ "."
 
-Most of the code is `map`, `sort`, `maximumBy` and `sum` in various combinations. By commenting out various lines I was able to still produce the space leak using `maximumBy` alone. By reimplementing `maximumBy` in terms of `foldl'`, the error went away. Small benchmarks show that is a regression in GHC 7.10, which I reported as [GHC ticket 10830](https://ghc.haskell.org/trac/ghc/ticket/10830).
+Most of the code is `map`, `sort`, `maximum` and `sum` in various combinations. By commenting out various lines I was able to still produce the space leak using `maximumBy` alone. By reimplementing `maximumBy` in terms of `foldl'`, the error went away. Small benchmarks show that is a regression in GHC 7.10, which I reported as [GHC ticket 10830](https://ghc.haskell.org/trac/ghc/ticket/10830). I therefore added the variant:
 
-After fixing `maximumBy` I was able to reduce the stack to `-K1K`, and have added such a check to the test suite. While this space leak was not actually problematic in practice (it's rarely used code which isn't performance sensitive), it's nice to fix anyway, and good to have a guarantee of other performance.
+    maximumBy' cmp = foldl1' $ \x y -> if cmp x y == GT then x else y
+
+Using `maximumBy'` I was able to reduce the stack to `-K1K`. While this space leak was not actually problematic in practice (it's rarely used code which isn't performance sensitive), it's nice to fix anyway, and allows modifying the test suite so I have a guarantee of no other space leaks. (Shake did in fact have one other Linux-only space leak, also now fixed, but that's a tale for a future post.)
 
 ### Caveats
 
-Before running this method, I was unaware Shake had a space leak, and while it's a fairly small one.
+This method has found several space leaks - two in Shake and two in Hoogle (I also ran it on HLint, which had no failures). It's definitely a useful technique, and by modifying the test suite, it ensures space leaks can't be reintroduced. There are however a number of caveats:
 
--O2 and profiling may introduce/remove space leaks
+* GHC's strictness analyser often removes space leaks by making accumulators strict, so `-O2` tends to remove some space leaks, and profiling may reinsert them by blocking optimisations. I aim to use dependent libraries at whatever optimisation they install with by default, but make my code space-leak free at all optimisation levels, making the strictness explicit. That way, minor code modifications will not miss strictness opportunities and introduce space leaks.
 
-stack omits duplicate elements
+* The stack trace produced by `-xc` omits duplicate adjacent elements, which is often the interesting information when debugging a space leak. In practice, it's a little inconvenient, but not terrible. Having GHC instead give repetition counts (e.g. `Main.recurse (x12)`) would be useful.
 
-no stack trace for the base libraries
+* The stack traces don't entries for things in imported libraries, which is unfortunate, and often means the location of the error is a 20 line function instead of the exact subexpression. The lack of such information makes debugging take a little longer.
 
-there are lots of exceptions before
+* The `-xc` flag prints stack information on all exceptions, which can often be a very large number. Lots of `IO` operations make use of exceptions, so often the console is flooded with stack traces. As a result, it's often easier to run without `-xc` to figure out the stack limit, then turn `-xc` on. Usually the stack overflow exception is near the end.
 
-there are a handful of exceptions after
+* There are often a handful of exceptions after the stack overflow, as various layers of the program catch and rethrow the exception. For programs that catch exceptions and rethrow them somewhat later (e.g. Shake), that can sometimes result in a large number of exceptions to wade through. It would be useful if GHC had an option to filter `-xc` to only certain types of exception, although I am not sure if it is feasible.
 
-mapM leaks
+* Some functions in the base libraries are both reasonable to use and have unbounded stack usage - notably `mapM`. For the case of `mapM` in particular you may wish to switch to [a constant stack version]() while investigating space leaks. There are likely to be other such functions.
 
-does it detect all space leaks? There can be small space leaks (2 or 3 elements) which retain a lot of space, say in a map. 
+* This technique catches a large class of space leaks, but certainly not all. As an example, given a `Map Key LargeValue`, if you remove a single `Key` but don't force the `Map`, it will leak a `LargeValue`. When the `Map` is forced it will take only a single stack entry, and thus not be detected. However, this technique would have detected a [previous Shake space leak]().
 
-### Results
+### Feedback
 
+If anyone manages to find space leaks using this technique we would be keen to know. I have previously told people that there are many advantages to lazy programming languages, but that space leaks are the big disadvantage. With the technique above, I feel confident that I can now make space leaks rarer in my code.
 
-**The Problem**
+### Original Formulation
 
-The classic example of a space-leak is:
-
-     foldl (+) 0 [1..n]
-
-This expression, when evaluated at `-O0`, causes a space leak - taking `O(n)` memory. Either using `-O2` or `foldl'` removes the space leak and runs in constant space. Any large code base is likely contain several instances where making some accumulator (or part of an accumulator) strict will improve performance without changing the semantics. The fix is usually simple (add a bang pattern or `seq`), but finding the problem, and checking it is solved, are both tricky.
-
-**Our Solution**
-
-Instead of preventing space leaks, our approach is to detect them. Given any program, it must have a "worst" space leak. If the user is not interested in fixing that space leak, then there's no point going any further. Therefore, all you need to do is detect the biggest space leak after a program completes.
-
-Looking at the evaluation model of Haskell, many space leaks can be detected by looking at the stack. In effect, when evaluating `foldl (+) 0 [1..n]`, GHC builds up the expression `(0 + (1 + (2 + (3 + ...`. When evaluating that expression, GHC ends up with the stack:
-
-    ...
-    (+) 3
-    (+) 2
-    (+) 1
-    (+) 0
-
-Here we can see that `(+)` repeats on the stack. Our idea is to detect the largest stack, and report its contents, and consider that to be the most interesting space leak.
-
-**Automating Detection**
-
-Given a program, you can detect the largest stack using the following steps:
-
-* Compile the program for profiling, e.g. `ghc --make Main.hs -rtsopts -prof -auto-all`.
-* Run the program with a specific stack size, e.g. `./Main +RTS -K100K` to run with a 100Kb stack.
-* Increase/decrease the stack size until you have determined the minimum stack for which the program succeeds, e.g. `-K33K`.
-* Reduce the stack by a small amount and rerun with `-xc`, e.g. `./Main +RTS -K32K -xc`.
-* The `-xc` run will print out the stack trace on every exception, look for the one with `StackOverflow` (likely the last one) and use that to reduce the stack usage.
-
-Using this approach on the Shake test suite initially failed at `-K32K` but succeeded at `-K33K`. Adding `-xc` showed the problem to be in `Development.Shake.Profile.generateSummary`, and commenting out pieces of this function tracked it down to `maximumBy`, and the GHC bug above. Fixing that instance allows the entire test suite to be run with `-K1K`, suggesting there are no other significant and easily detectable space leaks. There are a number of limitations with this approach:
-
-* Do not turn on `-xc` until you have determined the minimum stack size. A lot of programs throw a lot of exceptions that are caught and happily ignored, which generates a lot of output.
-* Some exceptions are caught and rethrown or recovered from, so sometimes the final exception will not be the relevant one.
-* It seems `-xc` omits stack traces from inside compiled libraries, and also does not print out duplicate stack entries. As a result, spotting the space leak is harder.
-
-**With Shake**
-
-https://ghc.haskell.org/trac/ghc/ticket/10830 - maximumBy has a space leak.
-
-:prof_ self test +RTS -K32K -xc -RTS
--- at 32K it dies, at 33K it works
-Development.Shake.Profile.generateSummary
-
-After that -K1K worked fine.
-
-Do without -xc first, since it generates a lot of traces - one for each exception.
-
-Note that some functions use lots of stack, but it's OK - for instance reverse and mapM.
-
-
-Our proposed solution is to continually scan the stack as the program executes, and afterwards display the stack which had the most occurrences of any single code pointer.
-
-**Limitations**
-
-Sometimes a space leak contains a single element in a map where the delete isn't forced, so a trivially small stack usage.
-
-Sometimes the largest stack is from `mapM`, which can be tamed (see previous blog post).
-
-**Tweaks**
-
-There are a number of possible tweaks, which probably need changing based on real-world experimentation.
-
-* Maybe what's not important is the high-water mark of occurrences, but just the stack when it was biggest.
-
-Perhaps we can already do that? Use profiling options to see what the stack is on exception, and just keep running with progressively smaller stacks?
-
-    ghc -O0 SpaceLeak.hs -rtsopts -prof -fprof-auto && SpaceLeak +RTS -K10K -xc
-
-In the runtime system, record `Map CodePointer Int` being the number of occurrences of a particularly `CodePointer` (e.g. `+`) in the stack at that point. In the above stack, there would be 4 instances of `(+)`. At the end of the program, you report the high-water mark and the `CodePointer` associated with it.
-
-**Tweaks**
-
-Maybe the length from the first to the last is better.
-
-We record `Map CodePointer (Int,Int)` being the depth of the stack where the first one occurs, and the count. When doing a push, you want to look at the longest length from the bottom to the top, with > 3 on the stack. 
-
-Maybe certain functions, e.g. `>>=` in IO, should be excluded.
-
-**Optimisations**
-
-Stay in lock step with the stack segments.
-
-**With Shake**
-
-https://ghc.haskell.org/trac/ghc/ticket/10830 - maximumBy has a space leak.
-
-:prof_ self test +RTS -K32K -xc -RTS
--- at 32K it dies, at 33K it works
-Development.Shake.Profile.generateSummary
-
-After that -K1K worked fine.
-
-Do without -xc first, since it generates a lot of traces - one for each exception.
-
-Note that some functions use lots of stack, but it's OK - for instance reverse and mapM.
+We originally designed a space-leak checker which would have required modifications to the runtime system, but might be more accurate. The basic idea was to look for sequences of repetition in the stack, rather than the maximum stack usage - which would hopefully allow tighter bounds and thus remove even very small space leaks. Given the success of the current technique, it is probably more effective to refine GHC to make it easier, rather than to fundamentally change the runtime system.
