@@ -1,6 +1,6 @@
 # ViewPatterns and lambda expansion
 
-_Summary: One of HLint's rules reduced sharing in the presence of view patterns._
+_Summary: One of HLint's rules reduced sharing in the presence of view patterns. Maybe lambda and functions should be desugared differently in Haskell._
 
 [HLint](https://hackage.haskell.org/package/hlint) has the rule:
 
