@@ -1,6 +1,6 @@
 # Solving the GCHQ puzzle "by hand"
 
-The [GCHQ 2015 Christmas puzzle](http://www.gchq.gov.uk/press_and_media/news_and_features/Pages/Directors-Christmas-puzzle-2015.aspx) is a [Nonogram](https://en.wikipedia.org/wiki/Nonogram) puzzle, which involves filling in squares on a grid to reveal a picture, satisfying some constraints. For a computer, a nice way to solve this problem is using a [SAT solver](https://matthewearl.github.io/2015/12/10/gchq-xmas-card/). But humans aren't great at SAT solving, and I was given a print-out of this puzzle while on holiday, with no computer. I'd never encountered such a puzzle before, so working with a friend (and some wine) we came up with an approach, and set about applying it. Alas, applying an algorithmic approach over a large grid is not easy for a human, and we eventually ended up with contradictions. On returning from holiday, I automated our approach, and tested it. Our approach worked, and the code is below.
+The [GCHQ 2015 Christmas puzzle](http://www.gchq.gov.uk/press_and_media/news_and_features/Pages/Directors-Christmas-puzzle-2015.aspx) is a [Nonogram](https://en.wikipedia.org/wiki/Nonogram) puzzle, which involves filling in squares on a grid to reveal a picture, guided by constraints on the rows and columns. For a computer, a nice way to solve this problem is using a [SAT solver](https://matthewearl.github.io/2015/12/10/gchq-xmas-card/). But humans aren't great at SAT solving, and I was given a print-out of this puzzle while on holiday, with no computer. I'd never encountered such a puzzle before, so working with a friend (and some wine) we came up with an approach, and set about applying it. Alas, robustly applying an algorithm with many steps is not easy for a human, and we eventually ended up with contradictions. On returning from holiday, I automated our approach, and tested it. Our approach worked, and the code is below.
 
 ### The Problem
 
@@ -16,9 +16,11 @@ Our approach was to take each line and compute the number of "free" gaps - how m
 
 ### The Code
 
+The complete code is available [here](https://gist.github.com/ndmitchell/3d80e46200806c0e995c).
+
 Our constraint system works over a grid where each square is in one of three states. Using [Haskell](https://haskell.org), we can encode that as `[[Maybe Bool]]`. The `[[.]]` is a list of lists, where the outer list is a list of rows, and the inner list is a list of squares. Each of the inner lists must be the same length, and for the GCHQ puzzle, they must all be 25 elements long. For the squares we use `Maybe Bool`, with `Nothing` for unknown and `Just` for known, using `True` as filled and `False` as unfilled.
 
-Given the `[[Maybe Bool]]` grid and the constraints, our approach was to pick a single line, and try to layout the runs, identifying squares that must be `True`/`False`. To replicate that process on a computer, I wrote a function `tile` that given the constraints and the existing line, produces all possible lines that fit. That code reads as:
+Given the `[[Maybe Bool]]` grid and the constraints, our approach was to pick a single line, and try to layout the runs, identifying squares that must be `True`/`False`. To replicate that process on a computer, I wrote a function `tile` that given the constraints and the existing line, produces all possible lines that fit. The code is:
 
     tile :: [Int] -> [Maybe Bool] -> [[Bool]]
     tile [] xs = maybeToList $ xs ~> replicate (length xs) False
@@ -39,11 +41,11 @@ The first equation (second line) says that if there are no remaining constraints
                = Just ys
     (~>) _ _ = Nothing
 
-This function takes a line of the grid (which may have unknowns), and a possible line (which is entirely concrete), and either returns `Nothing` (inconsistent) or `Just` the proposed line. The check first checks the sizes are consistent, then ensures everything which is concrete (not a `Nothing`) matches the proposed value (we assume both lists are the same length, which we always ensure).
+This function takes a line of the grid (which may have unknowns), and a possible line (which is entirely concrete), and either returns `Nothing` (inconsistent) or `Just` the proposed line. We first check the sizes are consistent, then that everything which is concrete (not a `Nothing`) matches the proposed value.
 
-Returning to the second equation in `tile`, the idea is to compute how many gaps could occur at this point. Taking the example of a line 25 long, with two runs of size 3, we could have anywhere between 0 and 18 (25-3-3-1) spaces first. For each possible size of gap, we split the row up (the `splitAt` calls), then constrain each piece to match the pattern (using `~>`).
+Returning to the second equation in `tile`, the idea is to compute how many spaces could occur at this point. Taking the example of a line 25 long, with two runs of size 3, we could have anywhere between 0 and 18 (25-3-3-1) spaces first. For each possible size of gap, we split the line up (the `splitAt` calls), then constrain each piece to match the existing grid (using `~>`).
 
-Given a way of returning all possible lines, we then need to collapse that into a single line, by marking all squares which could be either `True` or `False` as `Nothing`:
+Given a way of returning all possible lines, we then collapse that into a single line, by marking all squares which could be either `True` or `False` as `Nothing`:
 
     constrainLine :: [Int] -> [Maybe Bool] -> Maybe [Maybe Bool]
     constrainLine cs xs = if null xs2 then Nothing else mapM f $ transpose xs2
@@ -55,10 +57,12 @@ If there are no satisfying assignments for the line, we return `Nothing` - that 
     constrainSide :: [[Int]] -> [[Maybe Bool]] -> Maybe [[Maybe Bool]]
     constrainSide cs xs = sequence $ zipWith constrainLine cs xs
 
-Finally, to constrain the entire grid, we just constrain one side, then the other. To simplify the code, we just transpose the grid in between, so we can treat the rows and columns identically:
+Finally, to constrain the entire grid, we constrain one side, then the other. To simplify the code, we just transpose the grid in between, so we can treat the rows and columns identically:
 
     constrainGrid :: [[Int]] -> [[Int]] -> [[Maybe Bool]] -> Maybe [[Maybe Bool]]
-    constrainGrid rows cols xs = fmap transpose . constrainSide cols . transpose =<< constrainSide rows xs
+    constrainGrid rows cols xs =
+        fmap transpose . constrainSide cols .
+        transpose =<< constrainSide rows xs
 
 To constrain the whole problem we apply `constrainGrid` repeatedly, until it returns `Nothing` (the problem is unsatisfiable), we have a complete solution (problem solved), or nothing changes. If nothing changes then there might be two solutions, or our approach might not be powerful enough without using search.
 
@@ -92,7 +96,7 @@ After four iterations we end up with a fully constrained answer. To see the prog
     ..OOOOX......OOOO...O.X..
     ..XXXXX......XOXX.O.X.X..
 
-Here a `.` stands for `Nothing`. After four iterations we reach the answer in 0.34s:
+Here a `.` stands for `Nothing`. After four iterations we reach the answer in 0.28s:
 
     XXXXXXXOXXXOOOXOXOXXXXXXX
     XOOOOOXOXXOXXOOOOOXOOOOOX
