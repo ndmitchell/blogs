@@ -63,6 +63,11 @@ One property we don't chunk is that it should never be possible to move the firs
 
 #### Performance and alternatives
 
+For a build system, the entire input will be evaluated before, and the entire output will be kept in memory afterwards. The complexity is _O(n)_ in the number of `Char` values, which is as expected, since we have to count them all. Some observations about this point in the design space:
+
+* In a strict language this would be an _O(n^2)_ implementation
+* 
+
 
 length is to convert the list coming in back to an Int for the splitAt - if we had lazy Int's that would be identical to the solution before, but since we have strict Int that forces each chunk. scanl1 just gives us the running total, and takeWhile keeps taking from that total while we are below the size. In a strict language the repeated map length xs would give us O(n^2), but in Haskell we're fine.
 
