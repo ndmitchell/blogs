@@ -1,3 +1,14 @@
+Shake inevitablility/refactoring
+
+---------------------------------------------------------------------
+
+Ninjasmith
+
+---------------------------------------------------------------------
+
+Ninja semantics
+
+---------------------------------------------------------------------
 
 How to write a Monoid with Monad syntax, like the Shake rules Monad, which is a WriterT thingy. You need to make an extra kind the wire it up.
 
