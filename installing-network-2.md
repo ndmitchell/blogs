@@ -2,7 +2,7 @@
 
 _Summary: This post describes how to install the Haskell network library on Windows, again._
 
-I recently bought a new computer, and tried to install GHC 8.0.1 then upgrade the network library using Cabal. As I have come to expect, it didn't work. Using Git Bash, I got the error:
+I recently bought a new computer, and tried to install [GHC 8.0.1](https://www.haskell.org/ghc/) then upgrade the [network library](https://hackage.haskell.org/package/network) using [Cabal](https://www.haskell.org/cabal/). As I have come to expect, it didn't work. Using Git Bash, I got the error:
 
 	$ cabal install network-2.6.3.1
 	Resolving dependencies...
@@ -21,7 +21,7 @@ I recently bought a new computer, and tried to install GHC 8.0.1 then upgrade th
 	old-time-1.1.0.3 failed during the configure step. The exception was:
 	ExitFailure 77
 
-Running `-v3` shows the `CC` variable is being set to `C:\ghc\GHC-80~1.1┼║`, which looks like a buffer corruption or encoding issue. Fortunately the workaround was relatively easy:
+Running `-v3` shows the `CC` variable is being set to `C:\ghc\GHC-80~1.1┼║`, which looks like a buffer corruption or encoding issue. I tried my [previous solution](http://neilmitchell.blogspot.co.uk/2010/12/installing-haskell-network-library-on.html), but it didn't work. My new solution is:
 
     $ cabal unpack network-2.6.3.1
     $ cd network-2.6.3.1
@@ -33,3 +33,5 @@ Running `-v3` shows the `CC` variable is being set to `C:\ghc\GHC-80~1.1┼║`,
     $ cabal register
 
 I had to repeat the same pattern for the latest version of `old-time`, and the same pattern worked.
+
+Another way that works is to [use Stack](https://docs.haskellstack.org/en/stable/README/).

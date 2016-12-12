@@ -1,22 +1,22 @@
 # New XML Parser, Hexml
 
-_Summary: I've released a new library, Hexml, which is an incomplete-but-fast XML parser._
+_Summary: I've released a new Haskell library, Hexml, which is an incomplete-but-fast XML parser._
 
 I've just released [Hexml](https://github.com/ndmitchell/hexml), a new C/Haskell library for DOM-style XML parsing that is fast, but incomplete. To unpack that a bit:
 
 * Hexml is an XML parser that you give a string representing an XML document, it parses that string, and returns either a parse error or a representation of that document. Once you have the document, you can get the child nodes/attributes, walk around the document, and extract the text.
 
-* Hexml is really [a C library](todo: link to hexml.c), which has been designed to be easy to wrap in Haskell, and then a Haskell wrapper on top. It should be easy to use Hexml directly from C if desired.
+* Hexml is really [a C library](https://github.com/ndmitchell/hexml/blob/master/cbits/hexml.c), which has been designed to be easy to wrap in Haskell, and then a Haskell wrapper on top. It should be easy to use Hexml directly from C if desired.
 
-* Hexml has been designed for speed. In the very limited benchmarks I've done it is typically just over 2x faster at parsing than [Pugixml](todo: link to pugi), where pugixml is the gold standard for fast XML DOM parsers. In my uses it has turned XML parsing from a bottleneck to an irrelevance, so it works for me.
+* Hexml has been designed for speed. In the very limited benchmarks I've done it is typically just over 2x faster at parsing than [Pugixml](http://pugixml.org/), where Pugixml is the gold standard for fast XML DOM parsers. In my uses it has turned XML parsing from a bottleneck to an irrelevance, so it works for me.
 
-* To gain that speed, Hexml cheats. Primarily it doesn't do entity expansion, so `&amp;` remains as `&amp;` in the output. It also doesn't handle `CData` sections (but that's because I'm lazy) and comment locations are not remembered. It also doesn't deal with most of the XML standard, ignoring the `DOCTYPE` stuff, much like pugixml too.
+* To gain that speed, Hexml cheats. Primarily it doesn't do entity expansion, so `&amp;` remains as `&amp;` in the output. It also doesn't handle `CData` sections (but that's because I'm lazy) and comment locations are not remembered. It also doesn't deal with most of the XML standard, ignoring the `DOCTYPE` stuff.
 
-If you want a more robust version of Hexml then the [Haskell pugixml binding](todo: link) on Hackage is a reasonable place to start, but be warned that it [has memory issues, that can cause segfaults](todo: link to ticket). It also requires C++ which makes use through GHCi more challenging.
+If you want a more robust version of Hexml then the [Haskell pugixml binding](https://hackage.haskell.org/package/pugixml) on Hackage is a reasonable place to start, but be warned that it [has memory issues, that can cause segfaults](https://github.com/philopon/pugixml-hs/issues/5). It also requires C++ which makes use through GHCi more challenging.
 
 ## Speed techniques
 
-To make Hexml fast I first read the [chapter on fast parsing with Pugixml](todo: link to book), and stole all those techniques. After that, I introduced a number of my own.
+To make Hexml fast I first read the [chapter on fast parsing with Pugixml](http://www.aosabook.org/en/posa/parsing-xml-at-the-speed-of-light.html), and stole all those techniques. After that, I introduced a number of my own.
 
 * I only work on UTF8, which for the bits of UTF8 I care about, is the same as ASCII - I don't need to do any character decoding.
 
