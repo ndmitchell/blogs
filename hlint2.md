@@ -8,7 +8,7 @@ I've just released [HLint 2.0](https://github.com/ndmitchell/hlint) to [Hackage]
 
 Perhaps the most useful feature of this version is that HLint will search the current directory upwards for a `.hlint.yaml` file containing configuration settings. If a project includes a `.hlint.yaml` in the root then you won't need to pass it on the command line, and there's a reasonable chance any editor integration will pick it up as well. This idea was shamelessly stolen from [Stylish Haskell](https://github.com/jaspervdj/stylish-haskell/).
 
-HLint configuration files have also moved from Haskell syntax with special interpretation to YAML syntax. The Haskell syntax had become quite overloaded and was increasingly confused. The YAML syntax gives a fresh start with a chance to properly specify configuration directly rather than encoding it as Haskell expressions. The YAML configuration format enables a few features in this release, and going forward should enable more. To create a template `.hlint.yaml` file run `hlint --default > .hlint.yaml`.
+HLint configuration files have also moved from Haskell syntax with special interpretation to YAML syntax. The Haskell syntax had become quite overloaded and was increasingly confused. The YAML syntax gives a fresh start with a chance to properly specify configuration directly rather than encoding it as Haskell expressions. The YAML configuration format enables a few features in this release, and going forward should enable more. To create a template `.hlint.yaml` file run `hlint --default > .hlint.yaml`. HLint continues to work without a configuration file.
 
 In addition to a bunch of little hints, there is now a hint to suggest giving modules explicit export lists. I tend to always favour export lists, using `module Foo(module Foo) where` in the rare case they seem genuinely too much work. If you object to the hint, simply add to `.hlint.yaml`:
 
@@ -20,7 +20,7 @@ On the other extreme, if you always want to require a complete and explicit expo
 
 Which enables the off-by-default hint requiring an explicit list. To see which off-by-default hints your program triggers pass the command line argument `--show`.
 
-The biggest new hint is that you can now mark certain flags/extensions/imports/functions as being restricted - maintaining either a whitelist of blacklist and exceptions. This feature is particularly useful for code reviews. As an example, HLint itself contains the restriction:
+The biggest new hint is that you can now mark certain flags/extensions/imports/functions as being restricted - maintaining either a whitelist or blacklist and exceptions. As an example, HLint itself contains the restrictions:
 
     - functions:
       - {name: unsafeInterleaveIO, within: Parallel}
@@ -33,7 +33,7 @@ These unsafe functions can only be used in the modules/functions listed (or nowh
       - default: false
       - {name: [-fno-warn-incomplete-patterns, -fno-warn-overlapping-patterns]}
 
-Here we have used `default: false` to say that any flags not explicitly allowed cannot be used. If someone accidentally checks in development code with `{-# OPTIONS_GHC -w #-}` then HLint will catch it. This restriction hint is particularly designed for [code reviews](http://neilmitchell.blogspot.co.uk/2017/04/code-review-reviewed.html).
+Here we have used `default: false` to say that any flags not explicitly allowed cannot be used. If someone accidentally checks in development code with `{-# OPTIONS_GHC -w #-}` then HLint will catch it. This restriction feature is particularly designed for [code reviews](http://neilmitchell.blogspot.co.uk/2017/04/code-review-reviewed.html).
 
 **What Might Have Broken**
 
