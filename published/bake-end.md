@@ -1,0 +1,12 @@
+# The end of Bake
+
+_Summary: I no longer develop Bake, my continuous integration tool._
+
+In 2014 I [started a new project](https://neilmitchell.blogspot.co.uk/2014/10/bake-continuous-integration-system.html) of a continuous integration system, named [Bake](https://github.com/ndmitchell/bake#readme). The selling point of Bake was that it provided always-correct `master` development, but didn't require running all tests on all patches, allowing the development to scale much faster than the test resources. Over time I refined the model and figured out [exactly how to optimise throughput](https://neilmitchell.blogspot.co.uk/2015/06/maximum-patches-minimum-time.html). The experiments were promising, but I'm no longer working on Bake, because:
+
+* I wrote Bake with an eye to a particular set of challenges for my employer. I then changed jobs, and the challenges have changed. I don't have a strong need for Bake, and I don't think a project like Bake can be successful without dogfooding.
+* I have plenty of other projects that are fighting for my attention. While I think Bake is cool, it's certainly at the early stages, I think it needs a lot of work to have any meaningful impact.
+* Bake has a clever algorithm (I <3 algorithms!), and now needs a ton of evangalism, polish and web UI work (I was a webdev in a previous life, but it's not something I want to spend my spare time on).
+* The problem space that Bake targets is a bit weird. Open-source projects with a small contributor base (less than 5 people full time) are well served by [Travis](https://travis-ci.com/)/[Appveyor](https://www.appveyor.com/) etc, which I happily use for all my open-source projects. Big tech companies (e.g. [Google](https://www.google.com/) and [Facebook](https://www.facebook.com/)) can aford to throw hardware at the problem and have custom solutions. That leaves Bake with the niche of 5-500 commerical programmer teams, which isn't such a natural fit for open-source software.
+
+What I didn't find is any design flaw in the approach. I still think the ideas behind Bake are valuable, so would love to see them go somewhere, but leave it to others. The code [remains on GitHub](https://github.com/ndmitchell/bake) with a [`stack.yaml`](https://github.com/ndmitchell/bake/blob/master/stack.yaml) and [`shell.nix`](https://github.com/ndmitchell/bake/blob/master/shell.nix) that should (in theory) let people play with it indefinitely, but I won't be accepting any patches - other than to point at forks.
