@@ -29,7 +29,7 @@ overload field names in record types: for example, if the data types
 are in scope in the same module, there is no way to determine which
 type an occurrence of the ``personId`` record selector refers to.
 The ``HasField`` extension defined in the already-implemented
-`Overloaded Record Fields proposal <https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0002-overloaded-record-fields.rst>`
+`Overloaded Record Fields proposal <https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0002-overloaded-record-fields.rst>`_
 introduce ``HasField``, to allow type-based resolution of field names and
 polymorphism over record selectors. The class ``HasField`` is currently defined as:
 
