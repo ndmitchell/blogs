@@ -30,7 +30,7 @@ are in scope in the same module, there is no way to determine which
 type an occurrence of the ``personId`` record selector refers to.
 The ``HasField`` extension defined in the already-implemented
 `Overloaded Record Fields proposal <https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0002-overloaded-record-fields.rst>`_
-introduce ``HasField``, to allow type-based resolution of field names and
+introduced ``HasField``, to allow type-based resolution of field names and
 polymorphism over record selectors. The class ``HasField`` is currently defined as:
 
 .. code-block:: haskell
@@ -43,7 +43,7 @@ polymorphism over record selectors. The class ``HasField`` is currently defined 
     getField :: r -> a
 
 While this class provides a way to get a field, it provides no way to set a field.
-To quote:
+To quote the previous proposal:
 
   In the interests of simplicity, this proposal does not include a class
   to provide polymorphism over record updates
@@ -86,10 +86,10 @@ Polymorphic ``setField``
 A *type-changing update* is one where the type ``r`` is higher-kinded and the field
 ``x`` is the only member of that type. As an example, given a value of type ``(Int, Bool)``,
 the selector pointing to the first component, and a new value of type ``Double`` we can
-produce ``(Int, Bool)``. The design space for type-changing updates is large, and almost
+produce ``(Double, Bool)``. The design space for type-changing updates is large, and almost
 certainly requires an additional type class. In contrast, the design space for type-preserving
-updates is small and it can easily be incorporated into the existing type class. The addition
-of type-preserving updates in no way constraints the design space for future type-changing
+updates is small and it can be easily incorporated into the existing type class. The addition
+of type-preserving updates in no way constrains the design space for future type-changing
 updates, but is useful in its own right.
 
 Adding ``updateField``
