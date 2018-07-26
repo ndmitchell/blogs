@@ -60,15 +60,16 @@ We propose to extend the ``HasField`` class with an additional method ``setField
   -- | Update function to set a field in the record.
   setField :: a -> r -> r
 
-Using this addition function it would be possible to write a function:
+Using this additional function it is possible to write a function:
 
 .. code-block:: haskell
 
-  mkLens :: HasField lbl r a => Lens' r a
+  mkLens :: forall lbl r a . HasField lbl r a => Lens' r a
+  mkLens = lens (getField @lbl) (flip (setField @lbl))
 
 And thus allow generating lenses from the ``HasField`` class. The function
 ``setField`` is also useful in its own right, complementing the ``getField``
-method and providing the ability to modify records polymorphically.
+method and providing the ability to modify records by field name.
 
 Drawbacks
 ---------
@@ -104,6 +105,28 @@ An alternative to ``setField`` is:
 
 The function ``updateField`` can be recovered using ``setField`` and ``getField``, but
 ``setField`` is simpler, so we prefer it.
+
+Order of arguments to ``setField``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We can pick either of:
+
+.. code-block:: haskell
+
+  setField :: a -> r -> r
+  setField :: r -> a -> r
+
+We consider the former to be cleaner, and allows for better composition when updating many fields,
+e.g. you can see the equivalence between:
+
+.. code-block:: haskell
+
+  foo{x = 1, y = 2}
+  foo & (setField @"x" 1 . setField @"y" 2)
+
+This order is different to the ``lens`` function in ``Control.Lens``, whose order was chosen to
+aid implementation, at the slight cost of direct usability, as
+`mentioned here <https://www.reddit.com/r/haskell/comments/91wtze/signature_of_lens_combinator/e31d8gy/>`_.
 
 Implementation Plan
 -------------------
