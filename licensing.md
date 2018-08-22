@@ -36,7 +36,7 @@ The Apache-2.0 license offers a patent grant - I'm promising that if you use my 
 
 **Why both?**
 
-The Apache-2.0 license is incompatible with the GPL-2.0 and LGPL-2.1-only licenses, meaning any library building on my code plus the [GTK bindings](https://hackage.haskell.org/package/gtk) would be in a license quandary. By licensing under both most users can use Apache-2.0 (it gives you patent protection, so it's in your best interest), and those that would have problems otherwise can stick with BSD-3-Clause.
+The OR in the license means that I (and all contributors to my libraries) license all the code under BSD-3-Clause, and entirely separately also license all the code under Apache-2.0. Users are free to use the library under either of the available licenses, making it a user-centric OR. The Apache-2.0 license is incompatible with the GPL-2.0 and LGPL-2.1-only licenses, meaning any library building on my code plus the [GTK bindings](https://hackage.haskell.org/package/gtk) would be in a license quandary. By licensing under both most users can use Apache-2.0 (it gives you patent protection, so it's in your best interest), and those that would have problems otherwise can stick with BSD-3-Clause. 
 
 **Next steps**
 
