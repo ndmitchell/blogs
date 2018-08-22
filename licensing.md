@@ -22,7 +22,7 @@ When I first started releasing code (around 2004) I originally licensed my code 
 
 But what license _should_ I be using? These questions prompted me to hunt around and I came to the conclusion that the right license for me is:
 
-> BSD-3-Clause OR Apache-2.0
+    BSD-3-Clause OR Apache-2.0
 
 Concretely, I plan to license all my code under _both_ the BSD-3-Clause and Apache-2.0 licenses, but a user is able to use it under either. My reasoning is as follows:
 
