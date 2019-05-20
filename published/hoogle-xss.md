@@ -10,7 +10,7 @@ The first concern was to fix the website. While there aren't any cookies stored 
 
 #### Step 2: Use the type system
 
-Like any good Haskeller, my first though on encountering a bug is to use the type system to prevent it by construction. The problem boils down to taking user input and splicing it into an HTML page. My initial fix was to introduce a type [`Taint`](https://github.com/ndmitchell/hoogle/blob/v5.0.17.7/src/General/Web.hs#L39):
+Like any good Haskeller, my first thought on encountering a bug is to use the type system to prevent it by construction. The problem boils down to taking user input and splicing it into an HTML page. My initial fix was to introduce a type [`Taint`](https://github.com/ndmitchell/hoogle/blob/v5.0.17.7/src/General/Web.hs#L39):
 
 ```
 newtype Taint a = Taint a
@@ -19,9 +19,9 @@ escapeUntaint :: Taint String -> String
 escapeUntaint (Taint x) = escapeHTML x
 ```
 
-The idea is that instead of a the query parameters to the web page being `String`'s that can be carelessly spliced into the output, they were `Taint String` values whose only real unwrapping function involves escaping any HTML they may contain. Furthermore, `Taint` can have instances for `Monad` etc, meaning you can work on tainted values, but the result will always itself be tainted.
+The idea is that instead of the query parameters to the web page being `String`'s that can be carelessly spliced into the output, they were `Taint String` values whose only real unwrapping function involves escaping any HTML they may contain. Furthermore, `Taint` can have instances for `Monad` etc, meaning you can work on tainted values, but the result will always remain tainted.
 
-Using this approach uncovered no additional security problems, but gave me much more confidence there weren't any I just hadn't found.
+Using this approach uncovered no additional problems, but gave me much more confidence there weren't any I just hadn't found.
 
 #### Step 3: Make a release
 
@@ -29,7 +29,7 @@ At this point I made a release of Hoogle 5.0.17.7. This version has no known XSS
 
 #### Step 4: Switch to blaze-html
 
-While `Taint` is an effective tool for some domains, the real problem for Hoogle was that I was building up HTML values using `String` - making it way too easy to create invalid HTML, and providing an easy attack vector. The next change was to switch to [`blaze-html`](https://hackage.haskell.org/package/blaze-html), which uses strong typing to ensure the HTML is always valid. Instead of having to call `escapeHTML` to turn bad `String` into good `String`, I instead used `H.string` to turn bad `String` into good `Markup`. For the rare case where there genuinely was `String` that contained HTML for good reasons I used `H.preEscapedString`, making the "don't escape" explicit, and the "do escape" the default - a much safer default.
+While `Taint` is an effective tool for some domains, the real problem for Hoogle was that I was building up HTML values using `String` - making it way too easy to create invalid HTML, and providing an easy attack vector. The next change was to switch to [`blaze-html`](https://hackage.haskell.org/package/blaze-html), which uses strong typing to ensure the HTML is always valid. Instead of having to call `escapeHTML` to turn bad `String` into good `String`, I instead used `H.string` to turn bad `String` into good `Markup`. For the rare case where there genuinely was `String` that contained HTML for good reasons I used `H.preEscapedString`, making the "don't escape" explicit and longer, and the "do escape" the default - a much safer default.
 
 #### Step 5: Use Content Security Policy headers
 
@@ -38,3 +38,5 @@ There are a whole suite of headers that can be returned by the server to opt in 
 #### Step 6: Relax
 
 Hoogle 5.0.17.8 has all the security fixes listed and is deployed to [hoogle.haskell.org](https://hoogle.haskell.org/). Hopefully no more security issues for a while!
+
+_Many thanks to [Alexander Gugel](https://github.com/alexanderGugel) for the responsible disclosure, and to [Gary Verhaegen](https://github.com/gaverhae) for his work on CSP headers._
