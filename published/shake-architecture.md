@@ -13,14 +13,14 @@ When operating in memory, Shake uses the data type `Map k (Status v)`, with the 
 ```
 data Result v = Result
     {result :: v -- ^ the result associated with the Key
-    {built :: Step -- ^ when it was actually run
+    ,built :: Step -- ^ when it was actually run
     ,changed :: Step -- ^ when it last changed
     ,depends :: [[Id]] -- ^ dependencies
     }
 
 data Status v
     = Loaded (Result v)
-    | Running (Either SomeException (Result v)) -> IO ()))
+    | Running (Either SomeException (Result v) -> IO ())
     | Error SomeException
     | Ready (Result v)
 ```
@@ -29,7 +29,7 @@ Data is loaded in the `Loaded` state. When someone demands a key it moves to `Ru
 
 **Execution Model**
 
-The execution model of Shake is that every `Action` computation is either blocked waiting for a `Running` to complete, or queued/executing with the thread pool. The thread pool has a list of things to do and runs them in a given priority order, respecting parallelism constraints. Most threads start up, do a bit of work, block on a `Running` and leave it for another item in the thread pool to continue them.
+Shake runs values in the `Action` monad, which is a combination of some global state (e.g. settings), per-rule state (e.g. dependencies), continuation monad with IO underlying everything. The execution model of Shake is that every `Action` computation is either blocked waiting for a `Running` to complete, or queued/executing with the thread pool. The thread pool has a list of things to do and runs them in a given priority order, respecting parallelism constraints. Most threads start up, do a bit of work, block on a `Running` and leave it for another item in the thread pool to continue them.
 
 To pause a thread we use continuations, meaning the most important operation on `Action` (which isn't available to users!) is:
 
@@ -71,3 +71,7 @@ There's a number of pieces I haven't mentioned but which hide quite a lot of com
 **The Picture Version**
 
 Stepping back, the picture diagram looks like:
+
+![shake architecture](shake-architecture.png)
+
+For all gory details see [the source code](https://github.com/ndmitchell/shake).
