@@ -40,6 +40,7 @@ Yes - [instructions here](https://github.com/digital-asset/daml/tree/master/comp
 
 * The IDE doesn't load all the relevant files, only the ones you have open.
 * Integration with things like `stack` doesn't work very well - I've been using `hie-bios` in "Direct" mode - giving it the flags to start `ghci` myself. See my integrations for [`shake`](https://github.com/ndmitchell/shake/blob/master/hie.yaml) and [`hlint`](https://github.com/ndmitchell/hlint/blob/master/hie.yaml).
+* Features like `hs-boot` files and Template Haskell need more work to be fully supported, although a bit of Template Haskell has been observed to work.
 
 These issues are being discussed [on the `hie-bios` issue tracker](https://github.com/mpickering/hie-bios/issues/9).
 
