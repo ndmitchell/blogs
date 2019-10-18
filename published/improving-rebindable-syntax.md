@@ -1,0 +1,21 @@
+# Improving Rebindable Syntax
+
+_Summary: Rebindable syntax is powerful, but sometimes too flexible. I had some ideas on how to improve it._
+
+In Haskell, when you write `1`, GHC turns that into `GHC.Num.fromInteger 1`, knowing that the binding is `GHC.Num.fromInteger :: Num a => Integer -> a`. If you want to use a different `fromInteger` you can turn on the `RebindableSyntax` extension, which uses whichever `fromInteger` is in scope. While I was working at [Digital Asset](https://digitalasset.com/) on [DAML](https://daml.com/), we built a GHC-based compiler with a [different standard library](https://docs.daml.com/daml/reference/base.html). That standard library eliminates the `Char` type, has a packed `Text` instead of `String = [Char]`, doesn't have overloaded numeric literals, renames `Monad` to `Action` and other changes. To get that working, we leveraged `RebindableSyntax` along with a module [DA.Internal.RebindableSyntax](https://github.com/digital-asset/daml/blob/99ea93168d84d456060bbdad4d7922e19eacf4f8/compiler/damlc/daml-stdlib-src/DA/Internal/RebindableSyntax.daml) which is automatically imported into every module unqualified (via a GHC source plugin).
+
+With `RebindableSyntax` you can get a long way building your own base library, but there were two unpleasant parts:
+
+* When using `RebindableSyntax`, if the user writes `let fromInteger = undefined in 1` then they use the `fromInteger` they defined in the `let`, shadowing the global one. For users who turn on `RebindableSyntax` deliberately, that's what they want. However, if you want to replace the `base` library and make it feel "just as good", then you'd rather than `fromInteger` was always some specific library you point at.
+* In the process of building fresh base libraries, we had to follow all the (pretty complex!) layering choices that GHC has made about how the modules and packages form a directed acyclic graph. There are some modules where using integer literals would cause a module cycle to appear. The fact that a number of fully qualified names are hardcoded in GHC makes for a fairly tight coupling with the base libraries, that would be better avoided.
+
+I had an idea to solve that, but it's not fully fleshed out, and as of now, it's not a problem I still suffer from. However, I thought it worth dumping my (potentially unimplementable, certainly incomplete) thoughts out for the world, in case someone wants to pick them up.
+
+My idea to solve the problem was to add a flag to GHC such as `-fbuiltins=base.Builtins` which would specify where to get all builtins. You could expect the `base` library to gain a module `Builtins` which reexported everything like `fromInteger`. With that extension, using `RebindableSyntax` is then saying "whatever is in scope", and using `-fbuiltins` is saying "qualify everything with this name" - they start to become fairly similar ideas. I see that has having a few benefits:
+
+1. It becomes easier for someone to write a principled standard library which doesn't have `String = [Char]`, or whatever choice wants making, in a way that provides a coherent experience. One example is DAML, but another is the [`foundation` library](https://github.com/haskell-foundation/foundation/), which uses `RebindableSyntax` in its [example programs](https://github.com/haskell-foundation/foundation/blob/f77ecdd1e592af13676553f4e84acabaed053908/programs/SumDouble.hs).
+2. The lowest level GHC base libraries can be restructured to use `RebindableSyntax` as a way to more easily manage the dependencies between them in the base libraries themselves, rather than a cross-cutting concern with the compiler and base libraries. (This benefit might be possible even today with what we already have.)
+3. Things like which [integer library to use](https://github.com/ghc-proposals/ghc-proposals/pull/183) can become a library concern, rather than requiring compiler changes.
+4. Currently the code path for `RebindableSyntax` is always quite different from the normal syntax path. As a result, sometimes it's not quite right and [needs patching](https://github.com/ghc-proposals/ghc-proposals/pull/168).
+
+The main obvious disadvantages (beyond potentially the whole thing not being feasible) are that it would cause the compiler to slow down, as currently these types are hard-wired into the compiler.
