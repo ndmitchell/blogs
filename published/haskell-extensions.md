@@ -1,0 +1,16 @@
+# Managing Haskell Extensions
+
+_Summary: You can divide extensions into yes, no and maybe, and then use HLint to enforce that._
+
+I've worked in multiple moderately sized multinational teams of Haskell programmers. One debate that almost always comes up is which extensions to enable. It's important to have some consistency, so that everyone is using similar dialects of Haskell and can share/review code easily. The way I've solved this debate in the past is by, as a team, dividing the extensions into three categories:
+
+* **Always-on**. For example, `ScopedTypeVariables` is just how Haskell should work and should be enabled everywhere. We turn these extensions on globally [in Cabal with `default-extensions`](https://github.com/digital-asset/ghcide/blob/cbafcf29f4157e86e0522d87bf99cb2aeff1d853/ghcide.cabal#L186-L199), and then write an [HLint rule](https://github.com/digital-asset/ghcide/blob/cbafcf29f4157e86e0522d87bf99cb2aeff1d853/.hlint.yaml#L54-L73) to ban turning the extension on manually. In one quick stroke, a large amount of `{-# LANGUAGE #-}` boilerplate at the top of each file disappears.
+* **Always-off**, not enabled and mostly banned. For example, `TransformListComp` steals the `group` keyword and never got much traction. These extensions can be similarly banned by HLint, or you can [default unmentioned extensions to being disabled](https://github.com/digital-asset/ghcide/blob/cbafcf29f4157e86e0522d87bf99cb2aeff1d853/.hlint.yaml#L51-L52). If you really need to turn on one of these extensions, you need to both turn it on in the file, _and_ add an HLint exception. Such an edit can trigger wider code review, and serves as a good signal that something needs looking at carefully.
+* **Sometimes-on**, written at the top of the file as `{-# LANGUAGE #-}` pragmas when needed. These are extensions which show up sometimes, but not that often. A typical file might have zero to three of them. The reasons for making an extension sometimes-on fall into three categories:
+  * The extension has a harmful compile-time impact, e.g. `CPP` or `TemplateHaskell`. It's better to only turn these extensions on if they are needed, but they are needed fairly often.
+  * The extension can break some code, e.g. `OverloadedStrings`, so enabling it everywhere would cause compile failures. Generally, we work to minimize such cases, aiming to fix all code to compile with most extensions turned on.
+  * The extension is used rarely within the code base and is a signal to the reader that something unusual is going on. Depending on the code base that might be things like `RankNTypes` or `GADTs`. But for certain code bases, those extensions will be very common, so it very much varies by code base.
+
+The features that are often most debated are the syntax features - e.g. `BlockSyntax` or `LambdaCase`. Most projects should either use these extensions commonly (always-on), or never (banned). They provide some syntactic convenience, but if used rarely, tend to mostly confuse things.
+
+Using this approach every large team I've worked on has had one initial debate to classify extensions, then every few months someone will suggest moving an extension from one pile to another. However, it's pretty much entirely silenced the issue from normal discussion thereafter, leaving us to focus on actual coding.
