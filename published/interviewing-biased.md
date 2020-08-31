@@ -4,8 +4,8 @@ Interviewing usually involves some level of subjectivity. I once struggled to de
 
 Over my years, I've interviewed hundreds of candidates for software engineering jobs (I reckon somewhere in the 500-1000 mark). I've interviewed for many companies, for teams I was managing, for teams I worked in, and for other teams at the same company. In most places, I've been free to set the majority of the interview. I have [a standard pattern](https://neilmitchell.blogspot.com/2020/07/how-i-interview.html), with a standard technical question, to which I have heard a lot of answers. The quality of the answers fall into one of three categories:
 
-* About 35% give excellent, quick, effortless answers. These candidates pass the technical portion.
-* About 45% are confused and make nearly no progress even with lots of hints. These candidates fail.
+* About 40% give excellent, quick, effortless answers. These candidates pass the technical portion.
+* About 50% are confused and make nearly no progress even with lots of hints. These candidates fail.
 * About 10% struggle a bit but get to the answer.
 
 Candidates in the final bucket are by far the hardest to make a decision on. Not answering a question effortlessly doesn't mean you aren't a good candidate - it might mean it's not something you are used to, you got interview nerves or a million other factors that go into someone's performance. It makes the process far more subjective.
